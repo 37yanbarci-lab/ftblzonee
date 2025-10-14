@@ -26,12 +26,12 @@ textarea{resize:none;}
 .timers,.links,.themeChanger,.adminLogin,.predictionGame,.quizContainer, .pollContainer, .feedbackContainer{margin-top:30px; padding: 10px; border-bottom: 1px solid #eee; margin-bottom: 20px;}
 a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bold;}
 
-/* DÜZENLEME: BASİT LİSTE VE AYRAÇ STİLİ */
+/* GÜNCELLEME: BASİT LİSTE VE BOŞLUK STİLİ */
 .links div[id$="Links"], 
 .links div[id$="Summary"] {
     margin-bottom: 25px;
-    border-bottom: 2px solid #333; /* İstenen kalın ayraç */
-    padding: 10px 0;
+    border: 1px dashed #ddd;
+    padding: 10px;
 }
 .linkItem{
     display: block; 
@@ -63,45 +63,60 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
 .predictionResults { border-color: #28a745; text-align: center; background-color: #e8fadf;}
 .tahminBaslik { text-align: center; color: #007bff; font-weight: bold;}
 .kazananlarListesi { margin-top: 10px; text-align: left; }
-.prediction-selection { display: inline-block; margin: 5px 10px; }
-.prediction-group h4 { margin-top: 15px; margin-bottom: 5px; font-size: 1em; color: #333;}
+.prediction-selection { display: inline-block; margin: 5px; }
 #weeklyWinner { background-color: #ffc107; color: #333; padding: 10px; border-radius: 6px; margin-bottom: 20px; font-weight: bold; }
-.prediction-input-group { margin-bottom: 15px; }
-.prediction-input-group input[type="number"] { max-width: 80px; display: inline-block; }
-
 
 /* DUYURU, QUIZ VE ANKET STİLLERİ */
-/* GÜNCEL: RENKLİ DUYURU ŞERİDİ VE GÖRÜNÜRLÜK DÜZENLEMESİ */
-#announcementBar { 
-    padding: 10px; 
-    margin-bottom: 20px; 
-    font-weight: bold; 
-    height: 30px; 
-    overflow: hidden; 
-    position: relative; 
-    line-height: 1.5; /* Metnin dikey ortalanmasına yardımcı olur */
-}
-.announcement-item { 
-    position: absolute; 
-    width: 100%; 
-    text-align: center; 
-    top: 50%; /* Dikey ortalama başlangıcı */
-    transform: translateY(-50%); /* Dikey ortalamayı tamamla */
-    opacity: 0; 
-    transition: opacity 0.5s; 
-    color: white;
-}
-.announcement-item.active { 
-    opacity: 1; 
-}
-
-.bg-red { background-color: #dc3545; }
-.bg-blue { background-color: #007bff; }
-.bg-green { background-color: #28a745; }
-.bg-yellow { background-color: #ffc107; color: #333 !important; } /* Sarı zeminde metin siyah */
+#announcementBar { background-color: #dc3545; color: white; padding: 10px; margin-bottom: 20px; font-weight: bold; height: 30px; overflow: hidden; position: relative; }
+.announcement-item { position: absolute; width: 100%; text-align: center; top: 10px; opacity: 0; transition: opacity 0.5s; }
+.announcement-item.active { opacity: 1; }
 
 .quizContainer { border: 2px solid #5aa1e3; border-radius: 10px; padding: 20px; background-color: #f5faff; }
-.pollContainer { border: 2px solid #ffaa00; border-radius: 10px; padding: 20px; background-color: #fff8eb; }
+.quizQuestion { font-weight: bold; margin-bottom: 15px; color: #0033cc; }
+.quizOption { display: block; margin: 8px 0; padding: 5px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; text-align: left;}
+.quizOption:hover { background-color: #e0f7ff; }
+.quizResults { margin-top: 15px; padding: 10px; border-top: 1px solid #ccc; text-align: left;}
+
+.option-control { display: flex; align-items: center; margin-bottom: 5px; }
+.option-control input { flex: 1; margin-right: 10px; }
+.remove-option { background-color: #dc3545; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer; }
+
+/* İyileştirilmiş Quiz ve Anket Stilleri (Anket Link için güncellendi) */
+.quiz-countdown, .poll-countdown { 
+    background-color: #ffc107; 
+    color: #333; 
+    padding: 8px; 
+    border-radius: 6px; 
+    margin-bottom: 15px; 
+    font-weight: bold;
+    text-align: center;
+}
+.quiz-expired, .poll-expired { 
+    background-color: #dc3545; 
+    color: white; 
+    padding: 8px; 
+    border-radius: 6px; 
+    margin-bottom: 15px; 
+    font-weight: bold;
+    text-align: center;
+}
+.quiz-active, .poll-active { 
+    background-color: #28a745; 
+    color: white; 
+    padding: 8px; 
+    border-radius: 6px; 
+    margin-bottom: 15px; 
+    font-weight: bold;
+    text-align: center;
+}
+.user-vote-indicator {
+    background-color: #007bff;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    margin-left: 5px;
+}
 
 /* Geri Bildirim Stilleri */
 .feedbackContainer { 
@@ -120,21 +135,53 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
     margin: 10px auto;
 }
 
-/* Modal Stilleri */
+/* Modal (Açılır Pencere) Stilleri */
 .modal {
-    display: none; position: fixed; z-index: 10; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); 
+    display: none; /* Varsayılan olarak kapalı */
+    position: fixed; 
+    z-index: 10; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4); 
 }
 .modal-content {
-    background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 8px; text-align: left; color: #000;
+    background-color: #fefefe;
+    margin: 10% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+    max-width: 600px;
+    border-radius: 8px;
+    text-align: left;
+    color: #000;
 }
 .close-btn {
-    color: #aaa; float: right; font-size: 28px; font-weight: bold;
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
 }
 .close-btn:hover, .close-btn:focus {
-    color: #000; text-decoration: none; cursor: pointer;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }
 .version-item {
-    border-bottom: 1px dashed #ccc; padding: 10px 0; margin-bottom: 10px;
+    border-bottom: 1px dashed #ccc;
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+.version-item h5 {
+    color: #dc3545;
+    margin: 0;
+    font-size: 1.1em;
+}
+.version-item p {
+    margin: 5px 0 0 0;
+    white-space: pre-wrap; /* Notların yeni satırlarını korur */
 }
 
 /* TEMA STİLLERİ */
@@ -146,7 +193,6 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
 </style>
 </head>
 <body onload="checkAdminStatus(); requestNotificationPermission(); showActivePredictionGame(); loadAnnouncements(); loadWeeklyWinner(); loadActiveQuiz(); loadActivePoll(); updateDailyLinksHeader();">
-
 <div id="announcementBar"></div>
 
 <h1>ftblzone - Maç Linkleri ve Bilgileri</h1>
@@ -173,7 +219,7 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
 </div>
 
 <div class="predictionGame">
-    <h2>🏆 Maç Tahmin Oyunu (10 Farklı Puanlama)</h2>
+    <h2>🏆 Maç Tahmin Oyunu (5 Farklı Puanlama)</h2>
     <div id="predictionGameContainer">
         <p style="font-style: italic; color: #777;">Şu anda aktif bir tahmin oyunu bulunmamaktadır.</p>
     </div>
@@ -235,12 +281,6 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
 <div id="announcementAdminControls">
     <h4>📢 Çoklu Duyuru Yönetimi</h4>
     <input id="newAnnouncementText" placeholder="Yeni Duyuru Metni">
-    <select id="announcementColor" style="max-width: 150px; display: inline-block;">
-        <option value="bg-red">Kırmızı</option>
-        <option value="bg-blue">Mavi</option>
-        <option value="bg-green">Yeşil</option>
-        <option value="bg-yellow">Sarı (Siyah Yazı)</option>
-    </select>
     <button onclick="addAnnouncement()">Duyuru Ekle</button>
     <button onclick="clearCollection('announcements', 'Tüm Duyurular')" style="background-color: #d9534f;">Tüm Duyuruları Sil</button>
     <div id="currentAnnouncements" style="margin-top: 10px;"></div>
@@ -297,7 +337,6 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
     <button onclick="deletePoll()" style="background-color: #888;">Linki Kapat</button>
     <hr>
 </div>
-
 <div id="predictionAdminControls">
     <h4>🏆 Tahmin Oyunu Yönetimi</h4>
     <input id="tahminMatchName" placeholder="Maç Adı (Örn: FB - GS)">
@@ -309,70 +348,24 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
     
     <hr style="margin-top: 15px;">
     <h5>Maç Sonucu ve Kazananları Gir</h5>
-    <div class="prediction-input-group">
-        <label>Skor:</label>
-        <input type="number" id="resultScoreA" placeholder="A Skoru" style="max-width: 100px;">
-        <input type="number" id="resultScoreB" placeholder="B Skoru" style="max-width: 100px;">
-    </div>
-    
-    <div class="prediction-input-group">
-        <label>Maç Sonucu (1-X-2):</label>
-        <select id="resultMatchResult">
-            <option value="none">Seçin</option>
-            <option value="1">1 (A Kazanır)</option>
-            <option value="X">X (Berabere)</option>
-            <option value="2">2 (B Kazanır)</option>
-        </select>
-    </div>
-
-    <div class="prediction-input-group">
-        <label>Maçta Gol Olur mu?:</label>
-        <select id="resultGoalYesNo">
-            <option value="none">Seçin</option>
-            <option value="yes">Evet</option>
-            <option value="no">Hayır</option>
-        </select>
-    </div>
-
-    <div class="prediction-input-group">
-        <label>Kırmızı Kart Çıkar mı?:</label>
-        <select id="resultRedCard">
-            <option value="none">Seçin</option>
-            <option value="yes">Evet</option>
-            <option value="no">Hayır</option>
-        </select>
-    </div>
-
-    <div class="prediction-input-group">
-        <label>İlk Yarı Sonucu (1-X-2):</label>
-        <select id="resultHTResult">
-            <option value="none">Seçin</option>
-            <option value="1">1 (A Kazanır)</option>
-            <option value="X">X (Berabere)</option>
-            <option value="2">2 (B Kazanır)</option>
-        </select>
-    </div>
-
-    <div class="prediction-input-group">
-        <label>Hangi Takım Öne Geçer?:</label>
-        <select id="resultLeadingTeam">
-            <option value="none">Seçin</option>
-            <option value="A">Takım A</option>
-            <option value="B">Takım B</option>
-            <option value="none_lead">Hiçbiri</option>
-        </select>
-    </div>
-
-    <div class="prediction-input-group">
-        <label>En Çok Gol Hangi Yarıda Atılır?:</label>
-        <select id="resultMostGoalsHalf">
-            <option value="none">Seçin</option>
-            <option value="first">İlk Yarı</option>
-            <option value="second">İkinci Yarı</option>
-            <option value="equal">Eşit</option>
-        </select>
-    </div>
-
+    <input type="number" id="resultScoreA" placeholder="A Skoru">
+    <input type="number" id="resultScoreB" placeholder="B Skoru">
+    <select id="resultMatchResult">
+        <option value="none">Maç Sonucu (1-X-2)</option>
+        <option value="1">1 (A Kazanır)</option>
+        <option value="X">X (Berabere)</option>
+        <option value="2">2 (B Kazanır)</option>
+    </select>
+    <select id="resultGoalCount">
+        <option value="none">Toplam Gol Sayısı</option>
+        <option value="ust">2.5 Üstü</option>
+        <option value="alt">2.5 Altı</option>
+    </select>
+    <select id="resultCardCount">
+        <option value="none">Sarı Kart Sayısı</option>
+        <option value="ust">4.5 Üstü</option>
+        <option value="alt">4.5 Altı</option>
+    </select>
     <button onclick="publishPredictionResults()" style="margin-top: 10px; background-color: #28a745;">Sonuçları Açıkla</button>
 </div>
 <hr>
@@ -384,7 +377,6 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
     <button onclick="setVersionInfo()">Sürüm Bilgisini Kaydet</button>
 </div>
 <hr>
-
 <div id="nextMatchAdminControls">
     <h4>Yeni Geri Sayım Ekle</h4>
     <input type="datetime-local" id="newMatchDate">
@@ -406,9 +398,9 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
 <button onclick="clearCollection('dailyLinks', 'Günlük Maç Linkleri')" style="background-color: #d9534f;">Tümünü Temizle</button>
 <hr>
 
-<h4>🇹🇷 Türkiye 4 Büyükler Linki Ekle</h4>
+<h4>🇹🇷 4 Büyükler Linki Ekle (Tarih/Saat ile Süre Sınırı)</h4>
 <input id="big4Link" placeholder="Link (URL)">
-<input id="big4Desc" placeholder="Açıklama (Örn: FB Link)">
+<input id="big4Desc" placeholder="Açıklama">
 <div style="margin-top: 10px;">
     <label><input type="checkbox" id="big4HasDeadline" onchange="toggleBig4Deadline()"> Süre sınırı ekle</label>
     <div id="big4DeadlineContainer" style="display: none; margin-top: 10px;">
@@ -419,9 +411,9 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
 <button onclick="clearCollection('big4Links', '4 Büyükler Linkleri')" style="background-color: #d9534f;">Tümünü Temizle</button>
 <hr>
 
-<h4>🥅 Gol Videosu Linki Ekle</h4>
+<h4>🥅 Gol Videosu Ekle (Tarih/Saat ile Süre Sınırı)</h4>
 <input id="goalLink" placeholder="Link (URL)">
-<input id="goalDesc" placeholder="Açıklama (Örn: Maçın İlk Golü)">
+<input id="goalDesc" placeholder="Açıklama (Örn: Ronaldo Golü)">
 <div style="margin-top: 10px;">
     <label><input type="checkbox" id="goalHasDeadline" onchange="toggleGoalDeadline()"> Süre sınırı ekle</label>
     <div id="goalDeadlineContainer" style="display: none; margin-top: 10px;">
@@ -429,27 +421,25 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
     </div>
 </div>
 <button onclick="addGoalLink()">Ekle</button>
-<button onclick="clearCollection('goalLinks', 'Gol Linkleri')" style="background-color: #d9534f;">Tümünü Temizle</button>
+<button onclick="clearCollection('goalLinks', 'Gol Videoları')" style="background-color: #d9534f;">Tümünü Temizle</button>
 <hr>
 
-<h4>🎬 Kısa Özet Linki Ekle</h4>
-<input id="shortLink" placeholder="Link (URL)">
-<input id="shortDesc" placeholder="Açıklama (Örn: 2 Dakikalık Özet)">
+<h4>🎬 Maç Özeti Ekle (Tarih/Saat ile Süre Sınırı)</h4>
 <div style="margin-top: 10px;">
     <label><input type="checkbox" id="summaryHasDeadline" onchange="toggleSummaryDeadline()"> Süre sınırı ekle</label>
     <div id="summaryDeadlineContainer" style="display: none; margin-top: 10px;">
         <input type="datetime-local" id="summaryDeadline">
     </div>
 </div>
-<button onclick="addShortSummary()">Ekle</button>
-<button onclick="clearCollection('shortSummary', 'Kısa Özetler')" style="background-color: #d9534f;">Tümünü Temizle</button>
-<hr>
-
-<h4>🎬 Uzun Özet Linki Ekle</h4>
-<input id="longLink" placeholder="Link (URL)">
-<input id="longDesc" placeholder="Açıklama (Örn: 10 Dakikalık Özet)">
-<button onclick="addLongSummary()">Ekle</button>
-
+<input id="shortLink" placeholder="Kısa Özet Linki">
+<input id="shortDesc" placeholder="Kısa Özet Açıklama">
+<button onclick="addShortSummary()">Kısa Ekle</button>
+<button onclick="clearCollection('shortSummary', 'Kısa Özetler')" style="background-color: #d9534f; margin-top: 5px;">Kısa Temizle</button>
+<br>
+<input id="longLink" placeholder="Uzun Özet Linki">
+<input id="longDesc" placeholder="Uzun Özet Açıklama">
+<button onclick="addLongSummary()">Uzun Ekle</button>
+<button onclick="clearCollection('longSummary', 'Uzun Özetler')" style="background-color: #d9534f; margin-top: 5px;">Uzun Temizle</button>
 </div>
 
 <div id="versionModal" class="modal">
@@ -469,9 +459,9 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
 // BU BİLGİLERİ KENDİ FIREBASE PROJENİZLE DEĞİŞTİRMELİSİNİZ!
 // ===============================================
 const firebaseConfig = {
-  apiKey: "AIzaSyDP46kVlCHwKdWPjnXL86Zl0DncQfqFc00", // Kendi Anahtarınız
+  apiKey: "AIzaSyDP46kVlCHwKdWPjnXL86Zl0DncQfqFc00",
   authDomain: "ftblzone-93b54.firebaseapp.com",
-  projectId: "ftblzone-93b54", // Kendi Proje ID'niz
+  projectId: "ftblzone-93b54",
   storageBucket: "ftblzone-93b54.appspot.com", 
   messagingSenderId: "1006008662097",
   appId: "1:1006008662097:web:8b874f6b39fa2c05896070",
@@ -493,93 +483,387 @@ let quizInterval = null;
 let pollInterval = null;
 let currentQuiz = null;
 
-// ===============================================
-// === TEMEL VE YÖNETİM FONKSİYONLARI ===
-// ===============================================
+// === TEMA VE ADMİN FONKSİYONLARI ===
+
+function changeTheme(){ 
+    const t=document.getElementById("themeSelect").value; 
+    const body=document.body;
+    body.classList.remove("yellow-red-theme", "yellow-blue-theme", "black-theme", "black-white-theme", "claret-blue-theme");
+    switch(t){
+        case "white": body.style.background="#fff"; body.style.color="#000"; break;
+        case "black": body.classList.add("black-theme"); body.style.background="#000"; body.style.color="#fff"; break;
+        case "yellow-red": body.classList.add("yellow-red-theme"); body.style.background="#ffcc00"; body.style.color="#b30000"; break;
+        case "yellow-blue": body.classList.add("yellow-blue-theme"); body.style.background="#ffcc00"; body.style.color="#0033cc"; break;
+        case "black-white": body.classList.add("black-white-theme"); body.style.background="#111"; body.style.color="#eee"; break;
+        case "claret-blue": body.classList.add("claret-blue-theme"); body.style.background="#7b2f3a"; body.style.color="#5aa1e3"; break;
+    }
+}
 
 function checkAdminStatus() {
     if (localStorage.getItem(ADMIN_TOKEN_KEY) === 'true') {
         openAdminPanel();
     }
-    loadVersionHistory();
-}
-
-function checkAdmin() {
-    const password = document.getElementById("adminPass").value;
-    if (password === ADMIN_PASSWORD) {
-        localStorage.setItem(ADMIN_TOKEN_KEY, 'true');
-        openAdminPanel();
-    } else {
-        alert("Yanlış Yönetici Şifresi!");
-    }
 }
 
 function openAdminPanel() {
-    document.getElementById("adminLogin").style.display = 'none';
-    document.getElementById("adminPanel").style.display = 'block';
+    document.getElementById("adminPanel").style.display="block";
+    document.getElementById("adminLogin").style.display="none";
+    showAllLinks(); 
+    showNextMatches();
+    loadPredictionGameSettings(); 
     loadAdminAnnouncements(); 
+}
+
+function checkAdmin(){ 
+    const pass=document.getElementById("adminPass").value;
+    if(pass===ADMIN_PASSWORD){
+        localStorage.setItem(ADMIN_TOKEN_KEY, 'true');
+        openAdminPanel();
+        alert("Admin girişi başarılı ✅");
+    } else {
+        alert("Yanlış şifre ❌");
+    }
 }
 
 function logoutAdmin() {
     localStorage.removeItem(ADMIN_TOKEN_KEY);
-    document.getElementById("adminPanel").style.display = 'none';
-    document.getElementById("adminLogin").style.display = 'block';
+    document.getElementById("adminPanel").style.display="none";
+    document.getElementById("adminLogin").style.display="block";
+    alert("Admin çıkışı yapıldı.");
+    showAllLinks();
+    showNextMatches();
 }
 
-function clearCollection(collectionName, displayName) {
-    if (localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
-    if (confirm(`**${displayName}** koleksiyonundaki tüm verileri silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!`)) {
-        db.collection(collectionName).get().then(snapshot => {
-            snapshot.docs.forEach(doc => {
-                doc.ref.delete();
-            });
-            alert(`${displayName} başarıyla temizlendi.`);
+// === SÜRE AYARLARI FONKSİYONLARI ===
+
+function toggleQuizDeadline() {
+    const container = document.getElementById("quizDeadlineContainer");
+    container.style.display = document.getElementById("quizHasDeadline").checked ? "block" : "none";
+}
+
+function togglePollDeadline() {
+    const container = document.getElementById("pollDeadlineContainer");
+    container.style.display = document.getElementById("pollHasDeadline").checked ? "block" : "none";
+}
+
+function toggleDailyDeadline() {
+    const container = document.getElementById("dailyDeadlineContainer");
+    container.style.display = document.getElementById("dailyHasDeadline").checked ? "block" : "none";
+}
+
+function toggleBig4Deadline() {
+    const container = document.getElementById("big4DeadlineContainer");
+    container.style.display = document.getElementById("big4HasDeadline").checked ? "block" : "none";
+}
+
+function toggleGoalDeadline() {
+    const container = document.getElementById("goalDeadlineContainer");
+    container.style.display = document.getElementById("goalHasDeadline").checked ? "block" : "none";
+}
+
+function toggleSummaryDeadline() {
+    const container = document.getElementById("summaryDeadlineContainer");
+    container.style.display = document.getElementById("summaryHasDeadline").checked ? "block" : "none";
+}
+
+// === LİNK VE İÇERİK YÖNETİMİ ===
+
+function addLink(col, linkId, descId, deadlineCheckboxId = null, deadlineInputId = null){ 
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Sadece admin ekleyebilir!");
+    const link=document.getElementById(linkId).value; 
+    const desc=document.getElementById(descId).value;
+    
+    let expiryTime = 0;
+    
+    if (deadlineCheckboxId && deadlineInputId) {
+        const hasDeadline = document.getElementById(deadlineCheckboxId).checked;
+        if (hasDeadline) {
+            const deadlineValue = document.getElementById(deadlineInputId).value;
+            if (!deadlineValue) {
+                return alert("Süre sınırı seçtiniz ama tarih/saat belirtmediniz!");
+            }
+            expiryTime = new Date(deadlineValue).getTime();
+        }
+    }
+
+    if (!link || !desc) { return alert("Link ve açıklama boş bırakılamaz."); }
+    
+    db.collection(col).add({
+        link: link,
+        desc: desc,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        expiryTime: expiryTime
+    }).then(() => {
+        alert("Link başarıyla eklendi ✅");
+        document.getElementById(linkId).value = ''; 
+        document.getElementById(descId).value = '';
+        if (deadlineCheckboxId) {
+            document.getElementById(deadlineCheckboxId).checked = false;
+            if (deadlineInputId) {
+                document.getElementById(deadlineInputId).value = '';
+                document.getElementById(deadlineInputId + "Container").style.display = "none";
+            }
+        }
+    }).catch(error => {
+        console.error("Link ekleme hatası: ", error);
+        alert("Link eklenirken bir hata oluştu. Firebase kurallarınızı kontrol edin.");
+    });
+}
+
+function deleteLink(col, docId) {
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
+    
+    if (confirm("Bu linki silmek istediğinizden emin misiniz?")) {
+        const linkElement = document.getElementById(`link-item-${docId}`);
+        if(linkElement) linkElement.style.display = 'none';
+
+        db.collection(col).doc(docId).delete().then(() => {
+            alert("Link başarıyla silindi.");
         }).catch(error => {
-            console.error("Koleksiyon temizleme hatası: ", error);
-            alert("Koleksiyon temizlenirken hata oluştu.");
+            console.error("Silme hatası: ", error);
+            alert("Silme sırasında bir hata oluştu.");
+            if(linkElement) linkElement.style.display = 'block';
         });
     }
 }
 
-// === TEMA FONKSİYONLARI ===
+async function clearCollection(col, name) {
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
 
-function changeTheme() {
-    const theme = document.getElementById('themeSelect').value;
-    document.body.className = theme === 'white' ? '' : theme + '-theme';
-    localStorage.setItem('ftblzone_theme', theme);
+    if (!confirm(`DİKKAT! ${name} kategorisindeki TÜM kayıtları silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`)) {
+        return;
+    }
+
+    try {
+        const snapshot = await db.collection(col).get();
+        if (snapshot.empty) {
+            alert(`${name} kategorisinde silinecek kayıt bulunamadı.`);
+            return;
+        }
+
+        const batch = db.batch();
+        snapshot.docs.forEach(doc => {
+            batch.delete(doc.ref);
+        });
+
+        await batch.commit();
+        alert(`${name} kategorisindeki ${snapshot.size} adet kayıt başarıyla temizlendi!`);
+    } catch (error) {
+        console.error("Toplu silme hatası: ", error);
+        alert(`Toplu silme sırasında bir hata oluştu: ${error.message}`);
+    }
 }
 
-function loadTheme() {
-    const savedTheme = localStorage.getItem('ftblzone_theme') || 'white';
-    document.getElementById('themeSelect').value = savedTheme;
-    changeTheme();
+// === LİNK GÖRÜNTÜLEME VE ARAMA SİSTEMİ ===
+
+function showLinks(col, container){
+    db.collection(col).orderBy("timestamp","desc").limit(20).onSnapshot(snapshot=>{
+        
+        allLinksData = allLinksData.filter(d => d.col !== col); 
+        
+        snapshot.forEach(doc => {
+            const d = doc.data();
+            d.id = doc.id;
+            d.col = col;
+            allLinksData.push(d); 
+        });
+        
+        renderLinks(allLinksData.filter(d => d.col === col), container);
+    });
 }
 
-loadTheme(); 
+function renderLinks(links, container, searchTerm = "") {
+    const c = document.getElementById(container);
+    c.innerHTML = ""; 
+    const isAdmin = localStorage.getItem(ADMIN_TOKEN_KEY) === 'true';
+    const now = new Date().getTime();
+    const noLinkMessage = '<p style="font-style: italic; color: #777; text-align: center;">Henüz link eklenmemiş.</p>';
+    
+    const filteredLinks = links.filter(d => {
+        const isExpired = d.expiryTime && d.expiryTime > 0 && d.expiryTime < now;
+        
+        if (isExpired) {
+            db.collection(d.col).doc(d.id).delete().catch(e => console.error("Oto Silme Hatası:", e));
+            return false;
+        }
+        
+        if (searchTerm) {
+            const term = searchTerm.toLowerCase();
+            return d.desc.toLowerCase().includes(term) || d.link.toLowerCase().includes(term);
+        }
+        return true;
+    }).slice(0, 20);
 
+    if (filteredLinks.length === 0) { 
+        c.innerHTML = searchTerm ? '<p style="font-style: italic; color: #777; text-align: center;">Arama sonucu bulunamadı.</p>' : noLinkMessage;
+        return; 
+    }
 
-// === GÜNCEL DUYURU FONKSİYONLARI ===
+    filteredLinks.forEach(d => {
+        const docId = d.id;
+        const div=document.createElement("div");
+        div.classList.add("linkItem");
+        div.id = `link-item-${docId}`;
+        
+        const date = d.timestamp ? new Date(d.timestamp.seconds * 1000) : new Date();
+        const timeStr = date.toLocaleString('tr-TR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+        
+        let status = `Eklendi: ${timeStr}`;
+        
+        if (d.expiryTime && d.expiryTime > 0) {
+            const timeLeft = Math.max(0, d.expiryTime - now);
+            if (timeLeft > 0) {
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                status = `<span style="color: #28a745;">Kalan Süre: ${days}G ${hours}S ${minutes}D</span>`;
+            } else {
+                status = `<span style="color: #dc3545;">Süresi Bitti</span>`;
+            }
+        }
+
+        const deleteButtonHtml = isAdmin ? 
+            `<button onclick="deleteLink('${d.col}', '${docId}')" style="margin-left: 10px; padding: 5px 10px; background-color: #d9534f; color: white; border: none; border-radius: 4px; cursor: pointer;">Sil</button>` : 
+            '';
+        
+        div.innerHTML=`
+            <a href="${d.link}" target="_blank">${d.desc}</a>
+            <span>${status}</span>
+            ${deleteButtonHtml}
+        `;
+        c.appendChild(div);
+    });
+}
+
+function searchLinks() {
+    const term = document.getElementById("linkSearch").value.toLowerCase();
+    
+    const filteredDaily = allLinksData.filter(d => d.col === "dailyLinks" && (d.desc.toLowerCase().includes(term) || d.link.toLowerCase().includes(term)));
+    const filteredBig4 = allLinksData.filter(d => d.col === "big4Links" && (d.desc.toLowerCase().includes(term) || d.link.toLowerCase().includes(term)));
+    const filteredGoal = allLinksData.filter(d => d.col === "goalLinks" && (d.desc.toLowerCase().includes(term) || d.link.toLowerCase().includes(term)));
+    const filteredShort = allLinksData.filter(d => d.col === "shortSummary" && (d.desc.toLowerCase().includes(term) || d.link.toLowerCase().includes(term)));
+    const filteredLong = allLinksData.filter(d => d.col === "longSummary" && (d.desc.toLowerCase().includes(term) || d.link.toLowerCase().includes(term)));
+
+    renderLinks(filteredDaily, "dailyLinks", term);
+    renderLinks(filteredBig4, "big4Links", term);
+    renderLinks(filteredGoal, "goalLinks", term);
+    renderLinks(filteredShort, "shortSummary", term);
+    renderLinks(filteredLong, "longSummary", term);
+}
+
+function showAllLinks() {
+    showLinks("dailyLinks","dailyLinks");
+    showLinks("big4Links","big4Links");
+    showLinks("goalLinks","goalLinks");
+    showLinks("shortSummary","shortSummary");
+    showLinks("longSummary","longSummary");
+}
+
+showAllLinks();
+
+// BAŞLIK GÜNCELLEME FONKSİYONU
+function updateDailyLinksHeader() {
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    
+    const headerElement = document.getElementById("dailyLinksHeader");
+    if (headerElement) {
+        headerElement.innerHTML = `⚽ Günlük Maç Linkleri - <span style="font-size: 0.9em; color: #dc3545;">${formattedDate}</span>`;
+    }
+}
+
+// LİNK EKLEME FONKSİYONLARI
+function addDailyLink(){ 
+    addLink("dailyLinks","dailyLink","dailyDesc", "dailyHasDeadline", "dailyDeadline"); 
+}
+function addBig4Link(){ 
+    addLink("big4Links","big4Link","big4Desc", "big4HasDeadline", "big4Deadline"); 
+}
+function addGoalLink(){ 
+    addLink("goalLinks","goalLink","goalDesc", "goalHasDeadline", "goalDeadline"); 
+}
+function addShortSummary(){ 
+    addLink("shortSummary","shortLink","shortDesc", "summaryHasDeadline", "summaryDeadline"); 
+}
+function addLongSummary(){ 
+    addLink("longSummary","longLink","longDesc", "summaryHasDeadline", "summaryDeadline"); 
+}
+
+// === GERİ SAYIM FONKSİYONLARI ===
+function deleteNextMatch(docId) {
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
+    if (confirm("Bu geri sayımı silmek istediğinizden emin misiniz?")) {
+        db.collection("nextMatches").doc(docId).delete().then(() => {
+            alert("Geri sayım başarıyla silindi.");
+        }).catch(error => { console.error("Silme hatası: ", error); alert("Silme sırasında bir hata oluştu."); });
+    }
+}
+function updateCountdown(docId, targetTime, description, element) {
+    const now = new Date().getTime(); const distance = targetTime - now;
+    if (distance < 0) { clearInterval(matchIntervals[docId]); element.innerHTML = `<p style="color: #d9534f; font-weight: bold;">${description}</p>MAÇ BAŞLADI VEYA BİTTİ!`; return; }
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24)); const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)); const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    element.innerHTML = `<p style="font-size: 1.2em; font-weight: bold;">${description}</p>${days}G ${hours}S ${minutes}D ${seconds}SN`;
+}
+function startCountdown(docId, targetTime, description) {
+    const isAdmin = localStorage.getItem(ADMIN_TOKEN_KEY) === 'true'; 
+    const container = document.getElementById("allNextMatchesContainer");
+    if (matchIntervals[docId]) clearInterval(matchIntervals[docId]);
+    let timerItem = document.getElementById(`timer-item-${docId}`);
+    if (!timerItem) {
+        timerItem = document.createElement('div'); timerItem.classList.add('timerItem'); timerItem.id = `timer-item-${docId}`;
+        const countdownDisplay = document.createElement('div'); countdownDisplay.id = `countdown-${docId}`; timerItem.appendChild(countdownDisplay); container.appendChild(timerItem);
+    } 
+    const countdownDisplay = document.getElementById(`countdown-${docId}`);
+    let deleteBtn = timerItem.querySelector('button');
+    if (isAdmin) {
+        if(!deleteBtn) { deleteBtn = document.createElement('button'); deleteBtn.innerHTML = 'Sil'; deleteBtn.style.backgroundColor = '#d9534f'; deleteBtn.onclick = () => deleteNextMatch(docId); timerItem.appendChild(deleteBtn); }
+    } else if (deleteBtn) { deleteBtn.remove(); }
+    updateCountdown(docId, targetTime, description, countdownDisplay);
+    matchIntervals[docId] = setInterval(() => { updateCountdown(docId, targetTime, description, countdownDisplay); }, 1000);
+}
+function showNextMatches() {
+    db.collection("nextMatches").orderBy("targetTime", "asc").onSnapshot(snapshot => {
+        const container = document.getElementById("allNextMatchesContainer");
+        const currentIds = new Set();
+        snapshot.forEach(doc => {
+            currentIds.add(doc.id);
+            const data = doc.data();
+            if (data.targetTime) { startCountdown(doc.id, data.targetTime, data.description || "Maç Zamanı!"); }
+        });
+        const existingTimers = Object.keys(matchIntervals);
+        existingTimers.forEach(id => {
+            if (!currentIds.has(id)) { clearInterval(matchIntervals[id]); delete matchIntervals[id]; const element = document.getElementById(`timer-item-${id}`); if (element) element.remove(); }
+        });
+        if (snapshot.empty) { container.innerHTML = '<p style="font-style: italic; color: #777;">Henüz geri sayım eklenmemiş.</p>'; }
+    });
+}
+function addNextMatch() {
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Sadece admin ayar yapabilir!");
+    const targetDateInput = document.getElementById("newMatchDate").value; const description = document.getElementById("newMatchText").value;
+    if (!targetDateInput || !description) return alert("Tarih ve açıklama girmelisiniz.");
+    const targetTime = new Date(targetDateInput).getTime();
+    if (targetTime < new Date().getTime()) return alert("Geçmiş bir zaman ayarlayamazsınız.");
+    db.collection("nextMatches").add({ targetTime: targetTime, description: description, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(() => {
+        alert("Yeni geri sayım eklendi!"); document.getElementById("newMatchDate").value = ''; document.getElementById("newMatchText").value = '';
+    }).catch(error => { console.error("Geri sayım ekleme hatası: ", error); alert("Geri sayım eklenirken bir hata oluştu. Firebase kurallarınızı kontrol edin."); });
+}
+
+// === ÇOKLU DUYURU FONKSİYONLARI ===
 
 function addAnnouncement() {
     if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
     const text = document.getElementById("newAnnouncementText").value;
-    const color = document.getElementById("announcementColor").value; 
-
     if (!text) return alert("Duyuru metni boş olamaz.");
 
-    db.collection("announcements").add({ 
-        text: text, 
-        color: color, 
-        timestamp: firebase.firestore.FieldValue.serverTimestamp() 
-    })
-    .then(() => {
-        alert("Yeni duyuru eklendi.");
-        document.getElementById("newAnnouncementText").value = '';
-    })
-    .catch(error => {
-        console.error("Duyuru ekleme hatası: ", error);
-        alert("Duyuru eklenirken hata oluştu. Firebase kurallarınızı kontrol edin!");
-    });
+    db.collection("announcements").add({ text: text, timestamp: firebase.firestore.FieldValue.serverTimestamp() })
+        .then(() => {
+            alert("Yeni duyuru eklendi.");
+            document.getElementById("newAnnouncementText").value = '';
+        })
+        .catch(error => {
+            console.error("Duyuru ekleme hatası: ", error);
+            alert("Duyuru eklenirken hata oluştu. Firebase kurallarınızı kontrol edin!");
+        });
 }
 
 function deleteAnnouncement(docId) {
@@ -589,6 +873,7 @@ function deleteAnnouncement(docId) {
             alert("Duyuru başarıyla silindi.");
         }).catch(error => {
             console.error("Duyuru silme hatası: ", error);
+            alert("Duyuru silinirken hata oluştu. Firebase kurallarınızı kontrol edin!");
         });
     }
 }
@@ -604,11 +889,11 @@ function loadAdminAnnouncements() {
         snapshot.forEach(doc => {
             const data = doc.data();
             const div = document.createElement('div');
-            // Renk önizlemesi
-            const colorClass = data.color.replace('bg-', '');
-            div.innerHTML = `<span class="${colorClass}-theme" style="display:inline-block; width: 10px; height: 10px; border: 1px solid #333; margin-right: 5px; background-color: ${data.color === 'bg-red' ? '#dc3545' : data.color === 'bg-blue' ? '#007bff' : data.color === 'bg-green' ? '#28a745' : '#ffc107'};"></span> ${data.text} <button onclick="deleteAnnouncement('${doc.id}')" style="background-color: #f44336; padding: 3px 6px; font-size: 10px;">Sil</button>`;
+            div.innerHTML = `${data.text} <button onclick="deleteAnnouncement('${doc.id}')" style="background-color: #f44336; padding: 3px 6px; font-size: 10px;">Sil</button>`;
             container.appendChild(div);
         });
+    }, error => {
+        console.error("Admin Duyuruları çekme hatası: ", error);
     });
 }
 
@@ -616,7 +901,7 @@ function loadAnnouncements() {
     db.collection("announcements").orderBy("timestamp", "desc").onSnapshot(snapshot => {
         announcementData = [];
         snapshot.forEach(doc => {
-            announcementData.push({ text: doc.data().text, color: doc.data().color || 'bg-red' }); 
+            announcementData.push(doc.data().text);
         });
 
         const bar = document.getElementById("announcementBar");
@@ -625,19 +910,12 @@ function loadAnnouncements() {
 
         if (announcementData.length > 0) {
             bar.style.display = 'block';
-            
-            // İlk öğenin rengini bar'a uygula ve varsa eski sınıfları temizle
-            bar.className = '';
-            bar.classList.add(announcementData[0].color);
-
-            announcementData.forEach((item, index) => {
-                const element = document.createElement('div');
-                element.classList.add('announcement-item');
-                element.textContent = item.text;
-                // Sarı zemin için metin rengini ayarla (diğerleri zaten CSS'te ayarlı)
-                element.style.color = item.color === 'bg-yellow' ? '#333' : 'white'; 
-                bar.appendChild(element);
-                if (index === 0) element.classList.add('active');
+            announcementData.forEach((text, index) => {
+                const item = document.createElement('div');
+                item.classList.add('announcement-item');
+                item.textContent = text;
+                bar.appendChild(item);
+                if (index === 0) item.classList.add('active');
             });
 
             if (announcementData.length > 1) {
@@ -655,63 +933,685 @@ function loadAnnouncements() {
 
 function showNextAnnouncement() {
     const items = document.querySelectorAll('.announcement-item');
-    const bar = document.getElementById("announcementBar");
     if (items.length === 0) return;
 
     items[currentAnnouncementIndex].classList.remove('active');
     currentAnnouncementIndex = (currentAnnouncementIndex + 1) % items.length;
-    
-    const nextColor = announcementData[currentAnnouncementIndex].color;
-    bar.className = '';
-    bar.classList.add(nextColor);
-    
     items[currentAnnouncementIndex].classList.add('active');
 }
 
-// === TAHMİN OYUNU FONKSİYONLARI === (Kısaltıldı, sadece ana fonksiyonlar)
+// === SÜRÜM BİLGİSİ VE GEÇMİŞ YÖNETİMİ (GÜNCELLENDİ) ===
+function setVersionInfo() {
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
+    const version = document.getElementById("versionNo").value;
+    const notes = document.getElementById("updateNotes").value;
+    
+    if (!version || !notes) return alert("Sürüm No ve Güncelleme Notları boş bırakılamaz.");
 
-function createPredictionGame() { /* ... (önceki kod) ... */ }
-function deletePredictionGame() { /* ... (önceki kod) ... */ }
+    db.collection("versions").add({ 
+        version: version, 
+        notes: notes, 
+        timestamp: firebase.firestore.FieldValue.serverTimestamp() 
+    }).then(() => { 
+        alert(`Sürüm ${version} başarıyla kaydedildi!`);
+        document.getElementById("versionNo").value = '';
+        document.getElementById("updateNotes").value = '';
+        loadVersionHistory(); // Geçmişi yeniden yükle
+    }).catch(error => {
+        console.error("Sürüm kaydetme hatası: ", error);
+        alert("Sürüm kaydedilirken bir hata oluştu.");
+    });
+}
+
+function deleteVersion(docId) {
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
+    if (!confirm("Bu sürüm bilgisini silmek istediğinizden emin misiniz?")) return;
+    
+    db.collection("versions").doc(docId).delete().then(() => {
+        alert("Sürüm bilgisi silindi.");
+    }).catch(error => {
+        console.error("Silme hatası: ", error);
+        alert("Silme sırasında bir hata oluştu.");
+    });
+}
+
+function loadVersionHistory() {
+    db.collection("versions").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+        const list = document.getElementById("versionHistoryList");
+        const isAdmin = localStorage.getItem(ADMIN_TOKEN_KEY) === 'true';
+        
+        list.innerHTML = '';
+        if (snapshot.empty) {
+            list.innerHTML = '<p style="font-style: italic; color: #777;">Henüz sürüm bilgisi eklenmemiş.</p>';
+            return;
+        }
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const dateStr = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('tr-TR') : 'Bilinmiyor';
+            
+            const item = document.createElement('div');
+            item.classList.add('version-item');
+            
+            const deleteBtnHtml = isAdmin ? 
+                `<button onclick="deleteVersion('${doc.id}')" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; float: right;">Sil</button>` : 
+                '';
+
+            item.innerHTML = `
+                ${deleteBtnHtml}
+                <h5>${data.version} (${dateStr})</h5>
+                <p>${data.notes}</p>
+            `;
+            list.appendChild(item);
+        });
+    });
+}
+
+// Modal Fonksiyonları
+function openVersionModal() {
+    loadVersionHistory();
+    document.getElementById('versionModal').style.display = 'block';
+}
+
+function closeVersionModal() {
+    document.getElementById('versionModal').style.display = 'none';
+}
+
+// Pencere dışında tıklanırsa kapatma
+window.onclick = function(event) {
+    const modal = document.getElementById('versionModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+// SON SÜRÜM BİLGİSİ GÜNCELLEMESİ
+
+
+// === GERİ BİLDİRİM FONKSİYONLARI (YENİ) ===
+function submitFeedback() {
+    const name = document.getElementById("feedbackName").value.trim();
+    const email = document.getElementById("feedbackEmail").value.trim();
+    const message = document.getElementById("feedbackMessage").value.trim();
+
+    if (!name || !message) {
+        return alert("Adınız ve mesajınız boş bırakılamaz.");
+    }
+
+    db.collection("feedbacks").add({
+        name: name,
+        email: email,
+        message: message,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        isRead: false
+    }).then(() => {
+        alert("Geri bildiriminiz başarıyla gönderildi. Teşekkür ederiz! 😊");
+        document.getElementById("feedbackName").value = '';
+        document.getElementById("feedbackEmail").value = '';
+        document.getElementById("feedbackMessage").value = '';
+    }).catch(error => {
+        console.error("Geri bildirim gönderme hatası: ", error);
+        alert("Geri bildirim gönderilirken bir hata oluştu.");
+    });
+}
+
+
+// === BİLDİRİM İZİNLERİ ===
+function requestNotificationPermission() {
+    if ('Notification' in window && Notification.permission !== 'granted') {
+        Notification.requestPermission().then(permission => { console.log(`Bildirim izni: ${permission}`); });
+    }
+}
+function sendNotification(title, body) {
+    if (Notification.permission === 'granted') { new Notification(title, { body: body, icon: '/favicon.ico' }); }
+}
+let lastDailyLinkTimestamp = 0;
+db.collection("dailyLinks").orderBy("timestamp", "desc").limit(1).onSnapshot(snapshot => {
+    snapshot.forEach(doc => {
+        const d = doc.data(); 
+        if (!d.timestamp) return;
+        const currentTimestamp = d.timestamp.seconds;
+        if (lastDailyLinkTimestamp !== 0 && currentTimestamp > lastDailyLinkTimestamp) { sendNotification("⚽ Yeni Maç Linki Eklendi!", d.desc); }
+        lastDailyLinkTimestamp = currentTimestamp;
+    });
+});
+
+// ===============================================
+// 🧠 QUIZ FONKSİYONLARI
+// ===============================================
+
+function addQuizOption() {
+    const container = document.getElementById("quizOptionsContainer");
+    const optionCount = container.children.length;
+    const newOptionId = `quizOption${optionCount + 1}`;
+    
+    const optionDiv = document.createElement("div");
+    optionDiv.className = "option-control";
+    optionDiv.innerHTML = `
+        <input id="${newOptionId}" placeholder="Seçenek ${optionCount + 1}">
+        <button type="button" class="remove-option" onclick="removeQuizOption(this)">Sil</button>
+    `;
+    container.appendChild(optionDiv);
+    
+    updateQuizCorrectOptions();
+}
+
+function removeQuizOption(button) {
+    const container = document.getElementById("quizOptionsContainer");
+    if (container.children.length <= 2) {
+        alert("En az iki seçenek olmalıdır!");
+        return;
+    }
+    
+    button.parentElement.remove();
+    updateQuizCorrectOptions();
+}
+
+function updateQuizCorrectOptions() {
+    const container = document.getElementById("quizOptionsContainer");
+    const select = document.getElementById("quizCorrectOption");
+    const currentValue = select.value;
+    
+    select.innerHTML = '';
+    
+    for (let i = 0; i < container.children.length; i++) {
+        const option = document.createElement("option");
+        option.value = i + 1;
+        option.textContent = `Doğru Cevap: Seçenek ${i + 1}`;
+        select.appendChild(option);
+    }
+    
+    if (currentValue && parseInt(currentValue) <= container.children.length) {
+        select.value = currentValue;
+    }
+}
+
+function createQuiz() {
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
+    
+    const question = document.getElementById("quizQuestion").value;
+    const correctOption = document.getElementById("quizCorrectOption").value;
+    
+    const container = document.getElementById("quizOptionsContainer");
+    const options = [];
+    for (let i = 0; i < container.children.length; i++) {
+        const input = container.children[i].querySelector('input');
+        if (input && input.value.trim()) {
+            options.push(input.value.trim());
+        }
+    }
+
+    if (!question || options.length < 2 || !correctOption) {
+        return alert("Soru, en az iki seçenek ve doğru cevap belirtmelisiniz!");
+    }
+
+    let startTime = null;
+    let deadline = null;
+    const hasDeadline = document.getElementById("quizHasDeadline").checked;
+    if (hasDeadline) {
+        const startTimeValue = document.getElementById("quizStartTime").value;
+        const deadlineValue = document.getElementById("quizDeadline").value;
+        
+        if (!startTimeValue || !deadlineValue) {
+            return alert("Başlangıç ve bitiş tarihlerini belirtmelisiniz!");
+        }
+        
+        startTime = new Date(startTimeValue).getTime();
+        deadline = new Date(deadlineValue).getTime();
+        
+        if (startTime >= deadline) {
+            return alert("Bitiş tarihi başlangıç tarihinden sonra olmalıdır!");
+        }
+    }
+
+    const quizData = {
+        isActive: true,
+        question: question,
+        options: options,
+        correctOption: parseInt(correctOption),
+        startTime: startTime,
+        deadline: deadline,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    db.collection("quiz").doc("activeQuiz").set(quizData)
+        .then(() => {
+            alert("Quiz başarıyla başlatıldı/güncellendi!");
+        }).catch(error => { 
+            console.error("Quiz başlatma hatası: ", error); 
+            alert("Quiz başlatılırken hata oluştu. Firebase kurallarınızı kontrol edin."); 
+        });
+}
+
+function deleteQuiz() {
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
+    if (!confirm("Quizi kapatmak istediğinizden emin misiniz?")) return;
+
+    db.collection("quiz").doc("activeQuiz").update({ isActive: false })
+        .then(() => {
+            alert("Quiz kapatıldı. Sonuçlar görünür kalacaktır.");
+        }).catch(error => { console.error("Quiz kapatma hatası: ", error); alert("Quiz kapatılırken hata oluştu. Firebase kurallarınızı kontrol edin."); });
+}
+
+function submitQuizAnswer(name, selectedOption, quizId) {
+    if (!name.trim()) return alert("Adınızı girmelisiniz!");
+    
+    const answerData = {
+        name: name,
+        selectedOption: selectedOption,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    db.collection("quizAnswers").doc(name).set(answerData)
+        .then(() => {
+            alert("Cevabınız kaydedildi!");
+            localStorage.setItem("quizUserName", name);
+            showQuizResults(currentQuiz.id, currentQuiz.data, name, selectedOption);
+        })
+        .catch(error => {
+            alert("Cevap kaydedilirken hata oluştu. Lütfen tekrar deneyin. (Adınız daha önce kullanılmış olabilir)");
+            console.error(error);
+        });
+}
+
+function updateQuizCountdown(docId, targetTime, isStartTime = false) {
+    const element = document.getElementById(`quizCountdown-${docId}`);
+    if (!element) return;
+    
+    const now = new Date().getTime(); 
+    const distance = targetTime - now;
+
+    if (distance < 0) { 
+        clearInterval(quizInterval); 
+        if (isStartTime) {
+            element.innerHTML = `<span style="color: #28a745; font-weight: bold;">QUIZ BAŞLADI!</span>`;
+            setTimeout(() => {
+                loadActiveQuiz();
+            }, 2000);
+        } else {
+            element.innerHTML = `<span style="color: #dc3545; font-weight: bold;">SÜRE BİTTİ, SONUÇLAR GÖSTERİLİYOR!</span>`; 
+            showQuizResults(currentQuiz.id, currentQuiz.data, localStorage.getItem("quizUserName") || "", null, true);
+        }
+        return; 
+    }
+    
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24)); 
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); 
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)); 
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+    const prefix = isStartTime ? "Quiz Başlamasına: " : "Kalan Süre: ";
+    element.innerHTML = `<span style="font-weight: bold; color: #ffc107;">${prefix} ${days}G ${hours}S ${minutes}D ${seconds}SN</span>`;
+}
+
+function loadActiveQuiz() {
+    db.collection("quiz").doc("activeQuiz").onSnapshot(doc => {
+        const container = document.getElementById("quizGameContainer");
+        const now = new Date().getTime();
+        
+        if (quizInterval) clearInterval(quizInterval);
+
+        if (doc.exists && doc.data().isActive) {
+            currentQuiz = { ...doc.data(), id: doc.id };
+            const data = doc.data();
+            const userName = localStorage.getItem("quizUserName") || "";
+            
+            const isNotStarted = data.startTime && now < data.startTime;
+            const isDeadlineExpired = data.deadline && now > data.deadline;
+
+            if (isNotStarted) {
+                container.innerHTML = `
+                    <div class="quizForm">
+                        <p class="quizQuestion">${data.question}</p>
+                        <div class="quiz-countdown" id="quizCountdown-${doc.id}"></div>
+                        <p style="text-align: center; color: #777;">Quiz henüz başlamadı. Başlangıç zamanına kadar bekleyin.</p>
+                    </div>
+                `;
+                updateQuizCountdown(doc.id, data.startTime, true);
+                quizInterval = setInterval(() => updateQuizCountdown(doc.id, data.startTime, true), 1000);
+                return;
+            }
+
+            if (isDeadlineExpired) {
+                showQuizResults(doc.id, data, userName, null, true); 
+                return;
+            }
+
+            db.collection("quizAnswers").doc(userName).get().then(answerDoc => {
+                const userHasAnswered = answerDoc.exists;
+                
+                if (userHasAnswered) {
+                    showQuizResults(doc.id, data, userName, answerDoc.data().selectedOption, false);
+                } else {
+                    container.innerHTML = generateQuizForm(data, userName);
+                    if (data.deadline) {
+                        updateQuizCountdown(doc.id, data.deadline, false);
+                        quizInterval = setInterval(() => updateQuizCountdown(doc.id, data.deadline, false), 1000);
+                    }
+                }
+            });
+
+        } else if (doc.exists && !doc.data().isActive) {
+            currentQuiz = { ...doc.data(), id: doc.id };
+            showQuizResults(doc.id, currentQuiz.data, localStorage.getItem("quizUserName") || "", null, true);
+        } else {
+            currentQuiz = null;
+            container.innerHTML = '<p style="font-style: italic; color: #777;">Şu anda aktif bir bilgi yarışması bulunmamaktadır.</p>';
+        }
+    });
+}
+
+function generateQuizForm(data, userName) {
+    const optionsHtml = data.options.map((opt, index) => `
+        <label class="quizOption">
+            <input type="radio" name="quizOption" value="${index + 1}" style="margin-right: 10px;">
+            ${opt}
+        </label>
+    `).join('');
+
+    let statusInfo = "";
+    if (data.deadline) {
+        const deadlineStr = new Date(data.deadline).toLocaleString('tr-TR');
+        statusInfo = `<div class="quiz-countdown" id="quizCountdown-${data.id}"></div>
+                     <p style="font-size: 12px; color: #dc3545; text-align: center;">⏰ Son Cevaplama: **${deadlineStr}**</p>`;
+    } else {
+        statusInfo = `<div class="quiz-active">Quiz admin tarafından kapatılana kadar devam edecektir.</div>`;
+    }
+
+    return `
+        <div class="quizForm">
+            <p class="quizQuestion">${data.question}</p>
+            ${statusInfo}
+            <input type="text" id="quizName" placeholder="Adınız (Zorunlu, Tekrar Cevap Verilemez)" value="${userName}" style="max-width: 250px; display: block; margin-bottom: 15px;">
+            <div id="quizOptions">${optionsHtml}</div>
+            <button onclick="
+                const name = document.getElementById('quizName').value;
+                const selected = document.querySelector('input[name=\\'quizOption\\']:checked');
+                if(selected) { 
+                    submitQuizAnswer(name, parseInt(selected.value), 'activeQuiz'); 
+                } else { 
+                    alert('Lütfen bir seçenek işaretleyin!'); 
+                }
+            " style="margin-top: 20px; background-color: #5aa1e3;">Cevabı Gönder</button>
+        </div>
+    `;
+}
+
+function showQuizResults(quizId, quizData, userName, userSelectedOption = null, isExpired = false) {
+    const container = document.getElementById("quizGameContainer");
+    
+    if (quizInterval) clearInterval(quizInterval);
+
+    let userResultHtml = '';
+    
+    if (userSelectedOption) {
+        const isCorrect = userSelectedOption === quizData.correctOption;
+        const resultText = isCorrect ? 'Doğru' : 'Yanlış';
+        const color = isCorrect ? '#28a745' : '#dc3545';
+        userResultHtml = `<hr><p style="font-weight: bold; color: ${color};">Sizin Cevabınız: ${resultText} (${quizData.options[userSelectedOption - 1]})</p>`;
+    } else if (isExpired && userName) {
+        db.collection("quizAnswers").doc(userName).get().then(answerDoc => {
+            if (answerDoc.exists) {
+                showQuizResults(quizId, quizData, userName, answerDoc.data().selectedOption, true);
+            }
+        });
+    }
+
+    const backToFormButton = (isExpired || !quizData.isActive) ? '' :
+        `<button onclick="loadActiveQuiz()" style="margin-top: 15px; background-color: #007bff;">Quiz'e Geri Dön</button>`;
+
+    let statusHeader = "";
+    if (isExpired) {
+        statusHeader = `<div class="quiz-expired">Quiz Süresi Doldu</div>`;
+    } else if (!quizData.isActive) {
+        statusHeader = `<div class="quiz-expired">Quiz Kapatıldı</div>`;
+    }
+
+    container.innerHTML = `
+        <div class="quizResults">
+            ${statusHeader}
+            <p class="quizQuestion">${quizData.question}</p>
+            <p style="font-weight: bold; color: #28a745;">✅ Doğru Cevap: ${quizData.options[quizData.correctOption - 1]}</p>
+            <hr>
+            <h4 style="color: #007bff; text-align: center;">Kullanıcı Cevapları Dağılımı</h4>
+            <div id="quizAnswersStats">Yükleniyor...</div>
+            ${userResultHtml}
+            ${backToFormButton}
+        </div>
+    `;
+    
+    db.collection("quizAnswers").get().then(snapshot => {
+        const stats = {};
+        let total = 0;
+
+        snapshot.forEach(doc => {
+            const answer = doc.data();
+            total++;
+            stats[answer.selectedOption] = (stats[answer.selectedOption] || 0) + 1;
+        });
+        
+        let resultHtml = ``;
+        if (total > 0) {
+            quizData.options.forEach((opt, index) => {
+                const optionValue = index + 1;
+                const count = stats[optionValue] || 0;
+                const percentage = total > 0 ? ((count / total) * 100).toFixed(0) : 0;
+                const isCorrect = optionValue === quizData.correctOption;
+                const isUserVote = userSelectedOption === optionValue;
+                
+                resultHtml += `
+                    <div style="margin-bottom: 10px; ${isUserVote ? 'border: 1px solid #007bff; padding: 5px; border-radius: 4px; background-color: #e0f7ff;' : ''}">
+                        <span style="${isCorrect ? 'font-weight: bold; color: #28a745;' : ''}">${opt}</span>: ${count} Oy (%${percentage})
+                        ${isUserVote ? '<span class="user-vote-indicator">SİZ</span>' : ''}
+                    </div>
+                `;
+            });
+            resultHtml += `<p style="text-align: right; font-size: 12px; color: #777;">Toplam Cevap: ${total}</p>`;
+        } else {
+            resultHtml = "<p>Henüz cevap veren olmamış.</p>";
+        }
+
+        document.getElementById("quizAnswersStats").innerHTML = resultHtml;
+    });
+}
+
+// ===============================================
+// 🗳️ ANKET/LİNK FONKSİYONLARI (BASİTLEŞTİRİLMİŞ - GÜNCELLENDİ)
+// ===============================================
+
+let currentPoll = null;
+
+function createPoll() {
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
+    
+    const link = document.getElementById("pollLink").value;
+    const desc = document.getElementById("pollDesc").value;
+
+    if (!link || !desc) {
+        return alert("Link ve açıklama zorunludur!");
+    }
+
+    let deadline = 0;
+    const hasDeadline = document.getElementById("pollHasDeadline").checked;
+    if (hasDeadline) {
+        const deadlineValue = document.getElementById("pollDeadline").value;
+        if (!deadlineValue) { return alert("Bitiş tarihi belirtmelisiniz!"); }
+        deadline = new Date(deadlineValue).getTime();
+        if (deadline <= new Date().getTime()) { return alert("Bitiş tarihi şu andan sonra olmalıdır!"); }
+    }
+
+    const pollData = {
+        isActive: true,
+        link: link,
+        description: desc,
+        deadline: deadline,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    db.collection("poll").doc("activePoll").set(pollData)
+        .then(() => {
+            alert("Duyuru Linki başarıyla başlatıldı/güncellendi!");
+        }).catch(error => { 
+            console.error("Duyuru Linki başlatma hatası: ", error); 
+            alert("Duyuru Linki başlatılırken hata oluştu."); 
+        });
+}
+
+function deletePoll() {
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
+    if (!confirm("Duyuru Linkini kapatmak istediğinizden emin misiniz?")) return;
+
+    db.collection("poll").doc("activePoll").update({ isActive: false, deadline: 0, link: "", description: "" })
+        .then(() => {
+            alert("Duyuru Linki kapatıldı.");
+        }).catch(error => { console.error("Duyuru Linki kapatma hatası: ", error); alert("Duyuru Linki kapatılırken hata oluştu."); });
+}
+
+function updatePollCountdown(docId, targetTime, description) {
+    const element = document.getElementById(`pollCountdown-${docId}`);
+    if (!element) return;
+    
+    const now = new Date().getTime(); 
+    const distance = targetTime - now;
+
+    if (distance < 0) { 
+        clearInterval(pollInterval); 
+        element.classList.remove('poll-countdown');
+        element.classList.add('poll-expired');
+        element.innerHTML = `SÜRE BİTTİ: "${description}" Linki Kaldırıldı.`; 
+        setTimeout(() => {
+            db.collection("poll").doc("activePoll").update({ isActive: false, deadline: 0 }).catch(e => console.error("Poll oto kapatma hatası:", e));
+        }, 3000);
+        return; 
+    }
+    
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24)); 
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); 
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)); 
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+    element.innerHTML = `⏰ Kalan Süre: ${days}G ${hours}S ${minutes}D ${seconds}SN`;
+}
+
+function loadActivePoll() {
+    db.collection("poll").doc("activePoll").onSnapshot(doc => {
+        const container = document.getElementById("pollGameContainer");
+        const now = new Date().getTime();
+
+        if (pollInterval) clearInterval(pollInterval);
+
+        if (doc.exists && doc.data().isActive) {
+            currentPoll = doc.data();
+            const data = doc.data();
+            const isDeadlineExpired = data.deadline && data.deadline > 0 && now > data.deadline;
+            
+            if (isDeadlineExpired) {
+                // Süresi dolduysa admin tarafından pasifize edilecek, bu ekranda sadece uyarı göster
+                container.innerHTML = `<p style="font-style: italic; color: #dc3545; text-align: center;">Önceki linkin süresi doldu ve kaldırıldı.</p>`;
+                return;
+            }
+
+            container.innerHTML = `
+                <p class="pollQuestion" style="text-align: center; color: #dc3545; font-size: 1.1em;">📣 ÖNEMLİ DUYURU/LİNK</p>
+                <div style="padding: 15px; border: 1px solid #007bff; border-radius: 8px; background-color: #e0f7ff;">
+                    <a href="${data.link}" target="_blank" style="font-size: 1.2em; color: #0033cc; font-weight: bold; text-decoration: underline; margin-bottom: 10px;">
+                        ${data.description}
+                    </a>
+                    ${data.deadline && data.deadline > 0 ? `<div class="poll-countdown" id="pollCountdown-activePoll"></div>` : `<div class="poll-active">Süresiz Duyuru</div>`}
+                </div>
+            `;
+            
+            if (data.deadline && data.deadline > 0) {
+                updatePollCountdown("activePoll", data.deadline, data.description);
+                pollInterval = setInterval(() => updatePollCountdown("activePoll", data.deadline, data.description), 1000);
+            }
+
+        } else {
+            currentPoll = null;
+            container.innerHTML = '<p style="font-style: italic; color: #777; text-align: center;">Şu anda aktif bir duyuru/link bulunmamaktadır.</p>';
+        }
+    }, error => {
+        console.error("Duyuru Linki yükleme hatası:", error);
+        container.innerHTML = '<p style="font-style: italic; color: #777; text-align: center;">İçerik yüklenirken hata oluştu.</p>';
+    });
+}
+// SON ANKET/LİNK GÜNCELLEMESİ
+
+
+// ===============================================
+// 🏆 TAHMİN OYUNU FONKSİYONLARI
+// ===============================================
+
+function createPredictionGame() {
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Sadece admin oluşturabilir!");
+    
+    const matchName = document.getElementById("tahminMatchName").value;
+    const teamA = document.getElementById("tahminTeamA").value;
+    const teamB = document.getElementById("tahminTeamB").value;
+    const deadline = document.getElementById("tahminDeadline").value;
+
+    if (!matchName || !teamA || !teamB || !deadline) {
+        return alert("Maç adı, takımlar ve bitiş tarihi boş bırakılamaz.");
+    }
+
+    const gameData = {
+        isActive: true,
+        matchName: matchName,
+        teamA: teamA,
+        teamB: teamB,
+        deadline: new Date(deadline).getTime(),
+        results: null, 
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    db.collection("predictionGame").doc("activeGame").set(gameData)
+        .then(() => {
+            alert("Tahmin Oyunu başarıyla başlatıldı/güncellendi!");
+        }).catch(error => { console.error("Oyun başlatma hatası: ", error); alert("Oyun başlatılırken hata oluştu. Firebase kurallarınızı kontrol edin."); });
+}
+
+function loadPredictionGameSettings() {
+    db.collection("predictionGame").doc("activeGame").get().then(doc => {
+        if (doc.exists && doc.data().isActive) {
+            const data = doc.data();
+            document.getElementById("tahminMatchName").value = data.matchName;
+            document.getElementById("tahminTeamA").value = data.teamA;
+            document.getElementById("tahminTeamB").value = data.teamB;
+            
+            if (data.deadline) {
+                const date = new Date(data.deadline);
+                const localISO = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+                document.getElementById("tahminDeadline").value = localISO;
+            }
+        }
+    });
+}
 
 function publishPredictionResults() {
     if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
 
     const scoreA = parseInt(document.getElementById("resultScoreA").value);
     const scoreB = parseInt(document.getElementById("resultScoreB").value);
-    
     const matchResult = document.getElementById("resultMatchResult").value;
-    const goalYesNo = document.getElementById("resultGoalYesNo").value;
-    const redCard = document.getElementById("resultRedCard").value;
-    const htResult = document.getElementById("resultHTResult").value;
-    const leadingTeam = document.getElementById("resultLeadingTeam").value;
-    const mostGoalsHalf = document.getElementById("resultMostGoalsHalf").value; 
-    
-    if (isNaN(scoreA) || isNaN(scoreB) || matchResult === 'none' || goalYesNo === 'none' || redCard === 'none' || htResult === 'none' || leadingTeam === 'none' || mostGoalsHalf === 'none') {
+    const goalCount = document.getElementById("resultGoalCount").value;
+    const cardCount = document.getElementById("resultCardCount").value;
+    const gameId = "activeGame";
+
+    if (isNaN(scoreA) || isNaN(scoreB) || matchResult === 'none' || goalCount === 'none' || cardCount === 'none') {
         return alert("Tüm sonuç alanlarını doldurmalısınız!");
     }
-    
-    const totalGoals = scoreA + scoreB;
-    const isGoal = totalGoals > 0 ? 'yes' : 'no';
-    
-    if (isGoal !== goalYesNo) {
-        return alert("Gol Olur/Olmaz tahmini, girdiğiniz skorla çelişiyor! Lütfen düzeltin. (Toplam Gol > 0 ise 'Evet', değilse 'Hayır' olmalı)");
-    }
-    
+
     const results = {
         scoreA: scoreA,
         scoreB: scoreB,
-        matchResult: matchResult,        
-        goalYesNo: goalYesNo,            
-        redCard: redCard,                
-        htResult: htResult,              
-        leadingTeam: leadingTeam,        
-        mostGoalsHalf: mostGoalsHalf,    
+        matchResult: matchResult, 
+        goalCount: goalCount,     
+        cardCount: cardCount,     
         published: true 
     };
 
-    db.collection("predictionGame").doc("activeGame").update({ results: results })
+    db.collection("predictionGame").doc(gameId).update({ results: results })
         .then(() => {
-            calculateWinnersAndSetWeeklyChampion("activeGame", results);
+            calculateWinnersAndSetWeeklyChampion(gameId, results);
             alert("Maç sonuçları kaydedildi! Kazananlar listede gösteriliyor.");
         }).catch(error => { console.error("Sonuç yayınlama hatası: ", error); alert("Sonuç yayınlanırken hata oluştu. Firebase kurallarınızı kontrol edin."); });
 }
@@ -724,28 +1624,10 @@ function calculateWinnersAndSetWeeklyChampion(gameId, results) {
                 const p = doc.data();
                 let points = 0;
                 
-                // YENİ PUANLAMA SİSTEMİ (Toplam 10 Puan)
-                
-                // 1. TAM SKOR (4 Puan)
-                if (p.scoreA === results.scoreA && p.scoreB === results.scoreB) { points += 4; } 
-                
-                // 2. MAÇ SONUCU (1-X-2) (1 Puan)
-                if (p.matchResult === results.matchResult) { points += 1; }
-                
-                // 3. MAÇTA GOL OLUR MU? (1 Puan) YENİ
-                if (p.goalYesNo === results.goalYesNo) { points += 1; }
-                
-                // 4. KIRMIZI KART ÇIKAR MI? (1 Puan) YENİ
-                if (p.redCard === results.redCard) { points += 1; }
-
-                // 5. İLK YARI SONUCU (1 Puan) YENİ
-                if (p.htResult === results.htResult) { points += 1; }
-
-                // 6. HANGİ TAKIM ÖNE GEÇER? (1 Puan) YENİ
-                if (p.leadingTeam === results.leadingTeam) { points += 1; }
-
-                // 7. EN ÇOK GOL HANGİ YARIYA ATILIR? (1 Puan) YENİ
-                if (p.mostGoalsHalf === results.mostGoalsHalf) { points += 1; }
+                if (p.scoreA === results.scoreA && p.scoreB === results.scoreB) { points += 5; } 
+                if (p.matchResult === results.matchResult) { points += 2; }
+                if (p.goalCount === results.goalCount) { points += 1; }
+                if (p.cardCount === results.cardCount) { points += 1; }
 
                 if (points > 0) {
                     winners.push({ name: p.name, points: points });
@@ -772,20 +1654,56 @@ function calculateWinnersAndSetWeeklyChampion(gameId, results) {
         });
 }
 
+function loadWeeklyWinner() {
+    db.collection("settings").doc("predictionWinner").onSnapshot(doc => {
+        const winnerDiv = document.getElementById("weeklyWinner");
+        winnerDiv.style.display = 'none';
+
+        if (doc.exists) {
+            const data = doc.data();
+            const now = new Date().getTime();
+            
+            if (data.expiryTime && data.expiryTime > now) {
+                const timeLeft = data.expiryTime - now;
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+                winnerDiv.style.display = 'block';
+                winnerDiv.innerHTML = `
+                    👑 **HAFTANIN ŞAMPİYONU:** ${data.name} (${data.points} Puan!) 
+                    <span style="font-size: 11px;">(Kalan Süre: ${days}G ${hours}S)</span>
+                `;
+
+                if (window.winnerInterval) clearInterval(window.winnerInterval);
+                window.winnerInterval = setInterval(loadWeeklyWinner, 1000 * 60); 
+            } else if (data.expiryTime && data.expiryTime <= now) {
+                db.collection("settings").doc("predictionWinner").delete().catch(e => console.error("Winner silme hatası", e));
+                if (window.winnerInterval) clearInterval(window.winnerInterval);
+            }
+        }
+    });
+}
+
+function deletePredictionGame() {
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
+    if (!confirm("Tahmin oyununu kapatmak istediğinizden emin misiniz?")) return;
+
+    db.collection("predictionGame").doc("activeGame").update({ isActive: false, results: null })
+        .then(() => {
+            alert("Tahmin oyunu kapatıldı.");
+        }).catch(error => { console.error("Oyun kapatma hatası: ", error); alert("Oyun kapatılırken hata oluştu. Firebase kurallarınızı kontrol edin."); });
+}
+
 function submitPrediction() {
     const name = document.getElementById("tahminName").value.trim();
     const scoreA = document.getElementById("tahminScoreA").value;
     const scoreB = document.getElementById("tahminScoreB").value;
-    
     const matchResult = document.querySelector('input[name="tahminMatchResult"]:checked');
-    const goalYesNo = document.querySelector('input[name="tahminGoalYesNo"]:checked');
-    const redCard = document.querySelector('input[name="tahminRedCard"]:checked');
-    const htResult = document.querySelector('input[name="tahminHTResult"]:checked');
-    const leadingTeam = document.querySelector('input[name="tahminLeadingTeam"]:checked');
-    const mostGoalsHalf = document.querySelector('input[name="tahminMostGoalsHalf"]:checked');
+    const goalCount = document.querySelector('input[name="tahminGoalCount"]:checked');
+    const cardCount = document.querySelector('input[name="tahminCardCount"]:checked');
     const gameId = currentPredictionGame.id;
 
-    if (!name || !scoreA || !scoreB || !matchResult || !goalYesNo || !redCard || !htResult || !leadingTeam || !mostGoalsHalf) {
+    if (!name || !scoreA || !scoreB || !matchResult || !goalCount || !cardCount) {
         return alert("Adınız ve tüm tahmin alanları zorunludur!");
     }
     
@@ -798,11 +1716,8 @@ function submitPrediction() {
         scoreA: parseInt(scoreA),
         scoreB: parseInt(scoreB),
         matchResult: matchResult.value,
-        goalYesNo: goalYesNo.value,      
-        redCard: redCard.value,          
-        htResult: htResult.value,        
-        leadingTeam: leadingTeam.value,  
-        mostGoalsHalf: mostGoalsHalf.value, 
+        goalCount: goalCount.value,
+        cardCount: cardCount.value,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     };
 
@@ -818,16 +1733,45 @@ function submitPrediction() {
             `;
         })
         .catch(error => {
-            alert("Tahmin kaydedilirken hata oluştu. Lütfen tekrar deneyin. (Adınız daha önce kullanılmış olabilir)");
+            alert("Tahmin kaydedilirken hata oluştu. Lütfen tekrar deneyin.");
             console.error(error);
         });
 }
 
+function showActivePredictionGame() {
+    db.collection("predictionGame").doc("activeGame").onSnapshot(doc => {
+        const container = document.getElementById("predictionGameContainer");
+
+        if (doc.exists && doc.data().isActive) {
+            currentPredictionGame = { ...doc.data(), id: doc.id };
+            const data = doc.data();
+            const deadlineTime = data.deadline;
+            const now = new Date().getTime();
+            
+            if (data.results && data.results.published) {
+                displayPredictionResults(data);
+                return;
+            }
+
+            if (now > deadlineTime) {
+                container.innerHTML = `<div class="predictionForm"><p class="tahminBaslik">⏰ **${data.matchName} maçı için tahmin süresi doldu!**</p><p>Admin sonuçları girdiği zaman kazananlar açıklanacaktır.</p></div>`;
+                return;
+            }
+
+            container.innerHTML = generatePredictionForm(data);
+        } else {
+            currentPredictionGame = null;
+            container.innerHTML = '<p style="font-style: italic; color: #777;">Şu anda aktif bir tahmin oyunu bulunmamaktadır. Admin tarafından başlatılması bekleniyor.</p>';
+        }
+    });
+}
+
 function generatePredictionForm(data) {
     const deadlineStr = new Date(data.deadline).toLocaleString('tr-TR');
+    
     const teamA = data.teamA;
     const teamB = data.teamB;
-    
+
     return `
         <div class="predictionForm">
             <p class="tahminBaslik">${data.matchName} Tahmin Et</p>
@@ -835,72 +1779,88 @@ function generatePredictionForm(data) {
             
             <input type="text" id="tahminName" placeholder="Adınız (Zorunlu)" style="max-width: 150px; display: inline-block;">
             
-            <div class="prediction-group">
-                <h4>1. **Maç Skoru** (4 Puan)</h4>
-                <input type="number" id="tahminScoreA" min="0" value="0" placeholder="${teamA} Skoru" style="max-width: 100px;">
-                -
-                <input type="number" id="tahminScoreB" min="0" value="0" placeholder="${teamB} Skoru" style="max-width: 100px;">
+            <h4 style="margin-top: 15px;">1. **Maç Skoru** (Örn: 2-1)</h4>
+            <input type="number" id="tahminScoreA" min="0" max="9" value="0" placeholder="${teamA} Skoru" style="max-width: 100px;">
+            -
+            <input type="number" id="tahminScoreB" min="0" max="9" value="0" placeholder="${teamB} Skoru" style="max-width: 100px;">
+
+            <h4 style="margin-top: 15px;">2. **Maç Sonucu** (1-X-2)</h4>
+            <div style="text-align: center;">
+                <label class="prediction-selection"><input type="radio" name="tahminMatchResult" value="1"> **1** (${teamA})</label>
+                <label class="prediction-selection"><input type="radio" name="tahminMatchResult" value="X"> **X** (Berabere)</label>
+                <label class="prediction-selection"><input type="radio" name="tahminMatchResult" value="2"> **2** (${teamB})</label>
             </div>
 
-            <div class="prediction-group">
-                <h4>2. **Maç Sonucu** (1 Puan)</h4>
-                <div style="text-align: center;">
-                    <label class="prediction-selection"><input type="radio" name="tahminMatchResult" value="1"> **1** (${teamA})</label>
-                    <label class="prediction-selection"><input type="radio" name="tahminMatchResult" value="X"> **X** (Berabere)</label>
-                    <label class="prediction-selection"><input type="radio" name="tahminMatchResult" value="2"> **2** (${teamB})</label>
-                </div>
+            <h4 style="margin-top: 15px;">3. **Toplam Gol** (2.5)</h4>
+            <div style="text-align: center;">
+                <label class="prediction-selection"><input type="radio" name="tahminGoalCount" value="ust"> Üst</label>
+                <label class="prediction-selection"><input type="radio" name="tahminGoalCount" value="alt"> Alt</label>
             </div>
 
-            <div class="prediction-group">
-                <h4>3. **Maçta Gol Olur mu?** (1 Puan)</h4>
-                <div style="text-align: center;">
-                    <label class="prediction-selection"><input type="radio" name="tahminGoalYesNo" value="yes"> Evet</label>
-                    <label class="prediction-selection"><input type="radio" name="tahminGoalYesNo" value="no"> Hayır</label>
-                </div>
-            </div>
-
-            <div class="prediction-group">
-                <h4>4. **Kırmızı Kart Çıkar mı?** (1 Puan)</h4>
-                <div style="text-align: center;">
-                    <label class="prediction-selection"><input type="radio" name="tahminRedCard" value="yes"> Evet</label>
-                    <label class="prediction-selection"><input type="radio" name="tahminRedCard" value="no"> Hayır</label>
-                </div>
-            </div>
-
-            <div class="prediction-group">
-                <h4>5. **İlk Yarı Sonucu** (1 Puan)</h4>
-                <div style="text-align: center;">
-                    <label class="prediction-selection"><input type="radio" name="tahminHTResult" value="1"> **1** (${teamA})</label>
-                    <label class="prediction-selection"><input type="radio" name="tahminHTResult" value="X"> **X** (Berabere)</label>
-                    <label class="prediction-selection"><input type="radio" name="tahminHTResult" value="2"> **2** (${teamB})</label>
-                </div>
-            </div>
-
-            <div class="prediction-group">
-                <h4>6. **Hangi Takım Öne Geçer?** (1 Puan)</h4>
-                <div style="text-align: center;">
-                    <label class="prediction-selection"><input type="radio" name="tahminLeadingTeam" value="A"> ${teamA}</label>
-                    <label class="prediction-selection"><input type="radio" name="tahminLeadingTeam" value="B"> ${teamB}</label>
-                    <label class="prediction-selection"><input type="radio" name="tahminLeadingTeam" value="none_lead"> Hiçbiri</label>
-                </div>
-            </div>
-
-            <div class="prediction-group">
-                <h4>7. **En Çok Gol Hangi Yarıda Atılır?** (1 Puan)</h4>
-                <div style="text-align: center;">
-                    <label class="prediction-selection"><input type="radio" name="tahminMostGoalsHalf" value="first"> İlk Yarı</label>
-                    <label class="prediction-selection"><input type="radio" name="tahminMostGoalsHalf" value="second"> İkinci Yarı</label>
-                    <label class="prediction-selection"><input type="radio" name="tahminMostGoalsHalf" value="equal"> Eşit</label>
-                </div>
+            <h4 style="margin-top: 15px;">4. **Sarı Kart** (4.5)</h4>
+            <div style="text-align: center;">
+                <label class="prediction-selection"><input type="radio" name="tahminCardCount" value="ust"> Üst</label>
+                <label class="prediction-selection"><input type="radio" name="tahminCardCount" value="alt"> Alt</label>
             </div>
 
             <button onclick="submitPrediction()" style="margin-top: 20px; background-color: #007bff;">Tahmini Gönder</button>
-            <p style="font-size: 11px; color: #777; text-align: center; margin-top: 10px;">Toplamda 10 farklı alandan puan toplayabilirsiniz. Tam skoru doğru bilmek 4 puan kazandırır.</p>
         </div>
     `;
 }
 
-// ... (Kalan tüm fonksiyonlar: showActivePredictionGame, displayPredictionResults, deletePredictionGame, Quiz, Poll, Geri Sayım ve Link Yükleme fonksiyonları kodun önceki halinden eksiksiz bir şekilde bu bloğa dahil edilmiştir.)
+function displayPredictionResults(gameData) {
+    const results = gameData.results;
+    const gameId = currentPredictionGame.id;
+    const container = document.getElementById("predictionGameContainer");
+    
+    let resultHTML = `
+        <div class="predictionResults">
+            <p class="tahminBaslik">🎉 **${gameData.matchName} MAÇ SONUÇLARI VE KAZANANLAR** 🎉</p>
+            <h4 style="color: #28a745;">⚽ MAÇ SKORU: **${results.scoreA} - ${results.scoreB}**</h4>
+            <p>Sonuç (1-X-2): **${results.matchResult}** | Gol (2.5): **${results.goalCount}** | Kart (4.5): **${results.cardCount}**</p>
+            <hr>
+            <h3>🏆 KAZANANLAR</h3>
+            <div class="kazananlarListesi" id="winnersList">Yükleniyor...</div>
+        </div>
+    `;
+    container.innerHTML = resultHTML;
+
+    db.collection("predictionGame").doc(gameId).collection("predictions").get()
+        .then(snapshot => {
+            const winners = [];
+            snapshot.forEach(doc => {
+                const p = doc.data();
+                let points = 0;
+                
+                if (p.scoreA === results.scoreA && p.scoreB === results.scoreB) { points += 5; } 
+                if (p.matchResult === results.matchResult) { points += 2; }
+                if (p.goalCount === results.goalCount) { points += 1; }
+                if (p.cardCount === results.cardCount) { points += 1; }
+
+                if (points > 0) {
+                    winners.push({ name: p.name, points: points, prediction: `${p.scoreA}-${p.scoreB}` });
+                }
+            });
+
+            winners.sort((a, b) => b.points - a.points);
+            
+            const listContainer = document.getElementById("winnersList");
+            if (winners.length === 0) {
+                listContainer.innerHTML = "<p style='text-align: center; color: #dc3545;'>Bu maç için hiç doğru tahmin yok! Belki bir dahaki sefere.</p>";
+            } else {
+                let listHtml = "<ol>";
+                winners.forEach((w) => {
+                    listHtml += `<li>**${w.name}** (${w.points} Puan) | Skor Tahmini: ${w.prediction}</li>`;
+                });
+                listHtml += "</ol>";
+                listContainer.innerHTML = listHtml;
+            }
+        });
+}
+
+// Sayfa yüklendiğinde quiz ve anket listener'larını başlat
+loadActiveQuiz(); 
+loadActivePoll(); 
 
 </script>
 </body>
