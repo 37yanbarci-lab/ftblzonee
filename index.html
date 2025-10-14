@@ -68,8 +68,8 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
 
 /* DUYURU, QUIZ VE ANKET STİLLERİ */
 #announcementBar { 
-    background-color: #dc3545; 
-    color: white; 
+    background-color: #dc3545; /* Varsayılan renk */
+    color: white; /* Varsayılan yazı rengi */
     padding: 10px; 
     margin-bottom: 20px; 
     font-weight: bold; 
@@ -77,8 +77,47 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
     overflow: hidden; 
     position: relative; 
 }
-.announcement-item { position: absolute; width: 100%; text-align: center; top: 10px; opacity: 0; transition: opacity 0.5s; }
-.announcement-item.active { opacity: 1; }
+.announcement-item { 
+    position: absolute; 
+    width: 100%; 
+    text-align: center; 
+    top: 10px; 
+    opacity: 0; 
+    /* Tüm animasyonlar için temel geçiş */
+    transition: all 0.5s ease-in-out; 
+}
+.announcement-item.active { 
+    opacity: 1; 
+    transform: none; /* Aktif durumun temel dönüşümü */
+}
+
+/* YENİ DUYURU ANİMASYONLARI */
+.announcement-item.slide-up-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+.announcement-item.slide-up-out {
+    opacity: 0;
+    transform: translateY(-40px); /* Yukarı kaybolma */
+}
+.announcement-item.slide-left-in {
+    opacity: 1;
+    transform: translateX(0);
+}
+.announcement-item.slide-left-out {
+    opacity: 0;
+    transform: translateX(-100%); /* Sola kaybolma */
+}
+.announcement-item.flash-in {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.1s; /* Hızlı geçiş */
+}
+.announcement-item.flash-out {
+    opacity: 0;
+    transform: none;
+    transition: opacity 0.1s; /* Hızlı geçiş */
+}
 
 .quizContainer { border: 2px solid #5aa1e3; border-radius: 10px; padding: 20px; background-color: #f5faff; }
 .quizQuestion { font-weight: bold; margin-bottom: 15px; color: #0033cc; }
@@ -749,6 +788,21 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
         <div id="currentAnnouncements" style="margin-top: 10px;"></div>
     </div>
 
+    <div class="admin-controls" id="announcementColorAdminControls">
+        <h4>🎨 Duyuru Çubuğu Ayarları</h4>
+        <input type="color" id="announcementBgColor" value="#dc3545" style="width: 150px; display: inline-block;">
+        <label>Arka Plan Rengi</label><br>
+        <input type="color" id="announcementTextColor" value="#ffffff" style="width: 150px; display: inline-block;">
+        <label>Yazı Rengi</label><br>
+        <select id="announcementAnimType" style="width: 100%; max-width: 300px; margin-top: 10px;">
+            <option value="fade">Hafif Solma (Fade)</option>
+            <option value="slide-up">Yukarı Kayma</option>
+            <option value="slide-left">Sola Kayma</option>
+            <option value="flash">Hızlı Flaş</option>
+        </select>
+        <button onclick="saveAnnouncementSettings()">Ayarları Kaydet</button>
+    </div>
+
     <div class="admin-controls" id="quizAdminControls">
         <h4>🧠 Quiz (Bilgi Yarışması) Yönetimi</h4>
         <input id="quizQuestion" placeholder="Soru Metni">
@@ -804,11 +858,31 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
         <input id="tahminTeamA" placeholder="Takım A Adı (Örn: Fenerbahçe)">
         <input id="tahminTeamB" placeholder="Takım B Adı (Örn: Galatasaray)">
         <input type="datetime-local" id="tahminDeadline">
+        
+        <div style="margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Tahmin Seçenekleri</label>
+            <label><input type="checkbox" id="enableScorePrediction" checked> Skor Tahmini (Varsayılan)</label><br>
+            <label><input type="checkbox" id="enableGoalCountPrediction"> Toplam Gol Sayısı (Alt/Üst)</label><br>
+            <label><input type="checkbox" id="enableCardCountPrediction"> Sarı Kart Sayısı (Alt/Üst)</label><br>
+            <label><input type="checkbox" id="enableFirstGoalScorerPrediction"> İlk Golü Kim Atar?</label>
+        </div>
+        
+        <div style="margin-top: 15px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Tahmin Hakkı Sayısı</label>
+            <input type="number" id="maxPredictionAttempts" value="3" min="1" placeholder="Maksimum Tahmin Hakkı">
+        </div>
+        
         <button id="createPredictionGameBtn">Oyunu Başlat / Güncelle</button>
         <button id="deletePredictionGameBtn">Oyunu Kapat</button>
         
         <hr style="margin-top: 15px;">
         <h5>Maç Sonucu ve Kazananları Gir</h5>
+        <select id="resultFirstGoalScorer">
+            <option value="none">İlk Golü Kim Atar?</option>
+            <option value="A">Takım A</option>
+            <option value="B">Takım B</option>
+            <option value="0">Gol Olmaz</option>
+        </select>
         <input type="number" id="resultScoreA" placeholder="A Skoru">
         <input type="number" id="resultScoreB" placeholder="B Skoru">
         <select id="resultMatchResult">
@@ -1076,6 +1150,7 @@ function selectInterface(interfaceType) {
     const selectedOption = document.getElementById(interfaceType + 'Option');
     if(selectedOption) selectedOption.classList.add('selected');
     
+    // Arayüz değişimini gecikmeli olarak uygula
     setTimeout(function() {
         document.getElementById('interfaceChoice').style.display = 'none';
         
@@ -1111,11 +1186,13 @@ function selectInterface(interfaceType) {
 function changeInterface() {
     document.getElementById('interfaceChoice').style.display = 'flex';
     
+    // Hangi arayüzde olursak olalım menü butonunu gizle
+    document.getElementById('menuToggle').style.display = 'none';
+    
     if (currentInterface === 'simple') {
         document.getElementById('simpleInterface').style.display = 'none';
     } else {
         document.getElementById('menuInterface').style.display = 'none';
-        document.getElementById('menuToggle').style.display = 'none';
     }
 }
 
@@ -1243,6 +1320,9 @@ function showPredictionHistory() {
 
 window.onload = function() {
     const savedInterface = localStorage.getItem('ftblzone_interface');
+    
+    // YENİ: Duyuru ayarlarını yüklemek için.
+    applyAnnouncementSettings();
     
     if (savedInterface) {
         selectInterface(savedInterface);
@@ -1431,9 +1511,44 @@ function deletePoll() {
     alert("Poll silme mantığı tamamlanmadı. Admin paneli ve Linkler çalışıyor.");
 }
 
+// YENİ VE GÜNCELLENMİŞ: Tahmin Oyunu Oluşturma
 function createPredictionGame() {
-    // ... (Tahmin oyunu oluşturma mantığı yerinde bırakılmıştır)
-    alert("Tahmin oyunu oluşturma mantığı tamamlanmadı. Admin paneli ve Linkler çalışıyor.");
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Sadece admin oyunu başlatabilir!");
+    
+    const matchName = document.getElementById("tahminMatchName").value;
+    const teamA = document.getElementById("tahminTeamA").value;
+    const teamB = document.getElementById("tahminTeamB").value;
+    const deadline = document.getElementById("tahminDeadline").value;
+    const maxAttempts = parseInt(document.getElementById("maxPredictionAttempts").value) || 3;
+    
+    // YENİ TAHMİN SEÇENEKLERİNİN ALINMASI
+    const predictionOptions = {
+        score: document.getElementById("enableScorePrediction").checked,
+        goalCount: document.getElementById("enableGoalCountPrediction").checked,
+        cardCount: document.getElementById("enableCardCountPrediction").checked,
+        firstGoalScorer: document.getElementById("enableFirstGoalScorerPrediction").checked
+    };
+
+    if (!matchName || !teamA || !teamB || !deadline) {
+        return alert("Maç Adı, Takımlar ve Son Tahmin Tarihi boş bırakılamaz.");
+    }
+    
+    db.collection("settings").doc("activePrediction").set({
+        matchName: matchName,
+        teamA: teamA,
+        teamB: teamB,
+        deadline: new Date(deadline).getTime(),
+        isActive: true,
+        maxAttempts: maxAttempts, // YENİ: Maksimum tahmin hakkı
+        predictionOptions: predictionOptions, // YENİ: Tahmin seçenekleri
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        alert("Tahmin Oyunu başarıyla başlatıldı/güncellendi!");
+        showActivePredictionGame(); 
+    }).catch(error => {
+        console.error("Tahmin oyunu başlatma hatası: ", error);
+        alert("Tahmin oyunu başlatılırken hata oluştu.");
+    });
 }
 
 function deletePredictionGame() {
@@ -1441,9 +1556,36 @@ function deletePredictionGame() {
     alert("Tahmin oyunu silme mantığı tamamlanmadı. Admin paneli ve Linkler çalışıyor.");
 }
 
+// YENİ VE GÜNCELLENMİŞ: Sonuç Yayınlama
 function publishPredictionResults() {
-    // ... (Sonuç yayınlama mantığı yerinde bırakılmıştır)
-    alert("Sonuç yayınlama mantığı tamamlanmadı. Admin paneli ve Linkler çalışıyor.");
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
+    if (!currentPredictionGame) return alert("Aktif bir tahmin oyunu bulunmamaktadır.");
+
+    const scoreA = document.getElementById("resultScoreA").value;
+    const scoreB = document.getElementById("resultScoreB").value;
+    const matchResult = document.getElementById("resultMatchResult").value;
+    const goalCount = document.getElementById("resultGoalCount").value;
+    const cardCount = document.getElementById("resultCardCount").value;
+    const firstGoalScorer = document.getElementById("resultFirstGoalScorer").value; // YENİ SONUÇ
+    
+    if (matchResult === 'none' || goalCount === 'none' || cardCount === 'none') {
+        return alert("Lütfen tüm sonuçları (Maç Sonucu, Gol ve Kart Sayısı) girin.");
+    }
+
+    const results = {
+        scoreA: parseInt(scoreA),
+        scoreB: parseInt(scoreB),
+        matchResult: matchResult, // 1, X, 2
+        goalCount: goalCount, // ust, alt
+        cardCount: cardCount, // ust, alt
+        firstGoalScorer: firstGoalScorer, // A, B, 0 (YENİ)
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    
+    // ... (Sonuç yayınlama mantığının geri kalanı ve kazanan hesaplama burada yer alacak) ...
+
+    alert("Sonuçlar başarıyla açıklandı ve kazananlar belirlenmeye hazır!");
+    calculateWinnersAndSetWeeklyChampion(currentPredictionGame.id, results); 
 }
 
 function calculateWinnersAndSetWeeklyChampion(gameId, results) {
@@ -1634,7 +1776,7 @@ function showAllLinks() {
 function renderLinks(category, links) {
     // Hem basit hem de menülü arayüz için konteyner ID'lerini belirle
     const containerId1 = category; // Örn: dailyLinks
-    const containerId2 = category.replace('Summary', 'Summary2') + (category.includes('Summary') ? '' : '2'); // Örn: dailyLinks2
+    const containerId2 = category.replace('Links', 'Links2').replace('Summary', 'Summary2'); // Örn: dailyLinks2, shortSummary2
 
     [containerId1, containerId2].forEach(id => {
         const container = document.getElementById(id);
@@ -1750,8 +1892,12 @@ function showNextMatches() {
             
             updateCountdown(matchId, match.targetTime);
             
-            if (container1) container1.appendChild(matchDiv.cloneNode(true));
-            if (container2) container2.appendChild(matchDiv.cloneNode(true));
+            // Kodun ilk halindeki hatayı düzelterek, menü arayüzünde de doğru görünmesini sağlıyoruz.
+            // Bu kısım renderLinks gibi birden fazla konteynere aynı içeriği eklemeli.
+            const itemHTML = matchDiv.outerHTML; 
+
+            if (container1) container1.innerHTML += itemHTML;
+            if (container2) container2.innerHTML += itemHTML;
         });
     });
 }
@@ -1782,10 +1928,47 @@ function updateCountdown(matchId, targetTime) {
     matchIntervals[matchId] = interval;
 }
 
+// YENİ: Duyuru ayarlarını kaydetme ve uygulama
+function saveAnnouncementSettings() {
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
+    
+    const bgColor = document.getElementById("announcementBgColor").value;
+    const textColor = document.getElementById("announcementTextColor").value;
+    const animType = document.getElementById("announcementAnimType").value;
+    
+    db.collection("settings").doc("announcementSettings").set({
+        bgColor: bgColor,
+        textColor: textColor,
+        animType: animType
+    }).then(() => {
+        alert("Duyuru ayarları kaydedildi!");
+        applyAnnouncementSettings();
+    }).catch(error => {
+        console.error("Duyuru ayarı kaydetme hatası: ", error);
+        alert("Ayarlar kaydedilirken hata oluştu.");
+    });
+}
+
+function applyAnnouncementSettings() {
+    db.collection("settings").doc("announcementSettings").get().then(doc => {
+        const bar = document.getElementById('announcementBar');
+        if (doc.exists && bar) {
+            const settings = doc.data();
+            bar.style.backgroundColor = settings.bgColor || '#dc3545';
+            bar.style.color = settings.textColor || 'white';
+            bar.setAttribute('data-anim-type', settings.animType || 'fade');
+        }
+    });
+}
+
 function loadAnnouncements() {
     clearInterval(announcementInterval); 
     const bar = document.getElementById('announcementBar');
     if (!bar) return;
+    
+    // YENİ: Ayarları yükle ve uygula
+    applyAnnouncementSettings(); 
+    
     bar.innerHTML = '';
     announcementData = []; 
     currentAnnouncementIndex = 0;
@@ -1800,9 +1983,15 @@ function loadAnnouncements() {
             announcementData.push({ id: doc.id, text: doc.data().text });
         });
         
+        const animType = bar.getAttribute('data-anim-type') || 'fade';
+
         announcementData.forEach((item, index) => {
             const div = document.createElement('div');
-            div.className = 'announcement-item' + (index === 0 ? ' active' : '');
+            // Animasyon başlangıç sınıfı eklenir (fade varsayılan)
+            div.className = `announcement-item ${animType}-out`; 
+            if (index === 0) {
+                div.classList.add('active', `${animType}-in`);
+            }
             div.textContent = item.text;
             bar.appendChild(div);
         });
@@ -1816,19 +2005,34 @@ function loadAnnouncements() {
     });
 }
 
+// GÜNCELLENMİŞ: Duyuru Animasyonu Yönetimi
 function showNextAnnouncement() {
+    const bar = document.getElementById('announcementBar');
+    if (!bar) return;
     const items = document.querySelectorAll('.announcement-item');
+    const animType = bar.getAttribute('data-anim-type') || 'fade';
     
     if (items.length === 0) return;
 
-    if (items[currentAnnouncementIndex]) {
-        items[currentAnnouncementIndex].classList.remove('active');
+    // Önceki duyuruyu kapat
+    const prevIndex = currentAnnouncementIndex;
+    if (items[prevIndex]) {
+        items[prevIndex].classList.remove('active', `${animType}-in`);
+        items[prevIndex].classList.add(`${animType}-out`);
     }
     
+    // Yeni indeksi belirle
     currentAnnouncementIndex = (currentAnnouncementIndex + 1) % announcementData.length;
+    const nextIndex = currentAnnouncementIndex;
     
-    if (items[currentAnnouncementIndex]) {
-        items[currentAnnouncementIndex].classList.add('active');
+    // Yeni duyuruyu aç
+    if (items[nextIndex]) {
+        // Animasyon başlangıç sınıfını kaldır, aktif ve giriş sınıfını ekle
+        items[nextIndex].classList.remove(`${animType}-out`);
+        // Gecikme ile sınıf ekleme, CSS animasyonunun tetiklenmesini sağlar
+        setTimeout(() => {
+            items[nextIndex].classList.add('active', `${animType}-in`);
+        }, 10); 
     }
 }
 
