@@ -800,7 +800,7 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
             <option value="slide-left">Sola Kayma</option>
             <option value="flash">Hızlı Flaş</option>
         </select>
-        <button onclick="saveAnnouncementSettings()">Ayarları Kaydet</button>
+        <button id="saveAnnouncementSettingsBtn">Ayarları Kaydet</button>
     </div>
 
     <div class="admin-controls" id="quizAdminControls">
@@ -1062,7 +1062,7 @@ function initializeEventListeners() {
     const submitFeedbackBtn = document.getElementById('submitFeedbackBtn');
     if (submitFeedbackBtn) submitFeedbackBtn.addEventListener('click', submitFeedback);
     
-    // Admin panel butonları (Admin panelindeki elementler sadece admin giriş yaptığında var olabilir)
+    // Admin panel butonları
     const logoutAdminBtn = document.getElementById('logoutAdminBtn');
     if (logoutAdminBtn) logoutAdminBtn.addEventListener('click', logoutAdmin);
     const addAnnouncementBtn = document.getElementById('addAnnouncementBtn');
@@ -1071,6 +1071,8 @@ function initializeEventListeners() {
     if (clearAnnouncementsBtn) clearAnnouncementsBtn.addEventListener('click', function() {
         clearCollection('announcements', 'Tüm Duyurular');
     });
+    const saveAnnouncementSettingsBtn = document.getElementById('saveAnnouncementSettingsBtn');
+    if (saveAnnouncementSettingsBtn) saveAnnouncementSettingsBtn.addEventListener('click', saveAnnouncementSettings);
     const addQuizOptionBtn = document.getElementById('addQuizOptionBtn');
     if (addQuizOptionBtn) addQuizOptionBtn.addEventListener('click', addQuizOption);
     const createQuizBtn = document.getElementById('createQuizBtn');
@@ -1127,12 +1129,18 @@ function initializeEventListeners() {
     });
     
     // Toggle event listener'ları
-    document.getElementById('quizHasDeadline').addEventListener('change', toggleQuizDeadline);
-    document.getElementById('pollHasDeadline').addEventListener('change', togglePollDeadline);
-    document.getElementById('dailyHasDeadline').addEventListener('change', toggleDailyDeadline);
-    document.getElementById('big4HasDeadline').addEventListener('change', toggleBig4Deadline);
-    document.getElementById('goalHasDeadline').addEventListener('change', toggleGoalDeadline);
-    document.getElementById('summaryHasDeadline').addEventListener('change', toggleSummaryDeadline);
+    const quizHasDeadline = document.getElementById('quizHasDeadline');
+    if (quizHasDeadline) quizHasDeadline.addEventListener('change', toggleQuizDeadline);
+    const pollHasDeadline = document.getElementById('pollHasDeadline');
+    if (pollHasDeadline) pollHasDeadline.addEventListener('change', togglePollDeadline);
+    const dailyHasDeadline = document.getElementById('dailyHasDeadline');
+    if (dailyHasDeadline) dailyHasDeadline.addEventListener('change', toggleDailyDeadline);
+    const big4HasDeadline = document.getElementById('big4HasDeadline');
+    if (big4HasDeadline) big4HasDeadline.addEventListener('change', toggleBig4Deadline);
+    const goalHasDeadline = document.getElementById('goalHasDeadline');
+    if (goalHasDeadline) goalHasDeadline.addEventListener('change', toggleGoalDeadline);
+    const summaryHasDeadline = document.getElementById('summaryHasDeadline');
+    if (summaryHasDeadline) summaryHasDeadline.addEventListener('change', toggleSummaryDeadline);
     
     console.log("Event listener'lar başarıyla eklendi");
 }
@@ -1247,7 +1255,7 @@ function showSection(sectionId) {
     }
 }
 
-// === PROFİL FONKSİYONLARI (Kısaltılmış ve gerekli olanlar bırakıldı) ===
+// === PROFİL FONKSİYONLARI ===
 
 function loadUserProfile() {
     let userId = localStorage.getItem('ftblzone_user_id');
@@ -1307,13 +1315,101 @@ function closeEditProfileModal() {
 }
 
 function saveProfile() {
-    // ... (Profil kaydetme mantığı yerinde bırakılmıştır)
-    alert("Profil kaydetme mantığı tamamlanmadı. Admin paneli ve Linkler çalışıyor.");
+    if (!currentUser) return;
+    
+    const name = document.getElementById('editProfileName').value.trim();
+    const username = document.getElementById('editProfileUsername').value.trim();
+    const avatarFile = document.getElementById('editProfileAvatar').files[0];
+    
+    if (!name || !username) {
+        alert('Ad ve kullanıcı adı boş bırakılamaz!');
+        return;
+    }
+    
+    const updateData = {
+        name: name,
+        username: username,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    
+    // Avatar yükleme
+    if (avatarFile) {
+        const storageRef = storage.ref();
+        const avatarRef = storageRef.child('avatars/' + currentUser.id);
+        
+        avatarRef.put(avatarFile).then(snapshot => {
+            return snapshot.ref.getDownloadURL();
+        }).then(downloadURL => {
+            updateData.avatar = downloadURL;
+            completeProfileUpdate(updateData);
+        }).catch(error => {
+            console.error('Avatar yükleme hatası:', error);
+            completeProfileUpdate(updateData);
+        });
+    } else {
+        completeProfileUpdate(updateData);
+    }
+}
+
+function completeProfileUpdate(updateData) {
+    db.collection('users').doc(currentUser.id).update(updateData)
+        .then(() => {
+            currentUser = { ...currentUser, ...updateData };
+            updateProfileDisplay();
+            closeEditProfileModal();
+            alert('Profil başarıyla güncellendi!');
+        })
+        .catch(error => {
+            console.error('Profil güncelleme hatası:', error);
+            alert('Profil güncellenirken hata oluştu.');
+        });
 }
 
 function showPredictionHistory() {
-    // ... (Tahmin geçmişi gösterme mantığı yerinde bırakılmıştır)
-    alert("Tahmin geçmişi mantığı tamamlanmadı. Admin paneli ve Linkler çalışıyor.");
+    if (!currentUser) return;
+    
+    const historyDiv = document.getElementById('predictionHistory');
+    const listDiv = document.getElementById('predictionHistoryList');
+    
+    historyDiv.style.display = historyDiv.style.display === 'none' ? 'block' : 'none';
+    
+    if (historyDiv.style.display === 'block') {
+        listDiv.innerHTML = '<p>Tahmin geçmişiniz yükleniyor...</p>';
+        
+        // Kullanıcının tahminlerini getir
+        db.collection('predictionGame').doc('activeGame').collection('predictions')
+            .where('userId', '==', currentUser.id)
+            .get()
+            .then(snapshot => {
+                if (snapshot.empty) {
+                    listDiv.innerHTML = '<p>Henüz tahmin yapmamışsınız.</p>';
+                    return;
+                }
+                
+                let html = '';
+                snapshot.forEach(doc => {
+                    const prediction = doc.data();
+                    const date = prediction.timestamp ? new Date(prediction.timestamp.seconds * 1000).toLocaleDateString('tr-TR') : 'Bilinmiyor';
+                    
+                    html += `
+                        <div class="prediction-item">
+                            <div class="prediction-item-header">
+                                <span>${date}</span>
+                                <span class="prediction-points">${prediction.points || 0} Puan</span>
+                            </div>
+                            <div>Skor: ${prediction.scoreA}-${prediction.scoreB}</div>
+                            <div>Sonuç: ${prediction.matchResult} | Gol: ${prediction.goalCount} | Kart: ${prediction.cardCount}</div>
+                        </div>
+                    `;
+                });
+                
+                listDiv.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Tahmin geçmişi yüklenme hatası:', error);
+                listDiv.innerHTML = '<p>Geçmiş yüklenirken hata oluştu.</p>';
+            });
+    }
 }
 
 // === SAYFA YÜKLENDİĞİNDE ÇALIŞACAK FONKSİYONLARI ===
@@ -1492,23 +1588,116 @@ function updateQuizCorrectOptions() {
 }
 
 function createQuiz() {
-    // ... (Quiz oluşturma mantığı yerinde bırakılmıştır)
-    alert("Quiz oluşturma mantığı tamamlanmadı. Admin paneli ve Linkler çalışıyor.");
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
+    
+    const question = document.getElementById("quizQuestion").value;
+    const correctOption = document.getElementById("quizCorrectOption").value;
+    
+    const container = document.getElementById("quizOptionsContainer");
+    const options = [];
+    for (let i = 0; i < container.children.length; i++) {
+        const input = container.children[i].querySelector('input');
+        if (input && input.value.trim()) {
+            options.push(input.value.trim());
+        }
+    }
+
+    if (!question || options.length < 2 || !correctOption) {
+        return alert("Soru, en az iki seçenek ve doğru cevap belirtmelisiniz!");
+    }
+
+    let startTime = null;
+    let deadline = null;
+    const hasDeadline = document.getElementById("quizHasDeadline").checked;
+    if (hasDeadline) {
+        const startTimeValue = document.getElementById("quizStartTime").value;
+        const deadlineValue = document.getElementById("quizDeadline").value;
+        
+        if (!startTimeValue || !deadlineValue) {
+            return alert("Başlangıç ve bitiş tarihlerini belirtmelisiniz!");
+        }
+        
+        startTime = new Date(startTimeValue).getTime();
+        deadline = new Date(deadlineValue).getTime();
+        
+        if (startTime >= deadline) {
+            return alert("Bitiş tarihi başlangıç tarihinden sonra olmalıdır!");
+        }
+    }
+
+    const quizData = {
+        isActive: true,
+        question: question,
+        options: options,
+        correctOption: parseInt(correctOption),
+        startTime: startTime,
+        deadline: deadline,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    db.collection("quiz").doc("activeQuiz").set(quizData)
+        .then(() => {
+            alert("Quiz başarıyla başlatıldı/güncellendi!");
+        }).catch(error => { 
+            console.error("Quiz başlatma hatası: ", error); 
+            alert("Quiz başlatılırken hata oluştu. Firebase kurallarınızı kontrol edin."); 
+        });
 }
 
 function deleteQuiz() {
-    // ... (Quiz silme mantığı yerinde bırakılmıştır)
-    alert("Quiz silme mantığı tamamlanmadı. Admin paneli ve Linkler çalışıyor.");
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
+    if (!confirm("Quizi kapatmak istediğinizden emin misiniz?")) return;
+
+    db.collection("quiz").doc("activeQuiz").update({ isActive: false })
+        .then(() => {
+            alert("Quiz kapatıldı. Sonuçlar görünür kalacaktır.");
+        }).catch(error => { console.error("Quiz kapatma hatası: ", error); alert("Quiz kapatılırken hata oluştu. Firebase kurallarınızı kontrol edin."); });
 }
 
 function createPoll() {
-    // ... (Poll oluşturma mantığı yerinde bırakılmıştır)
-    alert("Poll oluşturma mantığı tamamlanmadı. Admin paneli ve Linkler çalışıyor.");
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
+    
+    const link = document.getElementById("pollLink").value;
+    const desc = document.getElementById("pollDesc").value;
+
+    if (!link || !desc) {
+        return alert("Link ve açıklama zorunludur!");
+    }
+
+    let deadline = 0;
+    const hasDeadline = document.getElementById("pollHasDeadline").checked;
+    if (hasDeadline) {
+        const deadlineValue = document.getElementById("pollDeadline").value;
+        if (!deadlineValue) { return alert("Bitiş tarihi belirtmelisiniz!"); }
+        deadline = new Date(deadlineValue).getTime();
+        if (deadline <= new Date().getTime()) { return alert("Bitiş tarihi şu andan sonra olmalıdır!"); }
+    }
+
+    const pollData = {
+        isActive: true,
+        link: link,
+        description: desc,
+        deadline: deadline,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    db.collection("poll").doc("activePoll").set(pollData)
+        .then(() => {
+            alert("Duyuru Linki başarıyla başlatıldı/güncellendi!");
+        }).catch(error => { 
+            console.error("Duyuru Linki başlatma hatası: ", error); 
+            alert("Duyuru Linki başlatılırken hata oluştu."); 
+        });
 }
 
 function deletePoll() {
-    // ... (Poll silme mantığı yerinde bırakılmıştır)
-    alert("Poll silme mantığı tamamlanmadı. Admin paneli ve Linkler çalışıyor.");
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
+    if (!confirm("Duyuru Linkini kapatmak istediğinizden emin misiniz?")) return;
+
+    db.collection("poll").doc("activePoll").update({ isActive: false, deadline: 0, link: "", description: "" })
+        .then(() => {
+            alert("Duyuru Linki kapatıldı.");
+        }).catch(error => { console.error("Duyuru Linki kapatma hatası: ", error); alert("Duyuru Linki kapatılırken hata oluştu."); });
 }
 
 // YENİ VE GÜNCELLENMİŞ: Tahmin Oyunu Oluşturma
@@ -1552,44 +1741,89 @@ function createPredictionGame() {
 }
 
 function deletePredictionGame() {
-    // ... (Tahmin oyunu silme mantığı yerinde bırakılmıştır)
-    alert("Tahmin oyunu silme mantığı tamamlanmadı. Admin paneli ve Linkler çalışıyor.");
+    if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
+    if (!confirm("Tahmin oyununu kapatmak istediğinizden emin misiniz?")) return;
+
+    db.collection("settings").doc("activePrediction").update({ isActive: false })
+        .then(() => {
+            alert("Tahmin oyunu kapatıldı.");
+        }).catch(error => { console.error("Oyun kapatma hatası: ", error); alert("Oyun kapatılırken hata oluştu."); });
 }
 
 // YENİ VE GÜNCELLENMİŞ: Sonuç Yayınlama
 function publishPredictionResults() {
     if(localStorage.getItem(ADMIN_TOKEN_KEY) !== 'true') return alert("Yetkisiz işlem.");
-    if (!currentPredictionGame) return alert("Aktif bir tahmin oyunu bulunmamaktadır.");
 
-    const scoreA = document.getElementById("resultScoreA").value;
-    const scoreB = document.getElementById("resultScoreB").value;
+    const scoreA = parseInt(document.getElementById("resultScoreA").value);
+    const scoreB = parseInt(document.getElementById("resultScoreB").value);
     const matchResult = document.getElementById("resultMatchResult").value;
     const goalCount = document.getElementById("resultGoalCount").value;
     const cardCount = document.getElementById("resultCardCount").value;
     const firstGoalScorer = document.getElementById("resultFirstGoalScorer").value; // YENİ SONUÇ
     
-    if (matchResult === 'none' || goalCount === 'none' || cardCount === 'none') {
+    if (isNaN(scoreA) || isNaN(scoreB) || matchResult === 'none' || goalCount === 'none' || cardCount === 'none') {
         return alert("Lütfen tüm sonuçları (Maç Sonucu, Gol ve Kart Sayısı) girin.");
     }
 
     const results = {
-        scoreA: parseInt(scoreA),
-        scoreB: parseInt(scoreB),
+        scoreA: scoreA,
+        scoreB: scoreB,
         matchResult: matchResult, // 1, X, 2
         goalCount: goalCount, // ust, alt
         cardCount: cardCount, // ust, alt
         firstGoalScorer: firstGoalScorer, // A, B, 0 (YENİ)
+        published: true,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     };
     
-    // ... (Sonuç yayınlama mantığının geri kalanı ve kazanan hesaplama burada yer alacak) ...
-
-    alert("Sonuçlar başarıyla açıklandı ve kazananlar belirlenmeye hazır!");
-    calculateWinnersAndSetWeeklyChampion(currentPredictionGame.id, results); 
+    db.collection("settings").doc("predictionResults").set(results)
+        .then(() => {
+            alert("Sonuçlar başarıyla açıklandı ve kazananlar belirlenmeye hazır!");
+            calculateWinnersAndSetWeeklyChampion(results); 
+        }).catch(error => { 
+            console.error("Sonuç yayınlama hatası: ", error); 
+            alert("Sonuç yayınlanırken hata oluştu."); 
+        });
 }
 
-function calculateWinnersAndSetWeeklyChampion(gameId, results) {
-    // ... (Kazanan hesaplama mantığı yerinde bırakılmıştır)
+function calculateWinnersAndSetWeeklyChampion(results) {
+    db.collection("predictionGame").doc("activeGame").collection("predictions").get()
+        .then(snapshot => {
+            let winners = [];
+            snapshot.forEach(doc => {
+                const p = doc.data();
+                let points = 0;
+                
+                if (p.scoreA === results.scoreA && p.scoreB === results.scoreB) { points += 5; } 
+                if (p.matchResult === results.matchResult) { points += 2; }
+                if (p.goalCount === results.goalCount) { points += 1; }
+                if (p.cardCount === results.cardCount) { points += 1; }
+                if (p.firstGoalScorer === results.firstGoalScorer) { points += 2; }
+
+                if (points > 0) {
+                    winners.push({ name: p.name, points: points });
+                }
+            });
+
+            winners.sort((a, b) => b.points - a.points);
+            
+            if (winners.length > 0) {
+                const maxPoints = winners[0].points;
+                const topWinners = winners.filter(w => w.points === maxPoints);
+                const winnerNames = topWinners.map(w => w.name).join(' & ');
+                const expiryTime = new Date().getTime() + (7 * 24 * 60 * 60 * 1000); 
+                
+                db.collection("settings").doc("predictionWinner").set({
+                    name: winnerNames,
+                    points: maxPoints,
+                    expiryTime: expiryTime,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => {
+                    console.log("Haftalık kazanan ayarlandı:", winnerNames);
+                    loadWeeklyWinner();
+                });
+            }
+        });
 }
 
 function setVersionInfo() {
@@ -1721,7 +1955,7 @@ function clearCollection(col, name) {
     });
 }
 
-// === VERİ YÜKLEME VE GÖRÜNTÜLEME FONKSİYONLARI (DÜZELTİLDİ/EKLENDİ) ===
+// === VERİ YÜKLEME VE GÖRÜNTÜLEME FONKSİYONLARI ===
 
 function showAllLinks() {
     allLinksData = []; 
@@ -1987,56 +2221,110 @@ function loadAnnouncements() {
 
         announcementData.forEach((item, index) => {
             const div = document.createElement('div');
+            // AnimasyonData.forEach((item, index) => {
+            const div = document.createElement('div');
             // Animasyon başlangıç sınıfı eklenir (fade varsayılan)
             div.className = `announcement-item ${animType}-out`; 
+            başlangıç sınıfı eklenir (fade varsayılan)
+            div.className = `announcement-item ${animType}-out`; 
             if (index === 0) {
+                div.classList.add('active', `${animType if (index === 0) {
                 div.classList.add('active', `${animType}-in`);
+            }
+            div.textContent = item.text;
+            bar.appendChild(div);
+       }-in`);
             }
             div.textContent = item.text;
             bar.appendChild(div);
         });
 
         if (announcementData.length > 1) {
+            announcementInterval = });
+
+        if (announcementData.length > 1) {
             announcementInterval = setInterval(showNextAnnouncement, 5000); 
         }
+    }).catch(error setInterval(showNextAnnouncement, 5000); 
+        }
     }).catch(error => {
+        console => {
         console.error("Duyuru yükleme hatası: ", error);
+        bar.innerHTML = '<div style="opacity: 1;">Duyurular yüklenemedi.</div.error("Duyuru yükleme hatası: ", error);
         bar.innerHTML = '<div style="opacity: 1;">Duyurular yüklenemedi.</div>';
     });
 }
 
+// GÜN>';
+    });
+}
+
 // GÜNCELLENMİŞ: Duyuru Animasyonu Yönetimi
+function showNextAnnouncement()CELLENMİŞ: Duyuru Animasyonu Yönetimi
 function showNextAnnouncement() {
     const bar = document.getElementById('announcementBar');
     if (!bar) return;
+    const items = document.querySelector {
+    const bar = document.getElementById('announcementBar');
+    if (!bar) return;
     const items = document.querySelectorAll('.announcement-item');
+    const animType = bar.getAttribute('data-anAll('.announcement-item');
     const animType = bar.getAttribute('data-anim-type') || 'fade';
+    
+    if (items.lengthim-type') || 'fade';
     
     if (items.length === 0) return;
 
+    // Önce === 0) return;
+
     // Önceki duyuruyu kapat
     const prevIndex = currentAnnouncementIndex;
+    ifki duyuruyu kapat
+    const prevIndex = currentAnnouncementIndex;
     if (items[prevIndex]) {
+        items[prevIndex (items[prevIndex]) {
         items[prevIndex].classList.remove('active', `${animType}-in`);
+        items[prevIndex].classList.add(`${animType}-out`);
+    }
+    
+    // Y].classList.remove('active', `${animType}-in`);
         items[prevIndex].classList.add(`${animType}-out`);
     }
     
     // Yeni indeksi belirle
     currentAnnouncementIndex = (currentAnnouncementIndex + 1) % announcementData.length;
+    consteni indeksi belirle
+    currentAnnouncementIndex = (currentAnnouncementIndex + 1) % announcementData.length;
     const nextIndex = currentAnnouncementIndex;
+    
+    // Y nextIndex = currentAnnouncementIndex;
     
     // Yeni duyuruyu aç
     if (items[nextIndex]) {
-        // Animasyon başlangıç sınıfını kaldır, aktif ve giriş sınıfını ekle
+        //eni duyuruyu aç
+    if (items[nextIndex]) {
+        // Animasyon başlangıç sınıfını kaldır, aktif Animasyon başlangıç sınıfını kaldır, aktif ve giriş ve giriş sınıfını ekle
         items[nextIndex].classList.remove(`${animType}-out`);
-        // Gecikme ile sınıf ekleme, CSS animasyonunun tetiklenmesini sağlar
+        // Gecikme ile sınıfını ekle
+        items[nextIndex].classList.remove(`${animType}-out`);
+        // Gecikme ile sınıf ekleme, CSS animasyonunun tetiklenmesini sınıf ekleme, CSS animasyonunun tetiklenmesini sağlar
+        setTimeout(() => {
+            items[nextIndex].class sağlar
         setTimeout(() => {
             items[nextIndex].classList.add('active', `${animType}-in`);
         }, 10); 
     }
 }
 
-function loadWeeklyWinner() {
+function loadWeeklyWinnerList.add('active', `${animType}-in`);
+        }, 10); 
+    }
+}
+
+function load() {
+    const winnerDivs = [document.getElementById('weeklyWinner'), document.getElementById('weeklyWinner2')];
+
+   WeeklyWinner() {
     const winnerDivs = [document.getElementById('weeklyWinner'), document.getElementById('weeklyWinner2')];
 
     db.collection("settings").doc("predictionWinner").get().then(doc => {
@@ -2044,16 +2332,34 @@ function loadWeeklyWinner() {
             if (div) div.style.display = 'none';
         });
 
+        if db.collection("settings").doc("predictionWinner").get().then(doc => {
+        winnerDivs.forEach(div => {
+            if (div) div.style.display = 'none';
+        (doc.exists) {
+            const data = doc.data();
+            const now = new Date().getTime();
+
+            if (data.expiryTime > now) });
+
         if (doc.exists) {
             const data = doc.data();
             const now = new Date().getTime();
 
             if (data.expiryTime > now) {
+                const winnerText = `🏆 Haftanın Şampiy {
                 const winnerText = `🏆 Haftanın Şampiyonu: ${data.name} (${data.points} Puan!)`;
+                
+                winnerDivsonu: ${data.name} (${data.points} Puan!)`;
                 
                 winnerDivs.forEach(div => {
                     if (div) {
+                        div.style.display = '.forEach(div => {
+                    if (div) {
                         div.style.display = 'block';
+                        div.innerHTML = winnerText;
+                    }
+                });
+           block';
                         div.innerHTML = winnerText;
                     }
                 });
@@ -2063,45 +2369,95 @@ function loadWeeklyWinner() {
 }
 
 function loadVersionHistory() {
-    const list = document.getElementById('versionHistoryList');
+    const list } 
+        }
+    });
+}
+
+function loadVersionHistory() {
+    const list = document = document.getElementById('versionHistoryList');
+    if (!list) return;
+
+    list.innerHTML = 'Yükleniyor...';
+
+    db.collection("versions").orderBy.getElementById('versionHistoryList');
     if (!list) return;
 
     list.innerHTML = 'Yükleniyor...';
 
     db.collection("versions").orderBy("timestamp", "desc").get().then(snapshot => {
+("timestamp", "desc").get().then(snapshot => {
         if (snapshot.empty) {
+            list.innerHTML = '<p>Henüz s        if (snapshot.empty) {
             list.innerHTML = '<p>Henüz sürüm bilgisi eklenmedi.</p>';
+            return;
+        }
+
+       ürüm bilgisi eklenmedi.</p>';
             return;
         }
 
         let html = '';
         snapshot.forEach(doc => {
             const data = doc.data();
-            const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('tr-TR') : 'Bilinmiyor';
+            const date let html = '';
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).to = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('tr-TR') : 'Bilinmiyor';
+            
+            htmlLocaleDateString('tr-TR') : 'Bilinmiyor';
             
             html += `
                 <div class="version-item">
+                    <h5>${data += `
+                <div class="version-item">
                     <h5>${data.version} - Yayın Tarihi: ${date}</h5>
+.version} - Yayın Tarihi: ${date}</h5>
                     <p>${data.notes}</p>
+                </div>
+            `;
+                           <p>${data.notes}</p>
                 </div>
             `;
         });
         
         list.innerHTML = html;
     }).catch(error => {
+        console.error(" });
+        
+        list.innerHTML = html;
+    }).catch(error => {
         console.error("Sürüm geçmişi yükleme hatası: ", error);
-        list.innerHTML = '<p>Sürüm geçmişi yüklenirken hata oluştu.</p>';
+        list.innerHTMLSürüm geçmişi yükleme hatası: ", error);
+        list.innerHTML = '<p>Sürüm geçmişi yüklenirken hata o = '<p>Sürüm geçmişi yüklenirken hata oluştu.</p>';
     });
 }
 
 
 function submitFeedback() {
-    const name = document.getElementById('feedbackName') ? document.getElementById('feedbackName').value : document.getElementById('feedbackName2').value;
+    const name =luştu.</p>';
+    });
+}
+
+
+function submitFeedback() {
+    const name = document.getElementById('feedbackName') ? document.getElementById('feedbackName').value : document.getElementById(' document.getElementById('feedbackName') ? document.getElementById('feedbackName').value : document.getElementById('feedbackName2').value;
+    const email = document.getElementById('feedbackEmail')feedbackName2').value;
     const email = document.getElementById('feedbackEmail') ? document.getElementById('feedbackEmail').value : document.getElementById('feedbackEmail2').value;
-    const message = document.getElementById('feedbackMessage') ? document.getElementById('feedbackMessage').value : document.getElementById('feedbackMessage2').value;
+    const message = ? document.getElementById('feedbackEmail').value : document.getElementById('feedbackEmail2').value;
+    const message = document.getElementById('feedbackMessage') ? document.getElementById('feedbackMessage').value document.getElementById('feedbackMessage') ? document.getElementById('feedbackMessage').value : document.getElementById('feedbackMessage2').value;
 
     if (!name || !message) {
-        alert('Lütfen adınızı ve mesajınızı giriniz.');
+        : document.getElementById('feedbackMessage2').value;
+
+    if (!name || !message) {
+        alert('Lütfen adınızı ve mesajınızı giriniz alert('Lütfen adınızı ve mesajınızı giriniz.');
+        return;
+    }
+
+    db.collection("feedback").add({
+        name: name,
+       .');
         return;
     }
 
@@ -2109,76 +2465,80 @@ function submitFeedback() {
         name: name,
         email: email,
         message: message,
+        timestamp: firebase.fire email: email,
+        message: message,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        alert("Geri bildiriminiz için teşekstore.FieldValue.serverTimestamp()
     }).then(() => {
         alert("Geri bildiriminiz için teşekkürler! Mesajınız başarıyla iletildi.");
         
-        const clearElements = ['feedbackName', 'feedbackEmail', 'feedbackMessage', 'feedbackName2', 'feedbackEmail2', 'feedbackMessage2'];
+       kürler! Mesajınız başarıyla iletildi.");
+        
+        const clearElements = ['feedbackName', 'feedbackEmail', 'feedbackMessage', 'feedbackName2 const clearElements = ['feedbackName', 'feedbackEmail', 'feedbackMessage', 'feedbackName2', 'feedbackEmail2', 'feedbackMessage2'];
+        clearElements.forEach(id => {
+', 'feedbackEmail2', 'feedbackMessage2'];
         clearElements.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.value = '';
         });
         
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        
+    }).catch(error => {
     }).catch(error => {
         console.error("Geri bildirim gönderme hatası: ", error);
+        alert("Geri bildirim gönderilirken bir hata olu        console.error("Geri bildirim gönderme hatası: ", error);
         alert("Geri bildirim gönderilirken bir hata oluştu.");
     });
 }
 
 function loadActiveQuiz() {
+    // Quiz yükleme veştu.");
+    });
+}
+
+function loadActiveQuiz() {
     // Quiz yükleme ve görüntüleme mantığı (kısaltıldı)
-    console.log("Quiz mantığı tamamlanmadı. Admin paneli ve Linkler çalışıyor.");
+ görüntüleme mantığı (kısaltıldı)
+    console.log("Quiz mantığı tamamlanmadı. Admin paneli ve Linkler ç    console.log("Quiz mantığı tamamlanmadı. Admin paneli ve Linkler çalışıyor.");
 }
 
 function loadActivePoll() {
-    // Poll yükleme ve görüntüleme mantığı (kısaltıldı)
+    // Poll yalışıyor.");
+}
+
+function loadActivePoll() {
+    // Poll yükleükleme ve görüntüleme mantığı (kısaltıldı)
+    console.log("Poll mantığı tamamlanmadı. Admin panelime ve görüntüleme mantığı (kısaltıldı)
     console.log("Poll mantığı tamamlanmadı. Admin paneli ve Linkler çalışıyor.");
 }
 
+function showActivePred ve Linkler çalışıyor.");
+}
+
 function showActivePredictionGame() {
+    // Tahmin oyunu yükleme ve görüntüleme mantığı (ictionGame() {
     // Tahmin oyunu yükleme ve görüntüleme mantığı (kısaltıldı)
+    console.log("Tahmin oyunkısaltıldı)
     console.log("Tahmin oyunu mantığı tamamlanmadı. Admin paneli ve Linkler çalışıyor.");
+u mantığı tamamlanmadı. Admin paneli ve Linkler çalışıyor.");
 }
 
 function loadPredictionGameSettings() {
+    // Admin panelinde oyun ayarlarını yü}
+
+function loadPredictionGameSettings() {
     // Admin panelinde oyun ayarlarını yükleme (kısaltıldı)
+    console.log("kleme (kısaltıldı)
     console.log("Admin Tahmin Ayarları yükleniyor...");
 }
 
 function loadAdminAnnouncements() {
-    // Admin panelinde duyuru listesini yükleme (kısaltıldı)
-    console.log("Admin Duyuru listesi yükleniyor...");
+    //Admin Tahmin Ayarları yükleniyor...");
 }
 
-
-function requestNotificationPermission() {
-    // Bildirim izni isteme mantığı (kısaltıldı)
-    console.log("Bildirim izni isteniyor...");
-}
-
-// Modal fonksiyonları
-function openVersionModal() {
-    loadVersionHistory();
-    document.getElementById('versionModal').style.display = 'block';
-}
-
-function closeVersionModal() {
-    document.getElementById('versionModal').style.display = 'none';
-}
-
-// Pencere dışında tıklanırsa kapatma
-window.onclick = function(event) {
-    const modal = document.getElementById('versionModal');
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-    
-    const profileModal = document.getElementById('editProfileModal');
-    if (event.target == profileModal) {
-        profileModal.style.display = "none";
-    }
-}
-</script>
-</body>
-</html>
-
+function loadAdminAnnouncements() {
+ Admin panelinde duyuru listesini y    // Admin panelinde duyuru listesini y
