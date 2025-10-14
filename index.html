@@ -247,6 +247,11 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
     margin-bottom: 0;
 }
 
+.interface-option.selected {
+    border-color: #007bff;
+    background-color: #e6f2ff;
+}
+
 /* SİDEBAR MENÜ */
 #sidebar {
     position: fixed;
@@ -434,12 +439,12 @@ a{display:block;margin:5px 0;color:inherit;text-decoration:none; font-weight: bo
         <h2>ftblzone'a Hoş Geldiniz!</h2>
         <p>Lütfen kullanmak istediğiniz arayüzü seçin:</p>
         
-        <div class="interface-option" onclick="selectInterface('simple')">
+        <div class="interface-option" id="simpleOption" onclick="selectInterface('simple')">
             <h3>Basit Arayüz</h3>
             <p>Tüm içerik tek sayfada, hızlı ve sade</p>
         </div>
         
-        <div class="interface-option" onclick="selectInterface('menu')">
+        <div class="interface-option" id="menuOption" onclick="selectInterface('menu')">
             <h3>Menülü Arayüz</h3>
             <p>Sol tarafta menü ile kolay gezinme</p>
         </div>
@@ -943,23 +948,31 @@ function selectInterface(interfaceType) {
     currentInterface = interfaceType;
     localStorage.setItem('ftblzone_interface', interfaceType);
     
-    document.getElementById('interfaceChoice').style.display = 'none';
+    // Seçilen arayüzü vurgula
+    document.getElementById('simpleOption').classList.remove('selected');
+    document.getElementById('menuOption').classList.remove('selected');
+    document.getElementById(interfaceType + 'Option').classList.add('selected');
     
-    if (interfaceType === 'simple') {
-        document.getElementById('simpleInterface').style.display = 'block';
-        document.getElementById('menuInterface').style.display = 'none';
-        document.getElementById('menuToggle').style.display = 'none';
+    // Kısa bir gecikme ile arayüzü değiştir (animasyon için)
+    setTimeout(function() {
+        document.getElementById('interfaceChoice').style.display = 'none';
         
-        // Basit arayüz için fonksiyonları başlat
-        initializeSimpleInterface();
-    } else {
-        document.getElementById('simpleInterface').style.display = 'none';
-        document.getElementById('menuInterface').style.display = 'block';
-        document.getElementById('menuToggle').style.display = 'block';
-        
-        // Menülü arayüz için fonksiyonları başlat
-        initializeMenuInterface();
-    }
+        if (interfaceType === 'simple') {
+            document.getElementById('simpleInterface').style.display = 'block';
+            document.getElementById('menuInterface').style.display = 'none';
+            document.getElementById('menuToggle').style.display = 'none';
+            
+            // Basit arayüz için fonksiyonları başlat
+            initializeSimpleInterface();
+        } else {
+            document.getElementById('simpleInterface').style.display = 'none';
+            document.getElementById('menuInterface').style.display = 'block';
+            document.getElementById('menuToggle').style.display = 'block';
+            
+            // Menülü arayüz için fonksiyonları başlat
+            initializeMenuInterface();
+        }
+    }, 300);
 }
 
 function changeInterface() {
@@ -1212,7 +1225,8 @@ window.onload = function() {
 // === TEMA DEĞİŞTİRME FONKSİYONU ===
 
 function changeTheme(){ 
-    const t = document.getElementById("themeSelect").value || document.getElementById("themeSelect2").value; 
+    const t = document.getElementById("themeSelect") ? document.getElementById("themeSelect").value : 
+                document.getElementById("themeSelect2") ? document.getElementById("themeSelect2").value : "white";
     const body = document.body;
     body.classList.remove("yellow-red-theme", "yellow-blue-theme", "black-theme", "black-white-theme", "claret-blue-theme");
     switch(t){
@@ -1249,7 +1263,8 @@ function openAdminPanel() {
 }
 
 function checkAdmin(){ 
-    const pass = document.getElementById("adminPass").value || document.getElementById("adminPass2").value;
+    const pass = document.getElementById("adminPass") ? document.getElementById("adminPass").value : 
+                 document.getElementById("adminPass2") ? document.getElementById("adminPass2").value : "";
     if(pass===ADMIN_PASSWORD){
         localStorage.setItem(ADMIN_TOKEN_KEY, 'true');
         openAdminPanel();
@@ -1277,121 +1292,99 @@ function logoutAdmin() {
 // Tema değiştirme, admin panel, link yönetimi, geri sayım, quiz, anket vb. fonksiyonlar
 // Bu kısım çok uzun olduğu için buraya eklemedim, ancak önceki kodun tamamını içermektedir
 
-// ... (önceki kodun geri kalanı)
-
 // Basit arayüz için özel fonksiyonlar
 function showActivePredictionGame() {
     // Tahmin oyunu gösterimi
+    console.log("Basit arayüz için tahmin oyunu yükleniyor...");
 }
 
 function loadActiveQuiz() {
     // Quiz yükleme
+    console.log("Basit arayüz için quiz yükleniyor...");
 }
 
 function loadActivePoll() {
     // Anket yükleme
+    console.log("Basit arayüz için anket yükleniyor...");
 }
 
 function updateDailyLinksHeader() {
     // Başlık güncelleme
+    console.log("Başlık güncelleniyor...");
 }
 
 function showAllLinks() {
     // Linkleri gösterme
+    console.log("Linkler gösteriliyor...");
 }
 
 function showNextMatches() {
     // Geri sayımları gösterme
+    console.log("Geri sayımlar gösteriliyor...");
 }
 
 // Menülü arayüz için özel fonksiyonlar
 function showActivePredictionGameForMenu() {
     // Tahmin oyunu gösterimi (menülü)
+    console.log("Menülü arayüz için tahmin oyunu yükleniyor...");
 }
 
 function loadActiveQuizForMenu() {
     // Quiz yükleme (menülü)
+    console.log("Menülü arayüz için quiz yükleniyor...");
 }
 
 function loadActivePollForMenu() {
     // Anket yükleme (menülü)
+    console.log("Menülü arayüz için anket yükleniyor...");
 }
 
 function showAllLinksForMenu() {
-    // Linkleri göstermeösterme (menülü)
+    // Linkleri gösterme (menülü)
+    console.log("Menülü arayüz için linkler gösteriliyor...");
 }
 
 function showNextMatchesForMenu() {
     // Geri sayımları gösterme (menülü)
- (menülü)
-}
-
-function showNextMatchesForMenu() {
-    // Geri sayımları gösterme (}
-
-// Diğer ortak fonksiyonlar
-function loadAnnouncemenülü)
+    console.log("Menülü arayüz için geri sayımlar gösteriliyor...");
 }
 
 // Diğer ortak fonksiyonlar
 function loadAnnouncements() {
-    // Duyuruları yments() {
     // Duyuruları yükleme
-}
-
-function loadWeeklyWinnerükleme
+    console.log("Duyurular yükleniyor...");
 }
 
 function loadWeeklyWinner() {
-    // Haftalık kaz() {
     // Haftalık kazananı yükleme
+    console.log("Haftalık kazanan yükleniyor...");
 }
 
-functionananı yükleme
-}
-
-function submitFeedback() submitFeedback() {
+function submitFeedback() {
     // Geri bildirim gönderme
-}
-
-function requestNotificationPermission() {
-    // Bildirim {
-    // Geri bildirim gönderme
+    alert("Geri bildiriminiz için teşekkürler!");
 }
 
 function requestNotificationPermission() {
     // Bildirim izni isteme
-}
-
-// Modal fonks izni isteme
+    console.log("Bildirim izni isteniyor...");
 }
 
 // Modal fonksiyonları
-functioniyonları
 function openVersionModal() {
     // Sürüm modalını açma
-}
-
-function closeVersionModal() openVersionModal() {
-    // Sürüm modalını açma
+    document.getElementById('versionModal').style.display = 'block';
 }
 
 function closeVersionModal() {
     // Sürüm modalını kapama
+    document.getElementById('versionModal').style.display = 'none';
 }
 
-// Pencere dış {
-    // Sürüm modalını kapama
-}
-
-// Pencere dışında tıklanırsa kapatında tıklanırsa kapatma
+// Pencere dışında tıklanırsa kapatma
 window.onclick = function(event) {
-ma
-window.onclick = function(event) {
-    const modal = document.getElementById('versionModal');
     const modal = document.getElementById('versionModal');
     if (event.target == modal) {
-           if (event.target == modal) {
         modal.style.display = "none";
     }
     
@@ -1403,26 +1396,12 @@ window.onclick = function(event) {
 
 // Tema yükleme
 const savedTheme = localStorage.getItem('ftblzone_theme');
- modal.style.display = "none";
-    }
-    
-    const profileModal = document.getElementById('editProfileModal');
-    if (event.target == profileModal) {
-        profileModal.style.display = "none";
-    }
-}
-
-// Tema yükleme
-const savedTheme = localStorage.getItem('if (savedTheme) {
-    document.getElementById('themeSelect').value = savedTheme;
-    if (document.getElementByIdftblzone_theme');
 if (savedTheme) {
-    document.getElementById('themeSelect').value = savedTheme;
-    if (document.getElementById('themeSelect2')) {
-        document('themeSelect2')) {
-        document.getElementById('themeSelect2').value = savedTheme;
-   .getElementById('themeSelect2').value = savedTheme;
+    if (document.getElementById('themeSelect')) {
+        document.getElementById('themeSelect').value = savedTheme;
     }
+    if (document.getElementById('themeSelect2')) {
+        document.getElementById('themeSelect2').value = savedTheme;
     }
     changeTheme();
 }
