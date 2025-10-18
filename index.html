@@ -1,425 +1,804 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ftblzone - Canlı Maç Takip ve Linkler</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ftblzone - Canlı Maç Takip ve Linkler</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-<!-- Firebase ve FCM Script'leri -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-messaging-compat.js"></script>
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #0d47a1;
+            --secondary: #ff6d00;
+            --secondary-dark: #e65100;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --dark: #202124;
+            --light: #f8f9fa;
+            --gray: #5f6368;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
 
-<style>
-/* GENEL STİLLER */
-:root {
-  --primary-color: #007bff;
-  --secondary-color: #6c757d;
-  --success-color: #28a745;
-  --warning-color: #ffc107;
-  --danger-color: #dc3545;
-  --light-color: #f8f9fa;
-  --dark-color: #343a40;
-  --transition-speed: 0.3s;
-  --border-radius: 8px;
-}
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-* {
-  box-sizing: border-box;
-}
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  text-align: center;
-  margin: 0;
-  padding: 10px;
-  transition: background 0.5s, color 0.5s;
-  background-color: #fff;
-  color: #000;
-  line-height: 1.6;
-}
+        /* Arayüz Seçim Ekranı */
+        .interface-choice {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.8s ease;
+        }
 
-/* ARAYÜZ SEÇİMİ STİLLERİ */
-.interface-choice {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  animation: fadeIn 0.5s ease;
-}
+        .interface-options {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: var(--radius);
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            animation: slideUp 0.8s ease;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
 
-.interface-options {
-  background-color: white;
-  padding: 30px;
-  border-radius: 10px;
-  text-align: center;
-  max-width: 500px;
-  width: 90%;
-  animation: slideInUp 0.5s ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
+        .interface-options h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #ff6d00, #ffab40);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(255, 109, 0, 0.3);
+        }
 
-.interface-option {
-  margin: 20px 0;
-  padding: 20px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all var(--transition-speed) ease;
-}
+        .interface-options p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.8);
+        }
 
-.interface-option:hover {
-  border-color: var(--primary-color);
-  background-color: #f0f8ff;
-  transform: translateY(-5px);
-}
+        .interface-option {
+            margin: 25px 0;
+            padding: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
 
-.interface-option h3 {
-  margin-top: 0;
-  color: #333;
-}
+        .interface-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.7s ease;
+        }
 
-.interface-option p {
-  color: #666;
-  margin-bottom: 0;
-}
+        .interface-option:hover::before {
+            left: 100%;
+        }
 
-.interface-option.selected {
-  border-color: var(--primary-color);
-  background-color: #e6f2ff;
-}
+        .interface-option:hover {
+            border-color: var(--primary);
+            background: rgba(26, 115, 232, 0.1);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
 
-/* SİDEBAR MENÜ */
-#sidebar {
-  position: fixed;
-  top: 0;
-  left: -250px;
-  width: 250px;
-  height: 100%;
-  background-color: #333;
-  color: white;
-  transition: left 0.3s ease;
-  z-index: 1000;
-  overflow-y: auto;
-  padding-top: 60px;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-}
+        .interface-option h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: white;
+        }
 
-#sidebar.active {
-  left: 0;
-}
+        .interface-option p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0;
+        }
 
-#sidebar ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
+        .interface-option.selected {
+            border-color: var(--secondary);
+            background: rgba(255, 109, 0, 0.1);
+        }
 
-#sidebar ul li {
-  padding: 15px 20px;
-  border-bottom: 1px solid #444;
-  cursor: pointer;
-  transition: background-color var(--transition-speed) ease;
-}
+        .note {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
 
-#sidebar ul li a {
-  color: white;
-  text-decoration: none;
-  display: block;
-}
+        /* Ana Arayüz */
+        .app-interface {
+            display: none;
+            animation: fadeIn 0.8s ease;
+        }
 
-#sidebar ul li:hover {
-  background-color: #444;
-}
+        /* Header */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
 
-#menuToggle {
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  z-index: 1001;
-  background-color: #333;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 18px;
-  transition: all var(--transition-speed) ease;
-}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-#menuToggle:hover {
-  background-color: #444;
-  transform: scale(1.05);
-}
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            animation: pulse 2s infinite;
+        }
 
-/* BÖLÜM STİLLERİ */
-.section {
-  display: none;
-  animation: fadeIn 0.5s ease;
-}
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #ff6d00, #ffab40);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-.section.active {
-  display: block;
-}
+        .header-controls {
+            display: flex;
+            gap: 15px;
+        }
 
-/* ANİMASYONLAR */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+        /* Buton Stilleri */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
 
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
 
-/* Diğer stiller buraya eklenebilir */
-</style>
+        .btn:active::after {
+            animation: ripple 1s ease-out;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(26, 115, 232, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.6);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 109, 0, 0.4);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 109, 0, 0.6);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* İçerik Alanı */
+        .app-content {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 20px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            height: fit-content;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .menu-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .menu-item.active {
+            background: rgba(26, 115, 232, 0.2);
+            border-left: 4px solid var(--primary);
+        }
+
+        .menu-icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Ana İçerik */
+        .main-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-height: 500px;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            font-size: 1.8rem;
+            color: var(--secondary);
+        }
+
+        /* Kartlar */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .card-desc {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Basit Arayüz */
+        .simple-interface {
+            display: none;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .simple-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 20px;
+        }
+
+        /* Animasyonlar */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive Tasarım */
+        @media (max-width: 768px) {
+            .app-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .header-controls {
+                flex-direction: column;
+                width: 100%;
+                margin-top: 15px;
+            }
+            
+            .app-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-<div id="interfaceChoice" class="interface-choice">
-    <div class="interface-options">
-        <h2>ftblzone'a Hoş Geldiniz!</h2>
-        <p>Lütfen kullanmak istediğiniz arayüzü seçin:</p>
-        
-        <div class="interface-option" id="simpleOption" data-interface="simple">
-            <h3>Basit Arayüz</h3>
-            <p>Tüm içerik tek sayfada, hızlı ve sade</p>
-        </div>
-        
-        <div class="interface-option" id="menuOption" data-interface="menu">
-            <h3>Menülü Arayüz</h3>
-            <p>Sol tarafta menü ile kolay gezinme</p>
-        </div>
-        
-        <p style="margin-top: 20px; font-size: 0.9em; color: #777;">Daha sonra ayarlardan değiştirebilirsiniz</p>
-    </div>
-</div>
-
-<button id="menuToggle" style="display:none;">☰</button>
-
-<div id="sidebar">
-    <ul>
-        <li><a href="#" data-section="home">🏠 Ana Sayfa</a></li>
-        <li><a href="#" data-section="links">⚽ Maç Linkleri</a></li>
-        <li><a href="#" data-section="timers">⏰ Geri Sayımlar</a></li>
-        <li><a href="#" data-section="quiz">🧠 Bilgi Yarışması</a></li>
-        <li><a href="#" data-section="poll">🔗 Duyuru/Link</a></li>
-        <li><a href="#" data-section="prediction">🏆 Tahmin Oyunu</a></li>
-        <li><a href="#" data-section="notifications">🔔 Bildirimler</a></li>
-        <li><a href="#" data-section="profile">👤 Profilim</a></li>
-        <li><a href="#" data-section="feedback">📧 Geri Bildirim</a></li>
-        <li><a href="#" data-section="settings">⚙️ Ayarlar</a></li>
-    </ul>
-</div>
-
-<div id="simpleInterface" style="display:none;">
-    <h1>ftblzone - Basit Arayüz</h1>
-    <p>Bu basit arayüz içeriği</p>
-    <button id="changeInterfaceSimple">Arayüzü Değiştir</button>
-</div>
-
-<div id="menuInterface" style="display:none;">
-    <div id="mainContent">
-        <div id="homeSection" class="section active">
-            <h1>Ana Sayfa</h1>
-            <p>Menülü arayüz ana sayfa içeriği</p>
-        </div>
-        
-        <div id="linksSection" class="section">
-            <h1>Maç Linkleri</h1>
-            <p>Maç linkleri içeriği</p>
-        </div>
-        
-        <!-- Diğer bölümler buraya eklenebilir -->
-        
-        <div id="settingsSection" class="section">
-            <h1>Ayarlar</h1>
-            <button id="changeInterfaceBtn">Arayüzü Değiştir</button>
+    <!-- Arayüz Seçim Ekranı -->
+    <div class="interface-choice" id="interfaceChoice">
+        <div class="interface-options">
+            <h2>ftblzone'a Hoş Geldiniz!</h2>
+            <p>Lütfen kullanmak istediğiniz arayüzü seçin:</p>
+            
+            <div class="interface-option" id="simpleOption" data-interface="simple">
+                <h3><i class="fas fa-bolt"></i> Basit Arayüz</h3>
+                <p>Tüm içerik tek sayfada, hızlı ve sade bir deneyim</p>
+            </div>
+            
+            <div class="interface-option" id="menuOption" data-interface="menu">
+                <h3><i class="fas fa-bars"></i> Menülü Arayüz</h3>
+                <p>Sol tarafta menü ile kolay gezinme, daha fazla özellik</p>
+            </div>
+            
+            <p class="note">Daha sonra ayarlardan arayüzünüzü değiştirebilirsiniz</p>
         </div>
     </div>
-</div>
 
-<script>
-// Firebase yapılandırması
-const firebaseConfig = {
-  apiKey: "AIzaSyDP46kVlCHwKdWPjnXL86Zl0DncQfqFc00",
-  authDomain: "ftblzone-93b54.firebaseapp.com",
-  projectId: "ftblzone-93b54",
-  storageBucket: "ftblzone-93b54.appspot.com",
-  messagingSenderId: "1006008662097",
-  appId: "1:1006008662097:web:8b874f6b39fa2c05896070"
-};
+    <!-- Menülü Arayüz -->
+    <div class="app-interface" id="menuInterface">
+        <div class="container">
+            <header class="app-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-futbol"></i>
+                    </div>
+                    <div class="logo-text">ftblzone</div>
+                </div>
+                <div class="header-controls">
+                    <button class="btn btn-primary" id="changeInterfaceBtn">
+                        <i class="fas fa-exchange-alt"></i> Arayüzü Değiştir
+                    </button>
+                    <button class="btn btn-outline">
+                        <i class="fas fa-cog"></i> Ayarlar
+                    </button>
+                </div>
+            </header>
 
-// Firebase başlatma
-try {
-  firebase.initializeApp(firebaseConfig);
-  console.log("Firebase başarıyla başlatıldı");
-} catch (error) {
-  console.error("Firebase başlatma hatası:", error);
-}
+            <div class="app-content">
+                <aside class="sidebar">
+                    <ul class="sidebar-menu">
+                        <li class="menu-item active" data-section="home">
+                            <i class="fas fa-home menu-icon"></i> Ana Sayfa
+                        </li>
+                        <li class="menu-item" data-section="matches">
+                            <i class="fas fa-futbol menu-icon"></i> Canlı Maçlar
+                        </li>
+                        <li class="menu-item" data-section="links">
+                            <i class="fas fa-link menu-icon"></i> Maç Linkleri
+                        </li>
+                        <li class="menu-item" data-section="predictions">
+                            <i class="fas fa-trophy menu-icon"></i> Tahmin Oyunu
+                        </li>
+                        <li class="menu-item" data-section="highlights">
+                            <i class="fas fa-video menu-icon"></i> Maç Özetleri
+                        </li>
+                        <li class="menu-item" data-section="stats">
+                            <i class="fas fa-chart-bar menu-icon"></i> İstatistikler
+                        </li>
+                        <li class="menu-item" data-section="news">
+                            <i class="fas fa-newspaper menu-icon"></i> Haberler
+                        </li>
+                        <li class="menu-item" data-section="profile">
+                            <i class="fas fa-user menu-icon"></i> Profilim
+                        </li>
+                    </ul>
+                </aside>
 
-// Uygulama durumu
-const appState = {
-  currentInterface: localStorage.getItem('ftblzone_interface') || null,
-  currentSection: 'home'
-};
+                <main class="main-content">
+                    <div class="content-section active" id="homeSection">
+                        <h2 class="section-title">
+                            <i class="fas fa-home section-icon"></i> Ana Sayfa
+                        </h2>
+                        <p>Futbol dünyasının nabzı burada atıyor! Canlı maçlar, güncel linkler ve daha fazlası...</p>
+                        
+                        <div class="cards-container">
+                            <div class="card">
+                                <div class="card-icon">
+                                    <i class="fas fa-futbol"></i>
+                                </div>
+                                <h3 class="card-title">Canlı Maçlar</h3>
+                                <p class="card-desc">Şu anda devam eden maçları takip edin</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <h3 class="card-title">Tahmin Oyunu</h3>
+                                <p class="card-desc">Maç sonuçlarını tahmin edin, puan kazanın</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-icon">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                                <h3 class="card-title">Maç Özetleri</h3>
+                                <p class="card-desc">Kaçırdığınız maçların özetlerini izleyin</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <h3 class="card-title">İstatistikler</h3>
+                                <p class="card-desc">Takım ve oyuncu istatistiklerini inceleyin</p>
+                            </div>
+                        </div>
+                    </div>
 
-// DOM elemanları
-const elements = {
-  interfaceChoice: document.getElementById('interfaceChoice'),
-  simpleOption: document.getElementById('simpleOption'),
-  menuOption: document.getElementById('menuOption'),
-  simpleInterface: document.getElementById('simpleInterface'),
-  menuInterface: document.getElementById('menuInterface'),
-  menuToggle: document.getElementById('menuToggle'),
-  sidebar: document.getElementById('sidebar'),
-  mainContent: document.getElementById('mainContent'),
-  changeInterfaceSimple: document.getElementById('changeInterfaceSimple'),
-  changeInterfaceBtn: document.getElementById('changeInterfaceBtn')
-};
+                    <div class="content-section" id="matchesSection">
+                        <h2 class="section-title">
+                            <i class="fas fa-futbol section-icon"></i> Canlı Maçlar
+                        </h2>
+                        <p>Devam eden maçlar ve yaklaşan karşılaşmalar</p>
+                        <!-- Maç içeriği buraya eklenecek -->
+                    </div>
 
-// Arayüz seçimi işlevleri
-function selectInterface(interfaceType) {
-  appState.currentInterface = interfaceType;
-  localStorage.setItem('ftblzone_interface', interfaceType);
-  
-  // Arayüz seçim ekranını gizle
-  elements.interfaceChoice.style.display = 'none';
-  
-  // Seçilen arayüzü göster
-  if (interfaceType === 'simple') {
-    elements.simpleInterface.style.display = 'block';
-    elements.menuInterface.style.display = 'none';
-    elements.menuToggle.style.display = 'none';
-  } else if (interfaceType === 'menu') {
-    elements.simpleInterface.style.display = 'none';
-    elements.menuInterface.style.display = 'block';
-    elements.menuToggle.style.display = 'block';
-    showSection('home');
-  }
-  
-  console.log(`Arayüz seçildi: ${interfaceType}`);
-}
+                    <div class="content-section" id="linksSection">
+                        <h2 class="section-title">
+                            <i class="fas fa-link section-icon"></i> Maç Linkleri
+                        </h2>
+                        <p>Güncel maç yayın linkleri</p>
+                        <!-- Link içeriği buraya eklenecek -->
+                    </div>
 
-function showInterfaceSelection() {
-  appState.currentInterface = null;
-  localStorage.removeItem('ftblzone_interface');
-  
-  // Tüm arayüzleri gizle
-  elements.simpleInterface.style.display = 'none';
-  elements.menuInterface.style.display = 'none';
-  elements.menuToggle.style.display = 'none';
-  
-  // Arayüz seçim ekranını göster
-  elements.interfaceChoice.style.display = 'flex';
-}
+                    <!-- Diğer bölümler buraya eklenecek -->
+                </main>
+            </div>
+        </div>
+    </div>
 
-// Menü işlevleri
-function toggleSidebar() {
-  elements.sidebar.classList.toggle('active');
-}
+    <!-- Basit Arayüz -->
+    <div class="simple-interface" id="simpleInterface">
+        <div class="container">
+            <header class="app-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-futbol"></i>
+                    </div>
+                    <div class="logo-text">ftblzone</div>
+                </div>
+                <div class="header-controls">
+                    <button class="btn btn-primary" id="changeInterfaceSimple">
+                        <i class="fas fa-exchange-alt"></i> Arayüzü Değiştir
+                    </button>
+                </div>
+            </header>
 
-function showSection(sectionId) {
-  // Tüm bölümleri gizle
-  const sections = document.querySelectorAll('.section');
-  sections.forEach(section => {
-    section.classList.remove('active');
-  });
-  
-  // Seçilen bölümü göster
-  const targetSection = document.getElementById(sectionId + 'Section');
-  if (targetSection) {
-    targetSection.classList.add('active');
-    appState.currentSection = sectionId;
-  }
-}
+            <div class="simple-content">
+                <h2 class="section-title">
+                    <i class="fas fa-bolt section-icon"></i> Basit Arayüz
+                </h2>
+                <p>Hızlı ve sade bir deneyim sunan basit arayüzümüze hoş geldiniz. Tüm içerik bu sayfada!</p>
+                
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-futbol"></i>
+                        </div>
+                        <h3 class="card-title">Canlı Maçlar</h3>
+                        <p class="card-desc">Şu anda devam eden maçları takip edin</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <h3 class="card-title">Maç Linkleri</h3>
+                        <p class="card-desc">Güncel maç yayın linkleri</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h3 class="card-title">Tahmin Oyunu</h3>
+                        <p class="card-desc">Maç sonuçlarını tahmin edin, puan kazanın</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <h3 class="card-title">Maç Özetleri</h3>
+                        <p class="card-desc">Kaçırdığınız maçların özetlerini izleyin</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-// Event listener'ları bağlama
-function initializeEventListeners() {
-  // Arayüz seçimi
-  elements.simpleOption.addEventListener('click', () => selectInterface('simple'));
-  elements.menuOption.addEventListener('click', () => selectInterface('menu'));
-  
-  // Arayüz değiştirme butonları
-  if (elements.changeInterfaceSimple) {
-    elements.changeInterfaceSimple.addEventListener('click', showInterfaceSelection);
-  }
-  if (elements.changeInterfaceBtn) {
-    elements.changeInterfaceBtn.addEventListener('click', showInterfaceSelection);
-  }
-  
-  // Menü toggle
-  elements.menuToggle.addEventListener('click', toggleSidebar);
-  
-  // Menü bağlantıları
-  const menuLinks = document.querySelectorAll('#sidebar a');
-  menuLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const section = link.getAttribute('data-section');
-      showSection(section);
-      toggleSidebar();
-    });
-  });
-  
-  // Dokunmatik olaylar için sidebar dışına tıklama
-  document.addEventListener('click', (e) => {
-    if (elements.sidebar.classList.contains('active') && 
-        !elements.sidebar.contains(e.target) && 
-        e.target !== elements.menuToggle) {
-      toggleSidebar();
-    }
-  });
-}
+    <script>
+        // DOM elementlerini seç
+        const interfaceChoice = document.getElementById('interfaceChoice');
+        const simpleOption = document.getElementById('simpleOption');
+        const menuOption = document.getElementById('menuOption');
+        const menuInterface = document.getElementById('menuInterface');
+        const simpleInterface = document.getElementById('simpleInterface');
+        const changeInterfaceBtn = document.getElementById('changeInterfaceBtn');
+        const changeInterfaceSimple = document.getElementById('changeInterfaceSimple');
+        const menuItems = document.querySelectorAll('.menu-item');
+        const contentSections = document.querySelectorAll('.content-section');
 
-// Uygulamayı başlatma
-function initializeApp() {
-  console.log("Uygulama başlatılıyor...");
-  
-  // Event listener'ları başlat
-  initializeEventListeners();
-  
-  // Kayıtlı arayüz varsa onu yükle
-  if (appState.currentInterface) {
-    selectInterface(appState.currentInterface);
-  } else {
-    // Yoksa arayüz seçim ekranını göster
-    elements.interfaceChoice.style.display = 'flex';
-  }
-  
-  console.log("Uygulama başlatıldı");
-}
+        // Arayüz seçimi işlevi
+        function selectInterface(interfaceType) {
+            // Tüm arayüzleri gizle
+            menuInterface.style.display = 'none';
+            simpleInterface.style.display = 'none';
+            interfaceChoice.style.display = 'none';
+            
+            // Seçilen arayüzü göster
+            if (interfaceType === 'simple') {
+                simpleInterface.style.display = 'block';
+                localStorage.setItem('ftblzone_interface', 'simple');
+            } else if (interfaceType === 'menu') {
+                menuInterface.style.display = 'block';
+                localStorage.setItem('ftblzone_interface', 'menu');
+            }
+        }
 
-// Sayfa yüklendiğinde uygulamayı başlat
-document.addEventListener('DOMContentLoaded', initializeApp);
+        // Arayüz değiştirme işlevi
+        function showInterfaceSelection() {
+            menuInterface.style.display = 'none';
+            simpleInterface.style.display = 'none';
+            interfaceChoice.style.display = 'flex';
+        }
 
-// Hata yönetimi
-window.addEventListener('error', (e) => {
-  console.error('Uygulama hatası:', e.error);
-});
+        // Menü öğesi tıklama işlevi
+        function selectMenuItem(selectedItem) {
+            // Tüm menü öğelerinden aktif sınıfını kaldır
+            menuItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Tüm içerik bölümlerini gizle
+            contentSections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Seçilen menü öğesine aktif sınıfı ekle
+            selectedItem.classList.add('active');
+            
+            // İlgili içerik bölümünü göster
+            const sectionId = selectedItem.getAttribute('data-section') + 'Section';
+            document.getElementById(sectionId).classList.add('active');
+        }
 
-// Çevrimdışı destek
-window.addEventListener('online', () => {
-  console.log('İnternet bağlantısı sağlandı');
-});
+        // Event listener'ları ekle
+        document.addEventListener('DOMContentLoaded', function() {
+            // Arayüz seçeneklerine tıklama
+            simpleOption.addEventListener('click', function() {
+                this.classList.add('selected');
+                menuOption.classList.remove('selected');
+                setTimeout(() => selectInterface('simple'), 300);
+            });
+            
+            menuOption.addEventListener('click', function() {
+                this.classList.add('selected');
+                simpleOption.classList.remove('selected');
+                setTimeout(() => selectInterface('menu'), 300);
+            });
+            
+            // Arayüz değiştirme butonları
+            changeInterfaceBtn.addEventListener('click', showInterfaceSelection);
+            changeInterfaceSimple.addEventListener('click', showInterfaceSelection);
+            
+            // Menü öğelerine tıklama
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    selectMenuItem(this);
+                });
+            });
+            
+            // LocalStorage'dan kayıtlı arayüzü yükle
+            const savedInterface = localStorage.getItem('ftblzone_interface');
+            if (savedInterface) {
+                selectInterface(savedInterface);
+                interfaceChoice.style.display = 'none';
+                
+                if (savedInterface === 'simple') {
+                    simpleOption.classList.add('selected');
+                } else {
+                    menuOption.classList.add('selected');
+                }
+            }
+            
+            // Butonlara animasyon efekti ekle
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // Ripple efekti için span oluştur
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('ripple-effect');
+                    
+                    this.appendChild(ripple);
+                    
+                    // Ripple'ı temizle
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+            
+            // Kartlara hover efekti
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
 
-window.addEventListener('offline', () => {
-  console.log('İnternet bağlantısı kesildi');
-});
-</script>
+        // Ripple efekti için CSS ekle
+        const style = document.createElement('style');
+        style.textContent = `
+            .ripple-effect {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.6);
+                transform: scale(0);
+                animation: ripple-animation 0.6s linear;
+            }
+            
+            @keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
