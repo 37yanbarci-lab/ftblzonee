@@ -501,6 +501,178 @@
             margin-top: 20px;
         }
 
+        /* Ayarlar Panel */
+        .settings-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .setting-info p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .admin-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 15px;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+
+        /* Form Elemanları */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius);
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
         /* Animasyonlar */
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -584,6 +756,10 @@
             .option-icon {
                 font-size: 2.5rem;
             }
+            
+            .admin-stats, .admin-actions {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -642,8 +818,11 @@
                     <button class="btn btn-primary" id="changeInterfaceBtn">
                         <i class="fas fa-exchange-alt"></i> Arayüzü Değiştir
                     </button>
-                    <button class="btn btn-outline">
+                    <button class="btn btn-outline" id="settingsBtn">
                         <i class="fas fa-cog"></i> Ayarlar
+                    </button>
+                    <button class="btn btn-secondary" id="adminBtn">
+                        <i class="fas fa-user-shield"></i> Admin
                     </button>
                 </div>
             </header>
@@ -722,7 +901,22 @@
                             <i class="fas fa-futbol section-icon"></i> Canlı Maçlar
                         </h2>
                         <p>Devam eden maçlar ve yaklaşan karşılaşmalar</p>
-                        <!-- Maç içeriği buraya eklenecek -->
+                        <div class="cards-container">
+                            <div class="card">
+                                <div class="card-icon">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                                <h3 class="card-title">Galatasaray vs Fenerbahçe</h3>
+                                <p class="card-desc">45. Dakika | Skor: 1-0</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-icon">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                                <h3 class="card-title">Beşiktaş vs Trabzonspor</h3>
+                                <p class="card-desc">32. Dakika | Skor: 0-0</p>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="content-section" id="linksSection">
@@ -730,7 +924,131 @@
                             <i class="fas fa-link section-icon"></i> Maç Linkleri
                         </h2>
                         <p>Güncel maç yayın linkleri</p>
-                        <!-- Link içeriği buraya eklenecek -->
+                        <div class="cards-container">
+                            <div class="card">
+                                <div class="card-icon">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </div>
+                                <h3 class="card-title">Galatasaray - Fenerbahçe</h3>
+                                <p class="card-desc">HD Kalitesinde Canlı Yayın</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-icon">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </div>
+                                <h3 class="card-title">Beşiktaş - Trabzonspor</h3>
+                                <p class="card-desc">Full HD Canlı İzle</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-section" id="settingsSection">
+                        <h2 class="section-title">
+                            <i class="fas fa-cog section-icon"></i> Ayarlar
+                        </h2>
+                        <p>Uygulama ayarlarınızı kişiselleştirin</p>
+                        
+                        <div class="settings-panel">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Koyu Tema</h4>
+                                    <p>Uygulamayı koyu temada kullan</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Bildirimler</h4>
+                                    <p>Maç başlangıç bildirimlerini aç</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Otomatik Güncelleme</h4>
+                                    <p>Maç skorlarını otomatik güncelle</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Vibrasyon</h4>
+                                    <p>Gol bildirimlerinde titreşim</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-section" id="adminSection">
+                        <h2 class="section-title">
+                            <i class="fas fa-user-shield section-icon"></i> Admin Paneli
+                        </h2>
+                        <p>Sistem yönetimi ve istatistikler</p>
+                        
+                        <div class="admin-stats">
+                            <div class="stat-card">
+                                <div class="stat-value">1,254</div>
+                                <div class="stat-label">Aktif Kullanıcı</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">23</div>
+                                <div class="stat-label">Canlı Maç</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">156</div>
+                                <div class="stat-label">Bugünkü Giriş</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">98%</div>
+                                <div class="stat-label">Sistem Durumu</div>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-actions">
+                            <div class="action-btn">
+                                <i class="fas fa-users action-icon"></i>
+                                <span>Kullanıcı Yönetimi</span>
+                            </div>
+                            <div class="action-btn">
+                                <i class="fas fa-futbol action-icon"></i>
+                                <span>Maç Ekle/Düzenle</span>
+                            </div>
+                            <div class="action-btn">
+                                <i class="fas fa-link action-icon"></i>
+                                <span>Link Yönetimi</span>
+                            </div>
+                            <div class="action-btn">
+                                <i class="fas fa-chart-bar action-icon"></i>
+                                <span>İstatistikler</span>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-panel" style="margin-top: 25px;">
+                            <h3 style="margin-bottom: 15px; color: white;">Hızlı İşlemler</h3>
+                            <div class="form-group">
+                                <label class="form-label">Yeni Maç Ekle</label>
+                                <input type="text" class="form-input" placeholder="Maç adını girin">
+                            </div>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Maç Ekle
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Diğer bölümler buraya eklenecek -->
@@ -806,10 +1124,13 @@
         const simpleInterface = document.getElementById('simpleInterface');
         const changeInterfaceBtn = document.getElementById('changeInterfaceBtn');
         const changeInterfaceSimple = document.getElementById('changeInterfaceSimple');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const adminBtn = document.getElementById('adminBtn');
         const menuItems = document.querySelectorAll('.menu-item');
         const contentSections = document.querySelectorAll('.content-section');
 
         let selectedInterface = null;
+        let isAdmin = true; // Admin durumu - gerçek uygulamada login sistemi ile kontrol edilmeli
 
         // Arayüz seçimi işlevi
         function selectInterface(interfaceType) {
@@ -876,6 +1197,43 @@
             document.getElementById(sectionId).classList.add('active');
         }
 
+        // Ayarlar bölümünü aç
+        function openSettings() {
+            // Tüm menü öğelerinden aktif sınıfını kaldır
+            menuItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Tüm içerik bölümlerini gizle
+            contentSections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Ayarlar bölümünü göster
+            document.getElementById('settingsSection').classList.add('active');
+        }
+
+        // Admin bölümünü aç
+        function openAdmin() {
+            if (!isAdmin) {
+                alert('Admin paneline erişim yetkiniz yok!');
+                return;
+            }
+            
+            // Tüm menü öğelerinden aktif sınıfını kaldır
+            menuItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Tüm içerik bölümlerini gizle
+            contentSections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Admin bölümünü göster
+            document.getElementById('adminSection').classList.add('active');
+        }
+
         // Event listener'ları ekle
         document.addEventListener('DOMContentLoaded', function() {
             // Arayüz seçeneklerine tıklama
@@ -903,6 +1261,12 @@
             changeInterfaceBtn.addEventListener('click', showInterfaceSelection);
             changeInterfaceSimple.addEventListener('click', showInterfaceSelection);
             
+            // Ayarlar butonu
+            settingsBtn.addEventListener('click', openSettings);
+            
+            // Admin butonu
+            adminBtn.addEventListener('click', openAdmin);
+            
             // Menü öğelerine tıklama
             menuItems.forEach(item => {
                 item.addEventListener('click', function() {
@@ -922,7 +1286,7 @@
             }
             
             // Butonlara animasyon efekti ekle
-            const buttons = document.querySelectorAll('.btn, .continue-btn');
+            const buttons = document.querySelectorAll('.btn, .continue-btn, .action-btn');
             buttons.forEach(button => {
                 button.addEventListener('click', function(e) {
                     // Ripple efekti için span oluştur
