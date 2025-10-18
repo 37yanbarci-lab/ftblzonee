@@ -27,13 +27,70 @@
             --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             --radius: 12px;
+            
+            /* Tema değişkenleri */
+            --bg-gradient: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --text-color: #f8f9fa;
+            --border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Temalar */
+        .theme-default {
+            --bg-gradient: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --text-color: #f8f9fa;
+            --border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .theme-sari-kirmizi {
+            --bg-gradient: linear-gradient(135deg, #F9A602, #D0021B);
+            --card-bg: rgba(255, 255, 255, 0.15);
+            --text-color: #ffffff;
+            --border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .theme-sari-lacivert {
+            --bg-gradient: linear-gradient(135deg, #FFD700, #0033A0);
+            --card-bg: rgba(255, 255, 255, 0.15);
+            --text-color: #ffffff;
+            --border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .theme-koyu {
+            --bg-gradient: linear-gradient(135deg, #0c0c0c, #2d2d2d);
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --text-color: #f0f0f0;
+            --border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .theme-acik {
+            --bg-gradient: linear-gradient(135deg, #74b9ff, #0984e3);
+            --card-bg: rgba(255, 255, 255, 0.25);
+            --text-color: #2d3436;
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-siyah-beyaz {
+            --bg-gradient: linear-gradient(135deg, #000000, #434343);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --text-color: #ffffff;
+            --border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .theme-bordo-mavi {
+            --bg-gradient: linear-gradient(135deg, #8B0000, #000080);
+            --card-bg: rgba(255, 255, 255, 0.12);
+            --text-color: #ffffff;
+            --border-color: rgba(255, 255, 255, 0.25);
         }
 
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-            color: var(--light);
+            background: var(--bg-gradient);
+            color: var(--text-color);
             min-height: 100vh;
             overflow-x: hidden;
+            transition: background 0.5s ease, color 0.5s ease;
         }
 
         .container {
@@ -58,7 +115,7 @@
         }
 
         .interface-options {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
             padding: 40px;
             border-radius: var(--radius);
@@ -67,7 +124,7 @@
             width: 90%;
             animation: slideUp 0.8s ease;
             box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border-color);
             position: relative;
             overflow: hidden;
         }
@@ -87,7 +144,7 @@
         .interface-options h2 {
             font-size: 2.5rem;
             margin-bottom: 10px;
-            background: linear-gradient(to right, #ff6d00, #ffab40);
+            background: linear-gradient(to right, var(--secondary), var(--secondary-dark));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 2px 10px rgba(255, 109, 0, 0.3);
@@ -97,7 +154,8 @@
         .interface-options p {
             font-size: 1.2rem;
             margin-bottom: 30px;
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--text-color);
+            opacity: 0.8;
             position: relative;
         }
 
@@ -111,11 +169,11 @@
 
         .interface-option {
             padding: 30px 20px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid var(--border-color);
             border-radius: var(--radius);
             cursor: pointer;
             transition: var(--transition);
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--card-bg);
             position: relative;
             overflow: hidden;
             display: flex;
@@ -166,13 +224,14 @@
         .interface-option h3 {
             font-size: 1.8rem;
             margin-bottom: 10px;
-            color: white;
+            color: var(--text-color);
         }
 
         .interface-option p {
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--text-color);
             margin-bottom: 0;
             font-size: 1rem;
+            opacity: 0.7;
         }
 
         .option-features {
@@ -187,7 +246,8 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--text-color);
+            opacity: 0.8;
             font-size: 0.9rem;
         }
 
@@ -245,7 +305,8 @@
         .note {
             margin-top: 30px;
             font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.6);
+            color: var(--text-color);
+            opacity: 0.6;
             position: relative;
         }
 
@@ -261,12 +322,12 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
             border-radius: var(--radius);
             margin-bottom: 20px;
             box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border-color);
         }
 
         .logo {
@@ -284,7 +345,7 @@
         .logo-text {
             font-size: 1.8rem;
             font-weight: 700;
-            background: linear-gradient(to right, #ff6d00, #ffab40);
+            background: linear-gradient(to right, var(--secondary), var(--secondary-dark));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -352,13 +413,13 @@
 
         .btn-outline {
             background: transparent;
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
         }
 
         .btn-outline:hover {
             background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.5);
+            border-color: var(--primary);
         }
 
         /* İçerik Alanı */
@@ -370,12 +431,12 @@
 
         /* Sidebar */
         .sidebar {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
             border-radius: var(--radius);
             padding: 20px;
             box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border-color);
             height: fit-content;
         }
 
@@ -393,6 +454,7 @@
             align-items: center;
             gap: 12px;
             font-weight: 500;
+            color: var(--text-color);
         }
 
         .menu-item:hover {
@@ -413,12 +475,12 @@
 
         /* Ana İçerik */
         .main-content {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
             border-radius: var(--radius);
             padding: 30px;
             box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border-color);
             min-height: 500px;
         }
 
@@ -434,7 +496,7 @@
         .section-title {
             font-size: 2rem;
             margin-bottom: 20px;
-            color: white;
+            color: var(--text-color);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -454,11 +516,11 @@
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--card-bg);
             border-radius: var(--radius);
             padding: 20px;
             transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
             cursor: pointer;
         }
 
@@ -477,11 +539,12 @@
         .card-title {
             font-size: 1.3rem;
             margin-bottom: 10px;
-            color: white;
+            color: var(--text-color);
         }
 
         .card-desc {
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--text-color);
+            opacity: 0.7;
             font-size: 0.9rem;
         }
 
@@ -492,22 +555,22 @@
         }
 
         .simple-content {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
             border-radius: var(--radius);
             padding: 30px;
             box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border-color);
             margin-top: 20px;
         }
 
         /* Ayarlar Panel */
         .settings-panel {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--card-bg);
             border-radius: var(--radius);
             padding: 25px;
             margin-top: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
         }
 
         .setting-item {
@@ -515,7 +578,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .setting-item:last-child {
@@ -525,11 +588,12 @@
         .setting-info h4 {
             font-size: 1.1rem;
             margin-bottom: 5px;
-            color: white;
+            color: var(--text-color);
         }
 
         .setting-info p {
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--text-color);
+            opacity: 0.7;
             font-size: 0.9rem;
         }
 
@@ -578,13 +642,53 @@
             transform: translateX(26px);
         }
 
+        /* Tema Seçici */
+        .theme-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .theme-option {
+            padding: 15px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid var(--border-color);
+            text-align: center;
+            background: var(--card-bg);
+        }
+
+        .theme-option:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+        }
+
+        .theme-option.active {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 2px var(--secondary);
+        }
+
+        .theme-preview {
+            width: 100%;
+            height: 60px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .theme-name {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
         /* Admin Panel */
         .admin-panel {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--card-bg);
             border-radius: var(--radius);
             padding: 25px;
             margin-top: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
         }
 
         .admin-stats {
@@ -595,11 +699,11 @@
         }
 
         .stat-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--card-bg);
             border-radius: var(--radius);
             padding: 20px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
         }
 
         .stat-value {
@@ -610,7 +714,8 @@
         }
 
         .stat-label {
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--text-color);
+            opacity: 0.7;
             font-size: 0.9rem;
         }
 
@@ -621,11 +726,11 @@
         }
 
         .action-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: var(--radius);
             padding: 15px;
-            color: white;
+            color: var(--text-color);
             cursor: pointer;
             transition: var(--transition);
             display: flex;
@@ -652,7 +757,7 @@
         .form-label {
             display: block;
             margin-bottom: 8px;
-            color: white;
+            color: var(--text-color);
             font-weight: 500;
         }
 
@@ -660,9 +765,9 @@
             width: 100%;
             padding: 12px 15px;
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            color: white;
+            color: var(--text-color);
             font-size: 1rem;
             transition: var(--transition);
         }
@@ -671,6 +776,36 @@
             outline: none;
             border-color: var(--primary);
             background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Admin Giriş Modal */
+        .admin-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .admin-login {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .admin-login h3 {
+            margin-bottom: 20px;
+            color: var(--text-color);
         }
 
         /* Animasyonlar */
@@ -760,10 +895,14 @@
             .admin-stats, .admin-actions {
                 grid-template-columns: 1fr;
             }
+            
+            .theme-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
-<body>
+<body class="theme-default">
     <!-- Arayüz Seçim Ekranı -->
     <div class="interface-choice" id="interfaceChoice">
         <div class="interface-options">
@@ -801,6 +940,22 @@
             </button>
             
             <p class="note">Daha sonra ayarlardan arayüzünüzü değiştirebilirsiniz</p>
+        </div>
+    </div>
+
+    <!-- Admin Giriş Modal -->
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-login">
+            <h3><i class="fas fa-user-shield"></i> Admin Girişi</h3>
+            <div class="form-group">
+                <input type="password" class="form-input" id="adminPassword" placeholder="Admin şifresini girin">
+            </div>
+            <button class="btn btn-primary" id="adminLoginBtn">
+                <i class="fas fa-sign-in-alt"></i> Giriş Yap
+            </button>
+            <button class="btn btn-outline" id="adminCancelBtn" style="margin-top: 10px;">
+                <i class="fas fa-times"></i> İptal
+            </button>
         </div>
     </div>
 
@@ -949,48 +1104,83 @@
                         <p>Uygulama ayarlarınızı kişiselleştirin</p>
                         
                         <div class="settings-panel">
-                            <div class="setting-item">
-                                <div class="setting-info">
-                                    <h4>Koyu Tema</h4>
-                                    <p>Uygulamayı koyu temada kullan</p>
+                            <h3 style="margin-bottom: 15px; color: var(--text-color);">Tema Seçimi</h3>
+                            <div class="theme-selector">
+                                <div class="theme-option active" data-theme="default">
+                                    <div class="theme-preview" style="background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);"></div>
+                                    <div class="theme-name">Varsayılan</div>
                                 </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
+                                <div class="theme-option" data-theme="sari-kirmizi">
+                                    <div class="theme-preview" style="background: linear-gradient(135deg, #F9A602, #D0021B);"></div>
+                                    <div class="theme-name">Sarı-Kırmızı</div>
+                                </div>
+                                <div class="theme-option" data-theme="sari-lacivert">
+                                    <div class="theme-preview" style="background: linear-gradient(135deg, #FFD700, #0033A0);"></div>
+                                    <div class="theme-name">Sarı-Lacivert</div>
+                                </div>
+                                <div class="theme-option" data-theme="koyu">
+                                    <div class="theme-preview" style="background: linear-gradient(135deg, #0c0c0c, #2d2d2d);"></div>
+                                    <div class="theme-name">Koyu</div>
+                                </div>
+                                <div class="theme-option" data-theme="acik">
+                                    <div class="theme-preview" style="background: linear-gradient(135deg, #74b9ff, #0984e3);"></div>
+                                    <div class="theme-name">Açık</div>
+                                </div>
+                                <div class="theme-option" data-theme="siyah-beyaz">
+                                    <div class="theme-preview" style="background: linear-gradient(135deg, #000000, #434343);"></div>
+                                    <div class="theme-name">Siyah-Beyaz</div>
+                                </div>
+                                <div class="theme-option" data-theme="bordo-mavi">
+                                    <div class="theme-preview" style="background: linear-gradient(135deg, #8B0000, #000080);"></div>
+                                    <div class="theme-name">Bordo-Mavi</div>
+                                </div>
                             </div>
                             
-                            <div class="setting-item">
-                                <div class="setting-info">
-                                    <h4>Bildirimler</h4>
-                                    <p>Maç başlangıç bildirimlerini aç</p>
+                            <div style="margin-top: 30px;">
+                                <h3 style="margin-bottom: 15px; color: var(--text-color);">Uygulama Ayarları</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Koyu Tema</h4>
+                                        <p>Uygulamayı koyu temada kullan</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
                                 </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            
-                            <div class="setting-item">
-                                <div class="setting-info">
-                                    <h4>Otomatik Güncelleme</h4>
-                                    <p>Maç skorlarını otomatik güncelle</p>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Bildirimler</h4>
+                                        <p>Maç başlangıç bildirimlerini aç</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
                                 </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            
-                            <div class="setting-item">
-                                <div class="setting-info">
-                                    <h4>Vibrasyon</h4>
-                                    <p>Gol bildirimlerinde titreşim</p>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Otomatik Güncelleme</h4>
+                                        <p>Maç skorlarını otomatik güncelle</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
                                 </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Vibrasyon</h4>
+                                        <p>Gol bildirimlerinde titreşim</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1040,7 +1230,7 @@
                         </div>
                         
                         <div class="admin-panel" style="margin-top: 25px;">
-                            <h3 style="margin-bottom: 15px; color: white;">Hızlı İşlemler</h3>
+                            <h3 style="margin-bottom: 15px; color: var(--text-color);">Hızlı İşlemler</h3>
                             <div class="form-group">
                                 <label class="form-label">Yeni Maç Ekle</label>
                                 <input type="text" class="form-input" placeholder="Maç adını girin">
@@ -1051,7 +1241,41 @@
                         </div>
                     </div>
 
-                    <!-- Diğer bölümler buraya eklenecek -->
+                    <!-- Diğer bölümler -->
+                    <div class="content-section" id="predictionsSection">
+                        <h2 class="section-title">
+                            <i class="fas fa-trophy section-icon"></i> Tahmin Oyunu
+                        </h2>
+                        <p>Maç sonuçlarını tahmin edin ve puan kazanın!</p>
+                    </div>
+
+                    <div class="content-section" id="highlightsSection">
+                        <h2 class="section-title">
+                            <i class="fas fa-video section-icon"></i> Maç Özetleri
+                        </h2>
+                        <p>Kaçırdığınız maçların özetlerini izleyin</p>
+                    </div>
+
+                    <div class="content-section" id="statsSection">
+                        <h2 class="section-title">
+                            <i class="fas fa-chart-bar section-icon"></i> İstatistikler
+                        </h2>
+                        <p>Detaylı takım ve oyuncu istatistikleri</p>
+                    </div>
+
+                    <div class="content-section" id="newsSection">
+                        <h2 class="section-title">
+                            <i class="fas fa-newspaper section-icon"></i> Haberler
+                        </h2>
+                        <p>Güncel futbol haberleri</p>
+                    </div>
+
+                    <div class="content-section" id="profileSection">
+                        <h2 class="section-title">
+                            <i class="fas fa-user section-icon"></i> Profilim
+                        </h2>
+                        <p>Hesap bilgileriniz ve istatistikleriniz</p>
+                    </div>
                 </main>
             </div>
         </div>
@@ -1126,11 +1350,17 @@
         const changeInterfaceSimple = document.getElementById('changeInterfaceSimple');
         const settingsBtn = document.getElementById('settingsBtn');
         const adminBtn = document.getElementById('adminBtn');
+        const adminModal = document.getElementById('adminModal');
+        const adminPassword = document.getElementById('adminPassword');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const adminCancelBtn = document.getElementById('adminCancelBtn');
         const menuItems = document.querySelectorAll('.menu-item');
         const contentSections = document.querySelectorAll('.content-section');
+        const themeOptions = document.querySelectorAll('.theme-option');
 
         let selectedInterface = null;
-        let isAdmin = true; // Admin durumu - gerçek uygulamada login sistemi ile kontrol edilmeli
+        let isAdmin = false; // Admin durumu - şifre ile kontrol edilecek
+        const ADMIN_PASSWORD = "admin123"; // Admin şifresi
 
         // Arayüz seçimi işlevi
         function selectInterface(interfaceType) {
@@ -1216,7 +1446,8 @@
         // Admin bölümünü aç
         function openAdmin() {
             if (!isAdmin) {
-                alert('Admin paneline erişim yetkiniz yok!');
+                // Admin giriş modalını göster
+                adminModal.style.display = 'flex';
                 return;
             }
             
@@ -1232,6 +1463,35 @@
             
             // Admin bölümünü göster
             document.getElementById('adminSection').classList.add('active');
+        }
+
+        // Admin girişi kontrolü
+        function checkAdminLogin() {
+            const password = adminPassword.value;
+            if (password === ADMIN_PASSWORD) {
+                isAdmin = true;
+                adminModal.style.display = 'none';
+                adminPassword.value = '';
+                openAdmin();
+            } else {
+                alert('Hatalı şifre! Lütfen tekrar deneyin.');
+                adminPassword.value = '';
+                adminPassword.focus();
+            }
+        }
+
+        // Tema değiştirme
+        function changeTheme(themeName) {
+            document.body.className = `theme-${themeName}`;
+            localStorage.setItem('ftblzone_theme', themeName);
+            
+            // Tüm tema seçeneklerinden aktif sınıfını kaldır
+            themeOptions.forEach(option => {
+                option.classList.remove('active');
+            });
+            
+            // Seçilen temayı aktif yap
+            document.querySelector(`.theme-option[data-theme="${themeName}"]`).classList.add('active');
         }
 
         // Event listener'ları ekle
@@ -1267,10 +1527,32 @@
             // Admin butonu
             adminBtn.addEventListener('click', openAdmin);
             
+            // Admin giriş butonları
+            adminLoginBtn.addEventListener('click', checkAdminLogin);
+            adminCancelBtn.addEventListener('click', function() {
+                adminModal.style.display = 'none';
+                adminPassword.value = '';
+            });
+            
+            // Admin şifre input'unda Enter tuşu
+            adminPassword.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkAdminLogin();
+                }
+            });
+            
             // Menü öğelerine tıklama
             menuItems.forEach(item => {
                 item.addEventListener('click', function() {
                     selectMenuItem(this);
+                });
+            });
+            
+            // Tema seçeneklerine tıklama
+            themeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const themeName = this.getAttribute('data-theme');
+                    changeTheme(themeName);
                 });
             });
             
@@ -1283,6 +1565,12 @@
             const savedInterface = localStorage.getItem('ftblzone_interface');
             if (savedInterface) {
                 selectInterface(savedInterface);
+            }
+            
+            // LocalStorage'dan kayıtlı temayı yükle
+            const savedTheme = localStorage.getItem('ftblzone_theme');
+            if (savedTheme) {
+                changeTheme(savedTheme);
             }
             
             // Butonlara animasyon efekti ekle
