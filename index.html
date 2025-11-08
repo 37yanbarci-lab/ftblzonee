@@ -456,6 +456,273 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        /* Form Stilleri */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Maç Listesi */
+        .match-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .match-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        .match-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .match-teams {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .match-time {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .match-score {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .match-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-live {
+            background: var(--danger);
+            color: white;
+        }
+
+        .status-upcoming {
+            background: var(--warning);
+            color: white;
+        }
+
+        .status-finished {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Link Listesi */
+        .link-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .link-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        .link-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .link-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .link-match {
+            font-weight: 600;
+        }
+
+        .link-quality {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .link-btn {
+            padding: 8px 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .link-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Haber Listesi */
+        .news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .news-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        .news-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .news-image {
+            width: 120px;
+            height: 80px;
+            border-radius: var(--radius);
+            object-fit: cover;
+        }
+
+        .news-content {
+            flex: 1;
+        }
+
+        .news-title {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .news-date {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* İstatistik Tablosu */
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .stats-table th,
+        .stats-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stats-table th {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+        }
+
+        .stats-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Profil Kartı */
+        .profile-card {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--secondary);
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
         /* Responsive Tasarım */
         @media (max-width: 768px) {
             .app-content {
@@ -484,6 +751,24 @@
             
             .theme-selector {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .profile-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .news-item {
+                flex-direction: column;
+            }
+            
+            .news-image {
+                width: 100%;
+                height: 150px;
             }
         }
     </style>
@@ -626,6 +911,36 @@
                             <i class="fas fa-futbol section-icon"></i> Canlı Maçlar
                         </h2>
                         <p>Devam eden maçlar ve yaklaşan karşılaşmalar</p>
+                        
+                        <div class="match-list">
+                            <div class="match-item">
+                                <div class="match-teams">
+                                    <span class="match-time">20:45</span>
+                                    <span>Galatasaray</span>
+                                    <span class="match-score">2 - 1</span>
+                                    <span>Fenerbahçe</span>
+                                </div>
+                                <span class="match-status status-live">CANLI</span>
+                            </div>
+                            <div class="match-item">
+                                <div class="match-teams">
+                                    <span class="match-time">21:00</span>
+                                    <span>Beşiktaş</span>
+                                    <span class="match-score">-</span>
+                                    <span>Trabzonspor</span>
+                                </div>
+                                <span class="match-status status-upcoming">YAKINDA</span>
+                            </div>
+                            <div class="match-item">
+                                <div class="match-teams">
+                                    <span class="match-time">18:30</span>
+                                    <span>Başakşehir</span>
+                                    <span class="match-score">0 - 0</span>
+                                    <span>Konyaspor</span>
+                                </div>
+                                <span class="match-status status-finished">BİTTİ</span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="content-section" id="linksSection">
@@ -633,6 +948,30 @@
                             <i class="fas fa-link section-icon"></i> Maç Linkleri
                         </h2>
                         <p>Güncel maç yayın linkleri</p>
+                        
+                        <div class="link-list">
+                            <div class="link-item">
+                                <div class="link-info">
+                                    <div class="link-match">Galatasaray vs Fenerbahçe</div>
+                                    <div class="link-quality">HD Kalite | Türkçe Yorumlu</div>
+                                </div>
+                                <button class="link-btn">İzle</button>
+                            </div>
+                            <div class="link-item">
+                                <div class="link-info">
+                                    <div class="link-match">Beşiktaş vs Trabzonspor</div>
+                                    <div class="link-quality">Full HD | Türkçe Yorumlu</div>
+                                </div>
+                                <button class="link-btn">İzle</button>
+                            </div>
+                            <div class="link-item">
+                                <div class="link-info">
+                                    <div class="link-match">Başakşehir vs Konyaspor</div>
+                                    <div class="link-quality">SD Kalite | Türkçe Yorumlu</div>
+                                </div>
+                                <button class="link-btn">İzle</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="content-section" id="settingsSection">
@@ -700,6 +1039,30 @@
                             <i class="fas fa-trophy section-icon"></i> Tahmin Oyunu
                         </h2>
                         <p>Maç sonuçlarını tahmin edin ve puan kazanın!</p>
+                        
+                        <div class="cards-container">
+                            <div class="card">
+                                <div class="card-icon">
+                                    <i class="fas fa-edit"></i>
+                                </div>
+                                <h3 class="card-title">Tahmin Yap</h3>
+                                <p class="card-desc">Yaklaşan maçlar için tahminlerinizi yapın</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-icon">
+                                    <i class="fas fa-list-ol"></i>
+                                </div>
+                                <h3 class="card-title">Sıralama</h3>
+                                <p class="card-desc">Tahmin sıralamanızı görüntüleyin</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-icon">
+                                    <i class="fas fa-award"></i>
+                                </div>
+                                <h3 class="card-title">Ödüller</h3>
+                                <p class="card-desc">Kazanabileceğiniz ödülleri görün</p>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="content-section" id="highlightsSection">
@@ -707,6 +1070,30 @@
                             <i class="fas fa-video section-icon"></i> Maç Özetleri
                         </h2>
                         <p>Kaçırdığınız maçların özetlerini izleyin</p>
+                        
+                        <div class="cards-container">
+                            <div class="card">
+                                <div class="card-icon">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
+                                <h3 class="card-title">Gol Özetleri</h3>
+                                <p class="card-desc">Maçlardan gol özetlerini izleyin</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-icon">
+                                    <i class="fas fa-film"></i>
+                                </div>
+                                <h3 class="card-title">Tam Özet</h3>
+                                <p class="card-desc">Maçların tam özetlerini izleyin</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <h3 class="card-title">Önemli Anlar</h3>
+                                <p class="card-desc">Maçlardan önemli anları izleyin</p>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="content-section" id="statsSection">
@@ -714,6 +1101,53 @@
                             <i class="fas fa-chart-bar section-icon"></i> İstatistikler
                         </h2>
                         <p>Detaylı takım ve oyuncu istatistikleri</p>
+                        
+                        <table class="stats-table">
+                            <thead>
+                                <tr>
+                                    <th>Takım</th>
+                                    <th>O</th>
+                                    <th>G</th>
+                                    <th>B</th>
+                                    <th>M</th>
+                                    <th>A</th>
+                                    <th>Y</th>
+                                    <th>P</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Galatasaray</td>
+                                    <td>34</td>
+                                    <td>28</td>
+                                    <td>4</td>
+                                    <td>2</td>
+                                    <td>83</td>
+                                    <td>27</td>
+                                    <td>88</td>
+                                </tr>
+                                <tr>
+                                    <td>Fenerbahçe</td>
+                                    <td>34</td>
+                                    <td>25</td>
+                                    <td>5</td>
+                                    <td>4</td>
+                                    <td>75</td>
+                                    <td>31</td>
+                                    <td>80</td>
+                                </tr>
+                                <tr>
+                                    <td>Beşiktaş</td>
+                                    <td>34</td>
+                                    <td>22</td>
+                                    <td>8</td>
+                                    <td>4</td>
+                                    <td>70</td>
+                                    <td>33</td>
+                                    <td>74</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
 
                     <div class="content-section" id="newsSection">
@@ -721,6 +1155,33 @@
                             <i class="fas fa-newspaper section-icon"></i> Haberler
                         </h2>
                         <p>Güncel futbol haberleri</p>
+                        
+                        <div class="news-list">
+                            <div class="news-item">
+                                <img src="https://via.placeholder.com/120x80" alt="Haber" class="news-image">
+                                <div class="news-content">
+                                    <h3 class="news-title">Galatasaray Şampiyonlar Ligi'nde!</h3>
+                                    <p class="news-date">2 saat önce</p>
+                                    <p>Sarı-kırmızılı takım, ön eleme turunu geçerek gruplara kaldı.</p>
+                                </div>
+                            </div>
+                            <div class="news-item">
+                                <img src="https://via.placeholder.com/120x80" alt="Haber" class="news-image">
+                                <div class="news-content">
+                                    <h3 class="news-title">Fenerbahçe'den transfer bombası!</h3>
+                                    <p class="news-date">5 saat önce</p>
+                                    <p>Sarı-lacivertliler, yıldız oyuncu için anlaşma sağladı.</p>
+                                </div>
+                            </div>
+                            <div class="news-item">
+                                <img src="https://via.placeholder.com/120x80" alt="Haber" class="news-image">
+                                <div class="news-content">
+                                    <h3 class="news-title">Beşiktaş yeni teknik direktörünü buldu</h3>
+                                    <p class="news-date">1 gün önce</p>
+                                    <p>Siyah-beyazlı kulüp, yeni sezon için anlaşma imzaladı.</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="content-section" id="profileSection">
@@ -728,6 +1189,29 @@
                             <i class="fas fa-user section-icon"></i> Profilim
                         </h2>
                         <p>Hesap bilgileriniz ve istatistikleriniz</p>
+                        
+                        <div class="profile-card">
+                            <img src="https://via.placeholder.com/100" alt="Profil" class="profile-avatar">
+                            <div class="profile-info">
+                                <h3 class="profile-name">Futbol Sever</h3>
+                                <p>ftblzone üyesi since 2023</p>
+                                
+                                <div class="profile-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-value">42</div>
+                                        <div class="stat-label">Takip Edilen Maç</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value">18</div>
+                                        <div class="stat-label">Doğru Tahmin</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value">1560</div>
+                                        <div class="stat-label">Puan</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </main>
             </div>
@@ -785,6 +1269,28 @@
                         </div>
                         <h3 class="card-title">Maç Özetleri</h3>
                         <p class="card-desc">Kaçırdığınız maçların özetlerini izleyin</p>
+                    </div>
+                </div>
+                
+                <div class="match-list" style="margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: white;">Bugünün Maçları</h3>
+                    <div class="match-item">
+                        <div class="match-teams">
+                            <span class="match-time">20:45</span>
+                            <span>Galatasaray</span>
+                            <span class="match-score">2 - 1</span>
+                            <span>Fenerbahçe</span>
+                        </div>
+                        <span class="match-status status-live">CANLI</span>
+                    </div>
+                    <div class="match-item">
+                        <div class="match-teams">
+                            <span class="match-time">21:00</span>
+                            <span>Beşiktaş</span>
+                            <span class="match-score">-</span>
+                            <span>Trabzonspor</span>
+                        </div>
+                        <span class="match-status status-upcoming">YAKINDA</span>
                     </div>
                 </div>
             </div>
