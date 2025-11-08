@@ -485,6 +485,28 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
         /* Maç Listesi */
         .match-list {
             display: flex;
@@ -723,6 +745,131 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
+        /* Admin Şifre Ekranı */
+        .admin-login {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+        }
+
+        .admin-login-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: var(--radius);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .admin-login h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .admin-login p {
+            margin-bottom: 25px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .admin-login .form-group {
+            margin-bottom: 25px;
+        }
+
+        .admin-login .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .admin-error {
+            color: var(--danger);
+            margin-top: 10px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        /* Admin Kontrol Paneli */
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .admin-tab {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .admin-tab.active {
+            background: rgba(26, 115, 232, 0.2);
+        }
+
+        .admin-tab-content {
+            display: none;
+        }
+
+        .admin-tab-content.active {
+            display: block;
+        }
+
+        .admin-item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .admin-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-item-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .admin-item-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .btn-edit {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+        }
+
         /* Responsive Tasarım */
         @media (max-width: 768px) {
             .app-content {
@@ -770,6 +917,10 @@
                 width: 100%;
                 height: 150px;
             }
+            
+            .admin-tabs {
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
@@ -811,6 +962,26 @@
             </button>
             
             <p class="note">Daha sonra ayarlardan arayüzünüzü değiştirebilirsiniz</p>
+        </div>
+    </div>
+
+    <!-- Admin Şifre Ekranı -->
+    <div class="admin-login" id="adminLogin">
+        <div class="admin-login-content">
+            <h2><i class="fas fa-user-shield"></i> Admin Girişi</h2>
+            <p>Admin paneline erişmek için şifrenizi girin</p>
+            
+            <div class="form-group">
+                <input type="password" class="form-input" id="adminPassword" placeholder="Admin şifresi">
+                <div class="admin-error" id="adminError">Hatalı şifre! Lütfen tekrar deneyin.</div>
+            </div>
+            
+            <button class="btn btn-primary" id="adminLoginBtn">
+                <i class="fas fa-sign-in-alt"></i> Giriş Yap
+            </button>
+            <button class="btn btn-outline" id="adminCancelBtn" style="margin-top: 10px;">
+                <i class="fas fa-times"></i> İptal
+            </button>
         </div>
     </div>
 
@@ -912,34 +1083,8 @@
                         </h2>
                         <p>Devam eden maçlar ve yaklaşan karşılaşmalar</p>
                         
-                        <div class="match-list">
-                            <div class="match-item">
-                                <div class="match-teams">
-                                    <span class="match-time">20:45</span>
-                                    <span>Galatasaray</span>
-                                    <span class="match-score">2 - 1</span>
-                                    <span>Fenerbahçe</span>
-                                </div>
-                                <span class="match-status status-live">CANLI</span>
-                            </div>
-                            <div class="match-item">
-                                <div class="match-teams">
-                                    <span class="match-time">21:00</span>
-                                    <span>Beşiktaş</span>
-                                    <span class="match-score">-</span>
-                                    <span>Trabzonspor</span>
-                                </div>
-                                <span class="match-status status-upcoming">YAKINDA</span>
-                            </div>
-                            <div class="match-item">
-                                <div class="match-teams">
-                                    <span class="match-time">18:30</span>
-                                    <span>Başakşehir</span>
-                                    <span class="match-score">0 - 0</span>
-                                    <span>Konyaspor</span>
-                                </div>
-                                <span class="match-status status-finished">BİTTİ</span>
-                            </div>
+                        <div class="match-list" id="matchesList">
+                            <!-- Maçlar buraya dinamik olarak eklenecek -->
                         </div>
                     </div>
 
@@ -949,28 +1094,8 @@
                         </h2>
                         <p>Güncel maç yayın linkleri</p>
                         
-                        <div class="link-list">
-                            <div class="link-item">
-                                <div class="link-info">
-                                    <div class="link-match">Galatasaray vs Fenerbahçe</div>
-                                    <div class="link-quality">HD Kalite | Türkçe Yorumlu</div>
-                                </div>
-                                <button class="link-btn">İzle</button>
-                            </div>
-                            <div class="link-item">
-                                <div class="link-info">
-                                    <div class="link-match">Beşiktaş vs Trabzonspor</div>
-                                    <div class="link-quality">Full HD | Türkçe Yorumlu</div>
-                                </div>
-                                <button class="link-btn">İzle</button>
-                            </div>
-                            <div class="link-item">
-                                <div class="link-info">
-                                    <div class="link-match">Başakşehir vs Konyaspor</div>
-                                    <div class="link-quality">SD Kalite | Türkçe Yorumlu</div>
-                                </div>
-                                <button class="link-btn">İzle</button>
-                            </div>
+                        <div class="link-list" id="linksList">
+                            <!-- Linkler buraya dinamik olarak eklenecek -->
                         </div>
                     </div>
 
@@ -1021,15 +1146,139 @@
                         </h2>
                         <p>Sistem yönetimi ve istatistikler</p>
                         
-                        <div class="admin-panel">
-                            <h3 style="margin-bottom: 15px; color: white;">Admin İşlemleri</h3>
+                        <div class="admin-tabs">
+                            <div class="admin-tab active" data-tab="matches">Maçlar</div>
+                            <div class="admin-tab" data-tab="links">Linkler</div>
+                            <div class="admin-tab" data-tab="news">Haberler</div>
+                            <div class="admin-tab" data-tab="stats">İstatistikler</div>
+                        </div>
+                        
+                        <div class="admin-tab-content active" id="adminMatchesTab">
+                            <h3 style="margin-bottom: 15px; color: white;">Maç Yönetimi</h3>
                             <div class="form-group">
-                                <label class="form-label">Yeni Maç Ekle</label>
-                                <input type="text" class="form-input" placeholder="Maç adını girin">
+                                <label class="form-label">Takım 1</label>
+                                <input type="text" class="form-input" id="adminMatchTeam1" placeholder="Takım 1 adı">
                             </div>
-                            <button class="btn btn-primary">
+                            <div class="form-group">
+                                <label class="form-label">Takım 2</label>
+                                <input type="text" class="form-input" id="adminMatchTeam2" placeholder="Takım 2 adı">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Maç Tarihi ve Saati</label>
+                                <input type="datetime-local" class="form-input" id="adminMatchTime">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Durum</label>
+                                <select class="form-select" id="adminMatchStatus">
+                                    <option value="upcoming">Yaklaşan</option>
+                                    <option value="live">Canlı</option>
+                                    <option value="finished">Bitti</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Skor (opsiyonel)</label>
+                                <input type="text" class="form-input" id="adminMatchScore" placeholder="örn: 2-1">
+                            </div>
+                            <button class="btn btn-primary" id="adminAddMatch">
                                 <i class="fas fa-plus"></i> Maç Ekle
                             </button>
+                            
+                            <div class="admin-item-list" id="adminMatchesList">
+                                <!-- Maçlar listesi buraya eklenecek -->
+                            </div>
+                        </div>
+                        
+                        <div class="admin-tab-content" id="adminLinksTab">
+                            <h3 style="margin-bottom: 15px; color: white;">Link Yönetimi</h3>
+                            <div class="form-group">
+                                <label class="form-label">Maç</label>
+                                <input type="text" class="form-input" id="adminLinkMatch" placeholder="Maç adı">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Link URL</label>
+                                <input type="text" class="form-input" id="adminLinkUrl" placeholder="https://...">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Kalite</label>
+                                <select class="form-select" id="adminLinkQuality">
+                                    <option value="HD Kalite | Türkçe Yorumlu">HD Kalite | Türkçe Yorumlu</option>
+                                    <option value="Full HD | Türkçe Yorumlu">Full HD | Türkçe Yorumlu</option>
+                                    <option value="SD Kalite | Türkçe Yorumlu">SD Kalite | Türkçe Yorumlu</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" id="adminAddLink">
+                                <i class="fas fa-plus"></i> Link Ekle
+                            </button>
+                            
+                            <div class="admin-item-list" id="adminLinksList">
+                                <!-- Linkler listesi buraya eklenecek -->
+                            </div>
+                        </div>
+                        
+                        <div class="admin-tab-content" id="adminNewsTab">
+                            <h3 style="margin-bottom: 15px; color: white;">Haber Yönetimi</h3>
+                            <div class="form-group">
+                                <label class="form-label">Haber Başlığı</label>
+                                <input type="text" class="form-input" id="adminNewsTitle" placeholder="Haber başlığı">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Haber İçeriği</label>
+                                <textarea class="form-input form-textarea" id="adminNewsContent" placeholder="Haber içeriği"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Görsel URL (opsiyonel)</label>
+                                <input type="text" class="form-input" id="adminNewsImage" placeholder="https://...">
+                            </div>
+                            <button class="btn btn-primary" id="adminAddNews">
+                                <i class="fas fa-plus"></i> Haber Ekle
+                            </button>
+                            
+                            <div class="admin-item-list" id="adminNewsList">
+                                <!-- Haberler listesi buraya eklenecek -->
+                            </div>
+                        </div>
+                        
+                        <div class="admin-tab-content" id="adminStatsTab">
+                            <h3 style="margin-bottom: 15px; color: white;">İstatistik Yönetimi</h3>
+                            <div class="form-group">
+                                <label class="form-label">Takım</label>
+                                <input type="text" class="form-input" id="adminStatsTeam" placeholder="Takım adı">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Oynanan Maç</label>
+                                <input type="number" class="form-input" id="adminStatsPlayed" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Galibiyet</label>
+                                <input type="number" class="form-input" id="adminStatsWins" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Beraberlik</label>
+                                <input type="number" class="form-input" id="adminStatsDraws" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Mağlubiyet</label>
+                                <input type="number" class="form-input" id="adminStatsLosses" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Attığı Gol</label>
+                                <input type="number" class="form-input" id="adminStatsGoalsFor" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Yediği Gol</label>
+                                <input type="number" class="form-input" id="adminStatsGoalsAgainst" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Puan</label>
+                                <input type="number" class="form-input" id="adminStatsPoints" placeholder="0">
+                            </div>
+                            <button class="btn btn-primary" id="adminAddStats">
+                                <i class="fas fa-plus"></i> İstatistik Ekle
+                            </button>
+                            
+                            <div class="admin-item-list" id="adminStatsList">
+                                <!-- İstatistikler listesi buraya eklenecek -->
+                            </div>
                         </div>
                     </div>
 
@@ -1039,30 +1288,6 @@
                             <i class="fas fa-trophy section-icon"></i> Tahmin Oyunu
                         </h2>
                         <p>Maç sonuçlarını tahmin edin ve puan kazanın!</p>
-                        
-                        <div class="cards-container">
-                            <div class="card">
-                                <div class="card-icon">
-                                    <i class="fas fa-edit"></i>
-                                </div>
-                                <h3 class="card-title">Tahmin Yap</h3>
-                                <p class="card-desc">Yaklaşan maçlar için tahminlerinizi yapın</p>
-                            </div>
-                            <div class="card">
-                                <div class="card-icon">
-                                    <i class="fas fa-list-ol"></i>
-                                </div>
-                                <h3 class="card-title">Sıralama</h3>
-                                <p class="card-desc">Tahmin sıralamanızı görüntüleyin</p>
-                            </div>
-                            <div class="card">
-                                <div class="card-icon">
-                                    <i class="fas fa-award"></i>
-                                </div>
-                                <h3 class="card-title">Ödüller</h3>
-                                <p class="card-desc">Kazanabileceğiniz ödülleri görün</p>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="content-section" id="highlightsSection">
@@ -1070,30 +1295,6 @@
                             <i class="fas fa-video section-icon"></i> Maç Özetleri
                         </h2>
                         <p>Kaçırdığınız maçların özetlerini izleyin</p>
-                        
-                        <div class="cards-container">
-                            <div class="card">
-                                <div class="card-icon">
-                                    <i class="fas fa-play-circle"></i>
-                                </div>
-                                <h3 class="card-title">Gol Özetleri</h3>
-                                <p class="card-desc">Maçlardan gol özetlerini izleyin</p>
-                            </div>
-                            <div class="card">
-                                <div class="card-icon">
-                                    <i class="fas fa-film"></i>
-                                </div>
-                                <h3 class="card-title">Tam Özet</h3>
-                                <p class="card-desc">Maçların tam özetlerini izleyin</p>
-                            </div>
-                            <div class="card">
-                                <div class="card-icon">
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <h3 class="card-title">Önemli Anlar</h3>
-                                <p class="card-desc">Maçlardan önemli anları izleyin</p>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="content-section" id="statsSection">
@@ -1102,7 +1303,7 @@
                         </h2>
                         <p>Detaylı takım ve oyuncu istatistikleri</p>
                         
-                        <table class="stats-table">
+                        <table class="stats-table" id="statsTable">
                             <thead>
                                 <tr>
                                     <th>Takım</th>
@@ -1115,37 +1316,8 @@
                                     <th>P</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Galatasaray</td>
-                                    <td>34</td>
-                                    <td>28</td>
-                                    <td>4</td>
-                                    <td>2</td>
-                                    <td>83</td>
-                                    <td>27</td>
-                                    <td>88</td>
-                                </tr>
-                                <tr>
-                                    <td>Fenerbahçe</td>
-                                    <td>34</td>
-                                    <td>25</td>
-                                    <td>5</td>
-                                    <td>4</td>
-                                    <td>75</td>
-                                    <td>31</td>
-                                    <td>80</td>
-                                </tr>
-                                <tr>
-                                    <td>Beşiktaş</td>
-                                    <td>34</td>
-                                    <td>22</td>
-                                    <td>8</td>
-                                    <td>4</td>
-                                    <td>70</td>
-                                    <td>33</td>
-                                    <td>74</td>
-                                </tr>
+                            <tbody id="statsTableBody">
+                                <!-- İstatistikler buraya dinamik olarak eklenecek -->
                             </tbody>
                         </table>
                     </div>
@@ -1156,31 +1328,8 @@
                         </h2>
                         <p>Güncel futbol haberleri</p>
                         
-                        <div class="news-list">
-                            <div class="news-item">
-                                <img src="https://via.placeholder.com/120x80" alt="Haber" class="news-image">
-                                <div class="news-content">
-                                    <h3 class="news-title">Galatasaray Şampiyonlar Ligi'nde!</h3>
-                                    <p class="news-date">2 saat önce</p>
-                                    <p>Sarı-kırmızılı takım, ön eleme turunu geçerek gruplara kaldı.</p>
-                                </div>
-                            </div>
-                            <div class="news-item">
-                                <img src="https://via.placeholder.com/120x80" alt="Haber" class="news-image">
-                                <div class="news-content">
-                                    <h3 class="news-title">Fenerbahçe'den transfer bombası!</h3>
-                                    <p class="news-date">5 saat önce</p>
-                                    <p>Sarı-lacivertliler, yıldız oyuncu için anlaşma sağladı.</p>
-                                </div>
-                            </div>
-                            <div class="news-item">
-                                <img src="https://via.placeholder.com/120x80" alt="Haber" class="news-image">
-                                <div class="news-content">
-                                    <h3 class="news-title">Beşiktaş yeni teknik direktörünü buldu</h3>
-                                    <p class="news-date">1 gün önce</p>
-                                    <p>Siyah-beyazlı kulüp, yeni sezon için anlaşma imzaladı.</p>
-                                </div>
-                            </div>
+                        <div class="news-list" id="newsList">
+                            <!-- Haberler buraya dinamik olarak eklenecek -->
                         </div>
                     </div>
 
@@ -1189,29 +1338,6 @@
                             <i class="fas fa-user section-icon"></i> Profilim
                         </h2>
                         <p>Hesap bilgileriniz ve istatistikleriniz</p>
-                        
-                        <div class="profile-card">
-                            <img src="https://via.placeholder.com/100" alt="Profil" class="profile-avatar">
-                            <div class="profile-info">
-                                <h3 class="profile-name">Futbol Sever</h3>
-                                <p>ftblzone üyesi since 2023</p>
-                                
-                                <div class="profile-stats">
-                                    <div class="stat-item">
-                                        <div class="stat-value">42</div>
-                                        <div class="stat-label">Takip Edilen Maç</div>
-                                    </div>
-                                    <div class="stat-item">
-                                        <div class="stat-value">18</div>
-                                        <div class="stat-label">Doğru Tahmin</div>
-                                    </div>
-                                    <div class="stat-item">
-                                        <div class="stat-value">1560</div>
-                                        <div class="stat-label">Puan</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </main>
             </div>
@@ -1231,6 +1357,9 @@
                 <div class="header-controls">
                     <button class="btn btn-primary" id="changeInterfaceSimple">
                         <i class="fas fa-exchange-alt"></i> Arayüzü Değiştir
+                    </button>
+                    <button class="btn btn-secondary" id="adminBtnSimple">
+                        <i class="fas fa-user-shield"></i> Admin
                     </button>
                 </div>
             </header>
@@ -1274,23 +1403,22 @@
                 
                 <div class="match-list" style="margin-top: 30px;">
                     <h3 style="margin-bottom: 15px; color: white;">Bugünün Maçları</h3>
-                    <div class="match-item">
-                        <div class="match-teams">
-                            <span class="match-time">20:45</span>
-                            <span>Galatasaray</span>
-                            <span class="match-score">2 - 1</span>
-                            <span>Fenerbahçe</span>
-                        </div>
-                        <span class="match-status status-live">CANLI</span>
+                    <div id="simpleMatchesList">
+                        <!-- Maçlar buraya dinamik olarak eklenecek -->
                     </div>
-                    <div class="match-item">
-                        <div class="match-teams">
-                            <span class="match-time">21:00</span>
-                            <span>Beşiktaş</span>
-                            <span class="match-score">-</span>
-                            <span>Trabzonspor</span>
-                        </div>
-                        <span class="match-status status-upcoming">YAKINDA</span>
+                </div>
+                
+                <div class="link-list" style="margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: white;">Maç Linkleri</h3>
+                    <div id="simpleLinksList">
+                        <!-- Linkler buraya dinamik olarak eklenecek -->
+                    </div>
+                </div>
+                
+                <div class="news-list" style="margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: white;">Son Haberler</h3>
+                    <div id="simpleNewsList">
+                        <!-- Haberler buraya dinamik olarak eklenecek -->
                     </div>
                 </div>
             </div>
@@ -1309,11 +1437,29 @@
         const changeInterfaceSimple = document.getElementById('changeInterfaceSimple');
         const settingsBtn = document.getElementById('settingsBtn');
         const adminBtn = document.getElementById('adminBtn');
+        const adminBtnSimple = document.getElementById('adminBtnSimple');
         const menuItems = document.querySelectorAll('.menu-item');
         const contentSections = document.querySelectorAll('.content-section');
         const themeOptions = document.querySelectorAll('.theme-option');
+        const adminLogin = document.getElementById('adminLogin');
+        const adminPassword = document.getElementById('adminPassword');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const adminCancelBtn = document.getElementById('adminCancelBtn');
+        const adminError = document.getElementById('adminError');
+        const adminTabs = document.querySelectorAll('.admin-tab');
+        const adminTabContents = document.querySelectorAll('.admin-tab-content');
+
+        // Admin şifresi
+        const ADMIN_PASSWORD = "admin123";
+
+        // Veri depolama
+        let matches = JSON.parse(localStorage.getItem('ftblzone_matches')) || [];
+        let links = JSON.parse(localStorage.getItem('ftblzone_links')) || [];
+        let news = JSON.parse(localStorage.getItem('ftblzone_news')) || [];
+        let stats = JSON.parse(localStorage.getItem('ftblzone_stats')) || [];
 
         let selectedInterface = null;
+        let isAdminLoggedIn = false;
 
         // Arayüz seçimi işlevi
         function selectInterface(interfaceType) {
@@ -1348,10 +1494,14 @@
                 simpleInterface.style.display = 'block';
                 menuInterface.style.display = 'none';
                 localStorage.setItem('ftblzone_interface', 'simple');
+                // Basit arayüz için içerikleri yükle
+                loadSimpleContent();
             } else if (selectedInterface === 'menu') {
                 simpleInterface.style.display = 'none';
                 menuInterface.style.display = 'block';
                 localStorage.setItem('ftblzone_interface', 'menu');
+                // Menülü arayüz için içerikleri yükle
+                loadMenuContent();
             }
         }
 
@@ -1404,6 +1554,15 @@
         // Admin bölümünü aç
         function openAdmin() {
             console.log('Admin açılıyor');
+            
+            if (!isAdminLoggedIn) {
+                // Admin giriş ekranını göster
+                adminLogin.style.display = 'flex';
+                adminPassword.value = '';
+                adminError.style.display = 'none';
+                return;
+            }
+            
             // Tüm menü öğelerinden aktif sınıfını kaldır
             menuItems.forEach(item => {
                 item.classList.remove('active');
@@ -1416,6 +1575,39 @@
             
             // Admin bölümünü göster
             document.getElementById('adminSection').classList.add('active');
+            
+            // Admin içeriklerini yükle
+            loadAdminContent();
+        }
+
+        // Admin giriş işlemi
+        function adminLoginProcess() {
+            const password = adminPassword.value;
+            
+            if (password === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                adminLogin.style.display = 'none';
+                openAdmin();
+            } else {
+                adminError.style.display = 'block';
+            }
+        }
+
+        // Admin sekme değiştirme
+        function changeAdminTab(tabName) {
+            // Tüm sekmelerden aktif sınıfını kaldır
+            adminTabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Tüm sekme içeriklerini gizle
+            adminTabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Seçilen sekme ve içeriği aktif yap
+            document.querySelector(`.admin-tab[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(`admin${tabName.charAt(0).toUpperCase() + tabName.slice(1)}Tab`).classList.add('active');
         }
 
         // Tema değiştirme
@@ -1431,6 +1623,478 @@
             
             // Seçilen temayı aktif yap
             document.querySelector(`.theme-option[data-theme="${themeName}"]`).classList.add('active');
+        }
+
+        // Maç ekleme
+        function addMatch() {
+            const team1 = document.getElementById('adminMatchTeam1').value;
+            const team2 = document.getElementById('adminMatchTeam2').value;
+            const time = document.getElementById('adminMatchTime').value;
+            const status = document.getElementById('adminMatchStatus').value;
+            const score = document.getElementById('adminMatchScore').value;
+            
+            if (!team1 || !team2 || !time) {
+                alert('Lütfen tüm zorunlu alanları doldurun!');
+                return;
+            }
+            
+            const newMatch = {
+                id: Date.now(),
+                team1,
+                team2,
+                time,
+                status,
+                score: score || '-'
+            };
+            
+            matches.push(newMatch);
+            localStorage.setItem('ftblzone_matches', JSON.stringify(matches));
+            
+            // Formu temizle
+            document.getElementById('adminMatchTeam1').value = '';
+            document.getElementById('adminMatchTeam2').value = '';
+            document.getElementById('adminMatchTime').value = '';
+            document.getElementById('adminMatchStatus').value = 'upcoming';
+            document.getElementById('adminMatchScore').value = '';
+            
+            // İçerikleri yenile
+            loadAdminContent();
+            loadMenuContent();
+            loadSimpleContent();
+        }
+
+        // Link ekleme
+        function addLink() {
+            const match = document.getElementById('adminLinkMatch').value;
+            const url = document.getElementById('adminLinkUrl').value;
+            const quality = document.getElementById('adminLinkQuality').value;
+            
+            if (!match || !url) {
+                alert('Lütfen tüm zorunlu alanları doldurun!');
+                return;
+            }
+            
+            const newLink = {
+                id: Date.now(),
+                match,
+                url,
+                quality
+            };
+            
+            links.push(newLink);
+            localStorage.setItem('ftblzone_links', JSON.stringify(links));
+            
+            // Formu temizle
+            document.getElementById('adminLinkMatch').value = '';
+            document.getElementById('adminLinkUrl').value = '';
+            document.getElementById('adminLinkQuality').value = 'HD Kalite | Türkçe Yorumlu';
+            
+            // İçerikleri yenile
+            loadAdminContent();
+            loadMenuContent();
+            loadSimpleContent();
+        }
+
+        // Haber ekleme
+        function addNews() {
+            const title = document.getElementById('adminNewsTitle').value;
+            const content = document.getElementById('adminNewsContent').value;
+            const image = document.getElementById('adminNewsImage').value;
+            
+            if (!title || !content) {
+                alert('Lütfen tüm zorunlu alanları doldurun!');
+                return;
+            }
+            
+            const newNews = {
+                id: Date.now(),
+                title,
+                content,
+                image: image || 'https://via.placeholder.com/120x80',
+                date: new Date().toLocaleDateString('tr-TR')
+            };
+            
+            news.push(newNews);
+            localStorage.setItem('ftblzone_news', JSON.stringify(news));
+            
+            // Formu temizle
+            document.getElementById('adminNewsTitle').value = '';
+            document.getElementById('adminNewsContent').value = '';
+            document.getElementById('adminNewsImage').value = '';
+            
+            // İçerikleri yenile
+            loadAdminContent();
+            loadMenuContent();
+            loadSimpleContent();
+        }
+
+        // İstatistik ekleme
+        function addStats() {
+            const team = document.getElementById('adminStatsTeam').value;
+            const played = parseInt(document.getElementById('adminStatsPlayed').value) || 0;
+            const wins = parseInt(document.getElementById('adminStatsWins').value) || 0;
+            const draws = parseInt(document.getElementById('adminStatsDraws').value) || 0;
+            const losses = parseInt(document.getElementById('adminStatsLosses').value) || 0;
+            const goalsFor = parseInt(document.getElementById('adminStatsGoalsFor').value) || 0;
+            const goalsAgainst = parseInt(document.getElementById('adminStatsGoalsAgainst').value) || 0;
+            const points = parseInt(document.getElementById('adminStatsPoints').value) || 0;
+            
+            if (!team) {
+                alert('Lütfen takım adını girin!');
+                return;
+            }
+            
+            const newStats = {
+                id: Date.now(),
+                team,
+                played,
+                wins,
+                draws,
+                losses,
+                goalsFor,
+                goalsAgainst,
+                points
+            };
+            
+            // Aynı takımın istatistiklerini güncelle
+            const existingIndex = stats.findIndex(s => s.team === team);
+            if (existingIndex !== -1) {
+                stats[existingIndex] = newStats;
+            } else {
+                stats.push(newStats);
+            }
+            
+            localStorage.setItem('ftblzone_stats', JSON.stringify(stats));
+            
+            // Formu temizle
+            document.getElementById('adminStatsTeam').value = '';
+            document.getElementById('adminStatsPlayed').value = '';
+            document.getElementById('adminStatsWins').value = '';
+            document.getElementById('adminStatsDraws').value = '';
+            document.getElementById('adminStatsLosses').value = '';
+            document.getElementById('adminStatsGoalsFor').value = '';
+            document.getElementById('adminStatsGoalsAgainst').value = '';
+            document.getElementById('adminStatsPoints').value = '';
+            
+            // İçerikleri yenile
+            loadAdminContent();
+            loadMenuContent();
+            loadSimpleContent();
+        }
+
+        // Öğe silme
+        function deleteItem(type, id) {
+            if (confirm('Bu öğeyi silmek istediğinizden emin misiniz?')) {
+                if (type === 'match') {
+                    matches = matches.filter(match => match.id !== id);
+                    localStorage.setItem('ftblzone_matches', JSON.stringify(matches));
+                } else if (type === 'link') {
+                    links = links.filter(link => link.id !== id);
+                    localStorage.setItem('ftblzone_links', JSON.stringify(links));
+                } else if (type === 'news') {
+                    news = news.filter(newsItem => newsItem.id !== id);
+                    localStorage.setItem('ftblzone_news', JSON.stringify(news));
+                } else if (type === 'stats') {
+                    stats = stats.filter(stat => stat.id !== id);
+                    localStorage.setItem('ftblzone_stats', JSON.stringify(stats));
+                }
+                
+                // İçerikleri yenile
+                loadAdminContent();
+                loadMenuContent();
+                loadSimpleContent();
+            }
+        }
+
+        // Menülü arayüz içeriklerini yükle
+        function loadMenuContent() {
+            // Maçları yükle
+            const matchesList = document.getElementById('matchesList');
+            matchesList.innerHTML = '';
+            
+            matches.forEach(match => {
+                const matchElement = document.createElement('div');
+                matchElement.className = 'match-item';
+                
+                let statusClass = '';
+                let statusText = '';
+                
+                if (match.status === 'live') {
+                    statusClass = 'status-live';
+                    statusText = 'CANLI';
+                } else if (match.status === 'upcoming') {
+                    statusClass = 'status-upcoming';
+                    statusText = 'YAKINDA';
+                } else {
+                    statusClass = 'status-finished';
+                    statusText = 'BİTTİ';
+                }
+                
+                const matchTime = new Date(match.time).toLocaleTimeString('tr-TR', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                matchElement.innerHTML = `
+                    <div class="match-teams">
+                        <span class="match-time">${matchTime}</span>
+                        <span>${match.team1}</span>
+                        <span class="match-score">${match.score}</span>
+                        <span>${match.team2}</span>
+                    </div>
+                    <span class="match-status ${statusClass}">${statusText}</span>
+                `;
+                
+                matchesList.appendChild(matchElement);
+            });
+            
+            // Linkleri yükle
+            const linksList = document.getElementById('linksList');
+            linksList.innerHTML = '';
+            
+            links.forEach(link => {
+                const linkElement = document.createElement('div');
+                linkElement.className = 'link-item';
+                
+                linkElement.innerHTML = `
+                    <div class="link-info">
+                        <div class="link-match">${link.match}</div>
+                        <div class="link-quality">${link.quality}</div>
+                    </div>
+                    <button class="link-btn" onclick="window.open('${link.url}', '_blank')">İzle</button>
+                `;
+                
+                linksList.appendChild(linkElement);
+            });
+            
+            // Haberleri yükle
+            const newsList = document.getElementById('newsList');
+            newsList.innerHTML = '';
+            
+            news.forEach(newsItem => {
+                const newsElement = document.createElement('div');
+                newsElement.className = 'news-item';
+                
+                newsElement.innerHTML = `
+                    <img src="${newsItem.image}" alt="Haber" class="news-image">
+                    <div class="news-content">
+                        <h3 class="news-title">${newsItem.title}</h3>
+                        <p class="news-date">${newsItem.date}</p>
+                        <p>${newsItem.content}</p>
+                    </div>
+                `;
+                
+                newsList.appendChild(newsElement);
+            });
+            
+            // İstatistikleri yükle
+            const statsTableBody = document.getElementById('statsTableBody');
+            statsTableBody.innerHTML = '';
+            
+            // Puan sırasına göre sırala
+            const sortedStats = [...stats].sort((a, b) => b.points - a.points);
+            
+            sortedStats.forEach(stat => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${stat.team}</td>
+                    <td>${stat.played}</td>
+                    <td>${stat.wins}</td>
+                    <td>${stat.draws}</td>
+                    <td>${stat.losses}</td>
+                    <td>${stat.goalsFor}</td>
+                    <td>${stat.goalsAgainst}</td>
+                    <td>${stat.points}</td>
+                `;
+                
+                statsTableBody.appendChild(row);
+            });
+        }
+
+        // Basit arayüz içeriklerini yükle
+        function loadSimpleContent() {
+            // Maçları yükle
+            const simpleMatchesList = document.getElementById('simpleMatchesList');
+            simpleMatchesList.innerHTML = '';
+            
+            matches.forEach(match => {
+                const matchElement = document.createElement('div');
+                matchElement.className = 'match-item';
+                
+                let statusClass = '';
+                let statusText = '';
+                
+                if (match.status === 'live') {
+                    statusClass = 'status-live';
+                    statusText = 'CANLI';
+                } else if (match.status === 'upcoming') {
+                    statusClass = 'status-upcoming';
+                    statusText = 'YAKINDA';
+                } else {
+                    statusClass = 'status-finished';
+                    statusText = 'BİTTİ';
+                }
+                
+                const matchTime = new Date(match.time).toLocaleTimeString('tr-TR', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                matchElement.innerHTML = `
+                    <div class="match-teams">
+                        <span class="match-time">${matchTime}</span>
+                        <span>${match.team1}</span>
+                        <span class="match-score">${match.score}</span>
+                        <span>${match.team2}</span>
+                    </div>
+                    <span class="match-status ${statusClass}">${statusText}</span>
+                `;
+                
+                simpleMatchesList.appendChild(matchElement);
+            });
+            
+            // Linkleri yükle
+            const simpleLinksList = document.getElementById('simpleLinksList');
+            simpleLinksList.innerHTML = '';
+            
+            links.forEach(link => {
+                const linkElement = document.createElement('div');
+                linkElement.className = 'link-item';
+                
+                linkElement.innerHTML = `
+                    <div class="link-info">
+                        <div class="link-match">${link.match}</div>
+                        <div class="link-quality">${link.quality}</div>
+                    </div>
+                    <button class="link-btn" onclick="window.open('${link.url}', '_blank')">İzle</button>
+                `;
+                
+                simpleLinksList.appendChild(linkElement);
+            });
+            
+            // Haberleri yükle
+            const simpleNewsList = document.getElementById('simpleNewsList');
+            simpleNewsList.innerHTML = '';
+            
+            // Son 3 haberi göster
+            const recentNews = news.slice(-3);
+            
+            recentNews.forEach(newsItem => {
+                const newsElement = document.createElement('div');
+                newsElement.className = 'news-item';
+                
+                newsElement.innerHTML = `
+                    <img src="${newsItem.image}" alt="Haber" class="news-image">
+                    <div class="news-content">
+                        <h3 class="news-title">${newsItem.title}</h3>
+                        <p class="news-date">${newsItem.date}</p>
+                        <p>${newsItem.content}</p>
+                    </div>
+                `;
+                
+                simpleNewsList.appendChild(newsElement);
+            });
+        }
+
+        // Admin içeriklerini yükle
+        function loadAdminContent() {
+            // Maçları yükle
+            const adminMatchesList = document.getElementById('adminMatchesList');
+            adminMatchesList.innerHTML = '';
+            
+            matches.forEach(match => {
+                const matchElement = document.createElement('div');
+                matchElement.className = 'admin-item';
+                
+                const matchTime = new Date(match.time).toLocaleString('tr-TR');
+                
+                matchElement.innerHTML = `
+                    <div>
+                        <strong>${match.team1} vs ${match.team2}</strong>
+                        <div>${matchTime} - ${match.status} - Skor: ${match.score}</div>
+                    </div>
+                    <div class="admin-item-actions">
+                        <button class="admin-item-btn btn-delete" onclick="deleteItem('match', ${match.id})">
+                            <i class="fas fa-trash"></i> Sil
+                        </button>
+                    </div>
+                `;
+                
+                adminMatchesList.appendChild(matchElement);
+            });
+            
+            // Linkleri yükle
+            const adminLinksList = document.getElementById('adminLinksList');
+            adminLinksList.innerHTML = '';
+            
+            links.forEach(link => {
+                const linkElement = document.createElement('div');
+                linkElement.className = 'admin-item';
+                
+                linkElement.innerHTML = `
+                    <div>
+                        <strong>${link.match}</strong>
+                        <div>${link.quality}</div>
+                        <div>${link.url}</div>
+                    </div>
+                    <div class="admin-item-actions">
+                        <button class="admin-item-btn btn-delete" onclick="deleteItem('link', ${link.id})">
+                            <i class="fas fa-trash"></i> Sil
+                        </button>
+                    </div>
+                `;
+                
+                adminLinksList.appendChild(linkElement);
+            });
+            
+            // Haberleri yükle
+            const adminNewsList = document.getElementById('adminNewsList');
+            adminNewsList.innerHTML = '';
+            
+            news.forEach(newsItem => {
+                const newsElement = document.createElement('div');
+                newsElement.className = 'admin-item';
+                
+                newsElement.innerHTML = `
+                    <div>
+                        <strong>${newsItem.title}</strong>
+                        <div>${newsItem.date}</div>
+                        <div>${newsItem.content.substring(0, 100)}...</div>
+                    </div>
+                    <div class="admin-item-actions">
+                        <button class="admin-item-btn btn-delete" onclick="deleteItem('news', ${newsItem.id})">
+                            <i class="fas fa-trash"></i> Sil
+                        </button>
+                    </div>
+                `;
+                
+                adminNewsList.appendChild(newsElement);
+            });
+            
+            // İstatistikleri yükle
+            const adminStatsList = document.getElementById('adminStatsList');
+            adminStatsList.innerHTML = '';
+            
+            stats.forEach(stat => {
+                const statElement = document.createElement('div');
+                statElement.className = 'admin-item';
+                
+                statElement.innerHTML = `
+                    <div>
+                        <strong>${stat.team}</strong>
+                        <div>O: ${stat.played} | G: ${stat.wins} | B: ${stat.draws} | M: ${stat.losses}</div>
+                        <div>A: ${stat.goalsFor} | Y: ${stat.goalsAgainst} | P: ${stat.points}</div>
+                    </div>
+                    <div class="admin-item-actions">
+                        <button class="admin-item-btn btn-delete" onclick="deleteItem('stats', ${stat.id})">
+                            <i class="fas fa-trash"></i> Sil
+                        </button>
+                    </div>
+                `;
+                
+                adminStatsList.appendChild(statElement);
+            });
         }
 
         // Event listener'ları ekle
@@ -1463,8 +2127,29 @@
             // Ayarlar butonu
             settingsBtn.addEventListener('click', openSettings);
             
-            // Admin butonu
+            // Admin butonları
             adminBtn.addEventListener('click', openAdmin);
+            adminBtnSimple.addEventListener('click', openAdmin);
+            
+            // Admin giriş butonları
+            adminLoginBtn.addEventListener('click', adminLoginProcess);
+            adminCancelBtn.addEventListener('click', function() {
+                adminLogin.style.display = 'none';
+            });
+            
+            // Admin sekme değiştirme
+            adminTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    changeAdminTab(tabName);
+                });
+            });
+            
+            // Admin form butonları
+            document.getElementById('adminAddMatch').addEventListener('click', addMatch);
+            document.getElementById('adminAddLink').addEventListener('click', addLink);
+            document.getElementById('adminAddNews').addEventListener('click', addNews);
+            document.getElementById('adminAddStats').addEventListener('click', addStats);
             
             // Menü öğelerine tıklama
             menuItems.forEach(item => {
@@ -1496,6 +2181,95 @@
             if (savedTheme) {
                 console.log('Kayıtlı tema bulundu:', savedTheme);
                 changeTheme(savedTheme);
+            }
+            
+            // Örnek verileri yükle (eğer yoksa)
+            if (matches.length === 0) {
+                matches = [
+                    {
+                        id: 1,
+                        team1: 'Galatasaray',
+                        team2: 'Fenerbahçe',
+                        time: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+                        status: 'upcoming',
+                        score: '-'
+                    },
+                    {
+                        id: 2,
+                        team1: 'Beşiktaş',
+                        team2: 'Trabzonspor',
+                        time: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+                        status: 'finished',
+                        score: '1-1'
+                    }
+                ];
+                localStorage.setItem('ftblzone_matches', JSON.stringify(matches));
+            }
+            
+            if (links.length === 0) {
+                links = [
+                    {
+                        id: 1,
+                        match: 'Galatasaray vs Fenerbahçe',
+                        url: 'https://example.com/stream1',
+                        quality: 'HD Kalite | Türkçe Yorumlu'
+                    },
+                    {
+                        id: 2,
+                        match: 'Beşiktaş vs Trabzonspor',
+                        url: 'https://example.com/stream2',
+                        quality: 'Full HD | Türkçe Yorumlu'
+                    }
+                ];
+                localStorage.setItem('ftblzone_links', JSON.stringify(links));
+            }
+            
+            if (news.length === 0) {
+                news = [
+                    {
+                        id: 1,
+                        title: 'Galatasaray Şampiyonlar Ligi\'nde!',
+                        content: 'Sarı-kırmızılı takım, ön eleme turunu geçerek gruplara kaldı.',
+                        image: 'https://via.placeholder.com/120x80',
+                        date: new Date().toLocaleDateString('tr-TR')
+                    },
+                    {
+                        id: 2,
+                        title: 'Fenerbahçe\'den transfer bombası!',
+                        content: 'Sarı-lacivertliler, yıldız oyuncu için anlaşma sağladı.',
+                        image: 'https://via.placeholder.com/120x80',
+                        date: new Date().toLocaleDateString('tr-TR')
+                    }
+                ];
+                localStorage.setItem('ftblzone_news', JSON.stringify(news));
+            }
+            
+            if (stats.length === 0) {
+                stats = [
+                    {
+                        id: 1,
+                        team: 'Galatasaray',
+                        played: 34,
+                        wins: 28,
+                        draws: 4,
+                        losses: 2,
+                        goalsFor: 83,
+                        goalsAgainst: 27,
+                        points: 88
+                    },
+                    {
+                        id: 2,
+                        team: 'Fenerbahçe',
+                        played: 34,
+                        wins: 25,
+                        draws: 5,
+                        losses: 4,
+                        goalsFor: 75,
+                        goalsAgainst: 31,
+                        points: 80
+                    }
+                ];
+                localStorage.setItem('ftblzone_stats', JSON.stringify(stats));
             }
             
             console.log('Tüm event listenerlar başarıyla eklendi');
