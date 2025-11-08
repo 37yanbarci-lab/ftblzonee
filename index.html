@@ -1,0 +1,131 @@
+# app.py
+import os
+from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
+from azure.ai.inference import ChatCompletionsClient
+from azure.ai.inference.models import SystemMessage, UserMessage
+from azure.core.credentials import AzureKeyCredential
+
+app = Flask(__name__)
+CORS(app)  # Frontend'den gelen isteklere izin ver
+
+# Yapay zeka istemcisini başlat
+def get_ai_client():
+    endpoint = "https://models.github.ai/inference"
+    model = "openai/gpt-4.1"
+    token = os.environ.get("GITHUB_TOKEN")
+    
+    if not token:
+        return None
+    
+    client = ChatCompletionsClient(
+        endpoint=endpoint,
+        credential=AzureKeyCredential(token),
+    )
+    return client, model
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    try:
+        data = request.json
+        user_message = data.get('message', '')
+        context = data.get('context', 'futbol')
+        
+        client, model = get_ai_client()
+        
+        if not client:
+            return jsonify({
+                'response': 'Yapay zeka servisi şu anda kullanılamıyor. Lütfen daha sonra tekrar deneyin.',
+                'error': 'AI service not configured'
+            })
+        
+        # Futbol asistanı sistemi mesajı
+        system_message = f"""
+        Sen bir futbol uzmanı ve canlı maç asistanısın. 
+        Kullanıcılara maçlar, takımlar, oyuncular, istatistikler ve futbol haberleri hakkında 
+        yardımcı oluyorsun. Türkçe cevap ver ve samimi, yardımsever bir dil kullan.
+        
+        Mevcut bağlam: {context}
+        """
+        
+        response = client.complete(
+            messages=[
+                SystemMessage(system_message),
+                UserMessage(user_message),
+            ],
+            temperature=0.7,
+            top_p=0.9,
+            model=model
+        )
+        
+        return jsonify({
+            'response': response.choices[0].message.content,
+            'success': True
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'response': 'Üzgünüm, bir hata oluştu. Lütfen daha sonra tekrar deneyin.',
+            'error': str(e),
+            'success': False
+        })
+
+@app.route('/api/match-analysis', methods=['POST'])
+def match_analysis():
+    try:
+        data = request.json
+        match_data = data.get('match_data', {})
+        
+        client, model = get_ai_client()
+        
+        if not client:
+            return jsonify({
+                'response': 'Analiz servisi şu anda kullanılamıyor.',
+                'error': 'AI service not configured'
+            })
+        
+        system_message = """
+        Sen bir futbol analisti ve maç yorumcususun. Maç istatistiklerini analiz edip 
+        detaylı yorumlar yapıyorsun. Türkçe cevap ver ve teknik analizlerle destekle.
+        """
+        
+        user_message = f"""
+        Aşağıdaki maç verilerini analiz et ve detaylı bir maç raporu hazırla:
+        
+        Maç: {match_data.get('team1', '')} vs {match_data.get('team2', '')}
+        Skor: {match_data.get('score', '')}
+        İstatistikler: {match_data.get('stats', {})}
+        Önemli Anlar: {match_data.get('highlights', [])}
+        
+        Lütfen maçın genel performansını, takımların taktiklerini, oyunun dönüm noktalarını 
+        ve gelecek maçlar için öngörülerini içeren kapsamlı bir analiz yap.
+        """
+        
+        response = client.complete(
+            messages=[
+                SystemMessage(system_message),
+                UserMessage(user_message),
+            ],
+            temperature=0.8,
+            top_p=0.9,
+            model=model
+        )
+        
+        return jsonify({
+            'analysis': response.choices[0].message.content,
+            'success': True
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'analysis': 'Maç analizi şu anda yapılamıyor.',
+            'error': str(e),
+            'success': False
+        })
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
