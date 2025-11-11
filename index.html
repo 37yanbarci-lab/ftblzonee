@@ -72,7 +72,7 @@
             z-index: 1000;
         }
         
-        .device-options, .login-content, .interface-options, .admin-login-content {
+        .device-options, .login-content, .interface-options, .admin-login-content, .ai-assistant-content {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             padding: 40px;
@@ -82,6 +82,21 @@
             width: 90%;
             box-shadow: var(--shadow);
             border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Admin Login Content override */
+        .admin-login-content {
+            max-width: 400px;
+            padding: 30px;
+        }
+
+        /* AI Assistant override */
+        .ai-assistant-content {
+            max-width: 500px;
+            height: 80vh; 
+            display: flex;
+            flex-direction: column;
+            padding: 0;
         }
 
         /* Header Stilleri */
@@ -197,27 +212,6 @@
             align-items: center;
             gap: 15px;
         }
-
-        .countdown-container {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-            justify-content: center;
-        }
-
-        .countdown-item {
-            text-align: center;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius);
-            min-width: 70px;
-        }
-        
-        .countdown-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--secondary);
-        }
         
         /* Arayüz Yapısı */
         .app-content {
@@ -278,6 +272,7 @@
         /* Form Stilleri (Admin/Giriş) */
         .form-group {
             margin-bottom: 20px;
+            text-align: left;
         }
 
         .form-input, .form-textarea, .form-select {
@@ -290,6 +285,12 @@
             font-size: 1rem;
             transition: var(--transition);
         }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
 
         .form-input:focus, .form-textarea:focus, .form-select:focus {
             outline: none;
@@ -297,12 +298,6 @@
             background: rgba(255, 255, 255, 0.15);
         }
         
-        /* Dropdown/Select için özel stil */
-        .form-select option {
-            background: var(--dark);
-            color: white;
-        }
-
         /* Hata/Başarı Mesajları */
         .error-message, .success-message, .admin-error {
             color: var(--danger);
@@ -310,52 +305,13 @@
             font-size: 0.9rem;
             display: none;
             font-weight: 600;
+            text-align: center;
         }
         
         .success-message {
             color: var(--success);
         }
 
-        /* Maç Listesi */
-        .match-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .match-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--radius);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: var(--transition);
-        }
-
-        .match-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .match-teams {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .status-live {
-            background: var(--danger);
-            color: white;
-        }
-
-        .status-upcoming {
-            background: var(--warning);
-            color: white;
-        }
-        
         /* Admin Listesi */
         .admin-item-list {
             display: flex;
@@ -375,46 +331,162 @@
             border-radius: var(--radius);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        /* Anket Stilleri */
-        .poll-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--radius);
+        
+        .admin-item-actions button {
+            background: var(--danger);
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
             cursor: pointer;
-            transition: var(--transition);
+            font-size: 0.9rem;
+            margin-left: 10px;
         }
 
-        .poll-option:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .poll-option.selected {
-            background: rgba(26, 115, 232, 0.2);
-            border-left: 4px solid var(--primary);
+        .admin-item-actions .btn-edit {
+            background: var(--primary);
         }
         
-        /* Yapay Zeka Asistanı Stilleri */
-        .ai-assistant-content {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: var(--radius);
-            width: 90%;
-            max-width: 500px;
-            height: 80vh; /* Yükseklik tanımlandı */
+        .admin-tab-content {
+            padding-top: 20px;
+            text-align: left;
+        }
+        
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .admin-tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: 600;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+        
+        .admin-tab.active {
+            border-bottom: 2px solid var(--secondary);
+            opacity: 1;
+            color: var(--secondary);
+        }
+        
+        /* Yapay Zeka Stilleri (Kısmi Tekrar, önceki koddan optimize edildi) */
+        .ai-assistant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .ai-chat-container {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
+        
         .ai-messages {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
-            max-height: calc(80vh - 170px); /* Toplam yükseklikten başlık ve input çıkarıldı */
+        }
+        
+        .ai-message {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: flex-start;
+        }
+        
+        .ai-message .message-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            margin-right: 10px;
+        }
+        
+        .ai-message .message-content {
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 80%;
+            font-size: 0.95rem;
+            text-align: left;
+        }
+        
+        .bot-message .message-avatar {
+            background: var(--primary);
+        }
+        
+        .bot-message .message-content {
+            background: rgba(26, 115, 232, 0.2);
+            border-bottom-left-radius: 4px;
+        }
+        
+        .user-message {
+            justify-content: flex-end;
+        }
+
+        .user-message .message-avatar {
+            order: 2;
+            margin-left: 10px;
+            margin-right: 0;
+            background: var(--secondary);
+        }
+        
+        .user-message .message-content {
+            order: 1;
+            background: rgba(255, 109, 0, 0.2);
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai-input-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        #aiInput {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 50px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        #aiInput:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .ai-quick-questions {
+            display: flex;
+            gap: 10px;
+            padding: 0 20px 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .quick-question {
+            padding: 8px 15px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .quick-question:hover {
+            background: var(--secondary);
         }
         
         /* Responsive Tasarım Düzeltmeleri */
@@ -441,21 +513,8 @@
             .sidebar {
                 display: none; /* Mobil'de menü gizlendi */
             }
-            
-            .menu-item {
-                font-size: 1rem;
-            }
         }
         
-        /* Mobil Optimizasyonu */
-        .mobile-optimized .btn {
-            padding: 15px 20px;
-            font-size: 1.1rem;
-        }
-
-        .mobile-optimized .header-controls {
-            flex-direction: column;
-        }
     </style>
 </head>
 <body>
@@ -563,18 +622,18 @@
 
     <div class="admin-login" id="adminLogin">
         <div class="admin-login-content">
-            <h2><i class="fas fa-user-shield"></i> Admin Girişi</h2>
-            <p>Admin paneline erişmek için şifrenizi girin. (Şifre: **admin**)</p>
+            <h2 style="text-align: center;"><i class="fas fa-user-shield"></i> Admin Girişi</h2>
+            <p style="text-align: center;">Admin paneline erişmek için şifrenizi girin. (Şifre: **admin**)</p>
             
             <div class="form-group">
                 <input type="password" class="form-input" id="adminPassword" placeholder="Admin şifresi">
                 <div class="admin-error" id="adminError"></div>
             </div>
             
-            <button class="btn btn-primary" id="adminLoginBtn">
+            <button class="btn btn-primary" id="adminLoginBtn" style="width: 100%;">
                 <i class="fas fa-sign-in-alt"></i> Giriş Yap
             </button>
-            <button class="btn btn-outline" id="adminCancelBtn" style="margin-top: 10px;">
+            <button class="btn btn-outline" id="adminCancelBtn" style="width: 100%; margin-top: 10px;">
                 <i class="fas fa-times"></i> İptal
             </button>
         </div>
@@ -584,9 +643,9 @@
         <div class="ai-assistant-content">
             <div class="ai-assistant-header">
                 <h3><i class="fas fa-robot"></i> Futbol Asistanı (Simülasyon)</h3>
-                <button class="close-btn" id="closeAIBtn">&times;</button>
+                <button class="close-btn" id="closeAIBtn" style="background: none; border: none; font-size: 1.5rem; color: white; cursor: pointer;">&times;</button>
             </div>
-            <div class="ai-chat-container" style="flex: 1; display: flex; flex-direction: column;">
+            <div class="ai-chat-container">
                 <div class="ai-messages" id="aiMessages">
                     <div class="ai-message bot-message">
                         <div class="message-avatar" style="background: var(--secondary);">
@@ -636,23 +695,7 @@
                 <div class="announcement-content">
                     <div class="announcement-title countdown-title" style="font-weight: 600;">Büyük Maça Kalan Süre</div>
                     <div class="countdown-container" id="countdown">
-                        <div class="countdown-item">
-                            <div class="countdown-value" id="countdownDays">00</div>
-                            <div class="countdown-label">Gün</div>
                         </div>
-                        <div class="countdown-item">
-                            <div class="countdown-value" id="countdownHours">00</div>
-                            <div class="countdown-label">Saat</div>
-                        </div>
-                        <div class="countdown-item">
-                            <div class="countdown-value" id="countdownMinutes">00</div>
-                            <div class="countdown-label">Dakika</div>
-                        </div>
-                        <div class="countdown-item">
-                            <div class="countdown-value" id="countdownSeconds">00</div>
-                            <div class="countdown-label">Saniye</div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -673,7 +716,7 @@
                     <button class="btn ai-assistant-btn" id="aiAssistantBtn">
                         <i class="fas fa-robot"></i> AI Asistan
                     </button>
-                    <button class="btn btn-secondary" id="adminBtn" style="display: none;">
+                    <button class="btn btn-secondary" id="adminBtn">
                         <i class="fas fa-user-shield"></i> Admin
                     </button>
                 </div>
@@ -694,24 +737,17 @@
                         <li class="menu-item" data-section="polls">
                             <i class="fas fa-poll menu-icon"></i> Anketler
                         </li>
-                        <li class="menu-item" data-section="predictions">
-                            <i class="fas fa-trophy menu-icon"></i> Tahmin Oyunu
+                        <li class="menu-item" data-section="settings">
+                            <i class="fas fa-cog menu-icon"></i> Ayarlar
                         </li>
-                        <li class="menu-item" data-section="highlights">
-                            <i class="fas fa-video menu-icon"></i> Maç Özetleri
-                        </li>
-                        <li class="menu-item" data-section="stats">
-                            <i class="fas fa-chart-bar menu-icon"></i> İstatistikler
-                        </li>
-                        <li class="menu-item" data-section="news">
-                            <i class="fas fa-newspaper menu-icon"></i> Haberler
-                        </li>
-                        <li class="menu-item" data-section="profile">
-                            <i class="fas fa-user menu-icon"></i> Profilim
-                        </li>
-                        <li class="menu-item" data-section="admin" style="display: none;">
+                        <li class="menu-item" data-section="admin" style="display: none;" id="adminMenuItem">
                             <i class="fas fa-user-shield menu-icon"></i> Admin Paneli
                         </li>
+                        <li class="menu-item" data-section="predictions"><i class="fas fa-trophy menu-icon"></i> Tahmin Oyunu</li>
+                        <li class="menu-item" data-section="highlights"><i class="fas fa-video menu-icon"></i> Maç Özetleri</li>
+                        <li class="menu-item" data-section="stats"><i class="fas fa-chart-bar menu-icon"></i> İstatistikler</li>
+                        <li class="menu-item" data-section="news"><i class="fas fa-newspaper menu-icon"></i> Haberler</li>
+                        <li class="menu-item" data-section="profile"><i class="fas fa-user menu-icon"></i> Profilim</li>
                     </ul>
                 </aside>
 
@@ -722,9 +758,6 @@
                         </h2>
                         <p>Futbol dünyasının nabzı burada atıyor! Canlı maçlar, güncel linkler ve daha fazlası...</p>
                         
-                        <div class="cards-container">
-                            </div>
-
                         <div class="match-list" style="margin-top: 40px;">
                             <h3 style="margin-bottom: 15px; color: white;">Bugünün Maçları</h3>
                             <div class="match-list" id="homeMatchesList">
@@ -749,19 +782,12 @@
                         <p>Güncel maç yayın linkleri (Simülasyon)</p>
                         
                         <div class="link-list" id="linksList" style="margin-top: 20px;">
-                            <div class="link-item">
+                            <div class="link-item" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius);">
                                 <div class="link-info">
-                                    <span class="link-match">Galatasaray vs Fenerbahçe</span>
-                                    <span class="link-quality">HD | 1080p | 5 Mbps</span>
+                                    <span class="link-match" style="font-weight: 600;">Galatasaray vs Fenerbahçe</span>
+                                    <span class="link-quality" style="font-size: 0.85rem; color: var(--success); margin-left: 10px;">HD | 1080p | 5 Mbps</span>
                                 </div>
-                                <button class="link-btn">İzle <i class="fas fa-external-link-alt"></i></button>
-                            </div>
-                            <div class="link-item">
-                                <div class="link-info">
-                                    <span class="link-match">Beşiktaş vs Trabzonspor</span>
-                                    <span class="link-quality">SD | 480p | 2 Mbps</span>
-                                </div>
-                                <button class="link-btn">İzle <i class="fas fa-external-link-alt"></i></button>
+                                <button class="link-btn btn btn-secondary" style="padding: 8px 15px;">İzle <i class="fas fa-external-link-alt"></i></button>
                             </div>
                         </div>
                     </div>
@@ -772,9 +798,9 @@
                         </h2>
                         <p>Güncel futbol anketlerine katılın ve görüşlerinizi paylaşın</p>
                         
-                        <div class="poll-container" id="currentPoll">
-                            <div class="poll-question">Bu sezon hangi takım şampiyon olur?</div>
-                            <div class="poll-options">
+                        <div class="poll-container" id="currentPoll" style="margin-top: 20px;">
+                            <div class="poll-question" style="font-size: 1.2rem; font-weight: 600; margin-bottom: 15px;">Bu sezon hangi takım şampiyon olur?</div>
+                            <div class="poll-options" style="display: flex; flex-direction: column; gap: 10px;">
                                 <div class="poll-option" data-option="1">
                                     <i class="fas fa-circle"></i>
                                     <span>Galatasaray</span>
@@ -792,7 +818,7 @@
                                     <span>Trabzonspor</span>
                                 </div>
                             </div>
-                            <button class="btn btn-primary" id="voteBtn" style="width: 100%;">
+                            <button class="btn btn-primary" id="voteBtn" style="width: 100%; margin-top: 20px;">
                                 <i class="fas fa-vote-yea"></i> Oyla
                             </button>
                         </div>
@@ -805,23 +831,23 @@
                         <p>Uygulama ayarlarınızı kişiselleştirin</p>
                         
                         <div class="settings-panel">
-                            <h3 style="margin-bottom: 15px; color: white;">Tema Seçimi</h3>
-                            <div class="theme-selector">
-                                <div class="theme-option active" data-theme="default">
-                                    <div class="theme-preview" style="background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);"></div>
-                                    <div class="theme-name">Varsayılan</div>
+                            <h3 style="margin-bottom: 15px; color: white; margin-top: 20px;">Tema Seçimi</h3>
+                            <div class="theme-selector" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                                <div class="theme-option active" data-theme="default" style="padding: 10px; border-radius: var(--radius); border: 2px solid transparent; cursor: pointer;">
+                                    <div class="theme-preview" style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);"></div>
+                                    <div class="theme-name" style="margin-top: 5px; font-size: 0.8rem;">Varsayılan</div>
                                 </div>
-                                <div class="theme-option" data-theme="sari-kirmizi">
-                                    <div class="theme-preview" style="background: linear-gradient(135deg, #D0021B, #F9A602);"></div>
-                                    <div class="theme-name">Sarı-Kırmızı</div>
+                                <div class="theme-option" data-theme="sari-kirmizi" style="padding: 10px; border-radius: var(--radius); border: 2px solid transparent; cursor: pointer;">
+                                    <div class="theme-preview" style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #D0021B, #F9A602);"></div>
+                                    <div class="theme-name" style="margin-top: 5px; font-size: 0.8rem;">Sarı-Kırmızı</div>
                                 </div>
-                                <div class="theme-option" data-theme="sari-lacivert">
-                                    <div class="theme-preview" style="background: linear-gradient(135deg, #0033A0, #FFD700);"></div>
-                                    <div class="theme-name">Sarı-Lacivert</div>
+                                <div class="theme-option" data-theme="sari-lacivert" style="padding: 10px; border-radius: var(--radius); border: 2px solid transparent; cursor: pointer;">
+                                    <div class="theme-preview" style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #0033A0, #FFD700);"></div>
+                                    <div class="theme-name" style="margin-top: 5px; font-size: 0.8rem;">Sarı-Lacivert</div>
                                 </div>
-                                <div class="theme-option" data-theme="koyu">
-                                    <div class="theme-preview" style="background: linear-gradient(135deg, #0c0c0c, #2d2d2d);"></div>
-                                    <div class="theme-name">Koyu</div>
+                                <div class="theme-option" data-theme="koyu" style="padding: 10px; border-radius: var(--radius); border: 2px solid transparent; cursor: pointer;">
+                                    <div class="theme-preview" style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #0c0c0c, #2d2d2d);"></div>
+                                    <div class="theme-name" style="margin-top: 5px; font-size: 0.8rem;">Koyu</div>
                                 </div>
                             </div>
                         </div>
@@ -831,7 +857,7 @@
                         <h2 class="section-title" style="font-size: 2rem;">
                             <i class="fas fa-user-shield section-icon" style="color: var(--secondary);"></i> Admin Paneli
                         </h2>
-                        <p>Sistem yönetimi ve istatistikler</p>
+                        <p>Sistem yönetimi ve içerik düzenleme</p>
                         
                         <div class="admin-tabs">
                             <div class="admin-tab active" data-tab="matches">Maçlar</div>
@@ -854,11 +880,11 @@
                                 <label class="form-label">Maç Tarihi ve Saati</label>
                                 <input type="datetime-local" class="form-input" id="adminMatchTime">
                             </div>
-                            <button class="btn btn-primary" id="adminAddMatch">
+                            <button class="btn btn-primary" id="adminAddMatch" style="width: 100%;">
                                 <i class="fas fa-plus"></i> Maç Ekle
                             </button>
                             
-                            <h3 style="margin-top: 30px; margin-bottom: 15px; color: white;">Maç Listesi</h3>
+                            <h3 style="margin-top: 30px; margin-bottom: 15px; color: white;">Maç Listesi (Silme Aktif)</h3>
                             <div class="admin-item-list" id="adminMatchesList">
                                 </div>
                         </div>
@@ -867,7 +893,7 @@
                         <div class="admin-tab-content" id="adminNewsTab" style="padding: 20px;">Haber Yönetimi (Geliştirilecek)</div>
 
                         <div class="admin-tab-content" id="adminAnnouncementsTab">
-                            <h3 style="margin-bottom: 15px; color: white;">Duyuru Ekle</h3>
+                            <h3 style="margin-bottom: 15px; color: white;">Duyuru Ekle (Simülasyon)</h3>
                             <div class="form-group">
                                 <label class="form-label">Duyuru Başlığı</label>
                                 <input type="text" class="form-input" id="adminAnnouncementTitle" placeholder="Duyuru başlığı">
@@ -876,8 +902,8 @@
                                 <label class="form-label">Duyuru Metni</label>
                                 <textarea class="form-input form-textarea" id="adminAnnouncementText" placeholder="Duyuru metni"></textarea>
                             </div>
-                            <button class="btn btn-primary" id="adminAddAnnouncement">
-                                <i class="fas fa-plus"></i> Duyuru Ekle (Simülasyon)
+                            <button class="btn btn-primary" id="adminAddAnnouncement" style="width: 100%;">
+                                <i class="fas fa-plus"></i> Duyuru Ekle
                             </button>
                         </div>
                     </div>
@@ -920,7 +946,7 @@
                     <button class="btn ai-assistant-btn" id="aiAssistantBtnSimple">
                         <i class="fas fa-robot"></i> AI Asistan
                     </button>
-                    <button class="btn btn-secondary" id="adminBtnSimple" style="display: none;">
+                    <button class="btn btn-secondary" id="adminBtnSimple">
                         <i class="fas fa-user-shield"></i> Admin
                     </button>
                 </div>
@@ -933,18 +959,18 @@
                 <p>Hızlı ve sade bir deneyim sunan basit arayüzümüze hoş geldiniz. Tüm içerik bu sayfada!</p>
                 
                 <h3 style="margin-top: 30px; margin-bottom: 15px; color: white;">Tema Seçimi</h3>
-                <div class="theme-selector" id="simpleThemeSelector" style="margin-bottom: 30px; display: none;">
-                    <div class="theme-option active" data-theme="default">
-                        <div class="theme-preview" style="background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);"></div>
-                        <div class="theme-name">Varsayılan</div>
+                <div class="theme-selector" id="simpleThemeSelector" style="margin-bottom: 30px; display: none; gap: 15px;">
+                    <div class="theme-option active" data-theme="default" style="padding: 10px; border-radius: var(--radius); border: 2px solid transparent; cursor: pointer;">
+                        <div class="theme-preview" style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);"></div>
+                        <div class="theme-name" style="margin-top: 5px; font-size: 0.8rem;">Varsayılan</div>
                     </div>
-                    <div class="theme-option" data-theme="sari-kirmizi">
-                        <div class="theme-preview" style="background: linear-gradient(135deg, #D0021B, #F9A602);"></div>
-                        <div class="theme-name">Sarı-Kırmızı</div>
+                    <div class="theme-option" data-theme="sari-kirmizi" style="padding: 10px; border-radius: var(--radius); border: 2px solid transparent; cursor: pointer;">
+                        <div class="theme-preview" style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #D0021B, #F9A602);"></div>
+                        <div class="theme-name" style="margin-top: 5px; font-size: 0.8rem;">Sarı-Kırmızı</div>
                     </div>
-                    <div class="theme-option" data-theme="sari-lacivert">
-                        <div class="theme-preview" style="background: linear-gradient(135deg, #0033A0, #FFD700);"></div>
-                        <div class="theme-name">Sarı-Lacivert</div>
+                    <div class="theme-option" data-theme="sari-lacivert" style="padding: 10px; border-radius: var(--radius); border: 2px solid transparent; cursor: pointer;">
+                        <div class="theme-preview" style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #0033A0, #FFD700);"></div>
+                        <div class="theme-name" style="margin-top: 5px; font-size: 0.8rem;">Sarı-Lacivert</div>
                     </div>
                 </div>
                 
@@ -955,8 +981,8 @@
                 </div>
                 
                 <div class="poll-container" style="margin-top: 30px;">
-                    <div class="poll-question">Bu sezon hangi takım şampiyon olur?</div>
-                    <div class="poll-options">
+                    <div class="poll-question" style="font-size: 1.2rem; font-weight: 600; margin-bottom: 15px;">Bu sezon hangi takım şampiyon olur?</div>
+                    <div class="poll-options" style="display: flex; flex-direction: column; gap: 10px;">
                         <div class="poll-option" data-option="1">
                             <i class="fas fa-circle"></i>
                             <span>Galatasaray</span>
@@ -974,7 +1000,7 @@
                             <span>Trabzonspor</span>
                         </div>
                     </div>
-                    <button class="btn btn-primary" id="simpleVoteBtn" style="width: 100%;">
+                    <button class="btn btn-primary" id="simpleVoteBtn" style="width: 100%; margin-top: 20px;">
                         <i class="fas fa-vote-yea"></i> Oyla
                     </button>
                 </div>
@@ -1015,6 +1041,7 @@
 
             const menuItems = document.querySelectorAll('.menu-item');
             const contentSections = document.querySelectorAll('.content-section');
+            const adminMenuItem = document.getElementById('adminMenuItem'); // Yeni Admin menü öğesi
 
             const adminBtn = document.getElementById('adminBtn');
             const adminBtnSimple = document.getElementById('adminBtnSimple');
@@ -1030,6 +1057,8 @@
             const pollOptions = document.querySelectorAll('.poll-option');
             const voteBtn = document.getElementById('voteBtn');
             const simpleVoteBtn = document.getElementById('simpleVoteBtn');
+            
+            const simpleThemeSelector = document.getElementById('simpleThemeSelector'); // Basit arayüz tema seçici
 
             // Yapay Zeka Elementleri
             const aiAssistantModal = document.getElementById('aiAssistantModal');
@@ -1050,28 +1079,28 @@
             const adminAddAnnouncementBtn = document.getElementById('adminAddAnnouncement');
             const adminAnnouncementTitleInput = document.getElementById('adminAnnouncementTitle');
             const adminAnnouncementTextInput = document.getElementById('adminAnnouncementText');
-
+            
             // Geri Sayım Elementleri
-            const countdownDays = document.getElementById('countdownDays');
-            const countdownHours = document.getElementById('countdownHours');
-            const countdownMinutes = document.getElementById('countdownMinutes');
-            const countdownSeconds = document.getElementById('countdownSeconds');
-
+            const countdownContainer = document.getElementById('countdown');
 
             // === Değişkenler & State Yönetimi ===
             // Local Storage'dan son durumu yükle
             let selectedDevice = localStorage.getItem('ftblzone_device') || null;
             let selectedInterface = localStorage.getItem('ftblzone_interface') || null;
             let currentTheme = localStorage.getItem('ftblzone_theme') || 'default';
-            let isAdminLoggedIn = false;
+            let isAdminLoggedIn = localStorage.getItem('ftblzone_admin') === 'true'; // Admin durumunu hafızada tut
             let selectedPollOption = null;
             const CORRECT_ADMIN_PASSWORD = 'admin'; // Simülasyon şifresi
 
             // Simülasyon Verileri
-            let matches = [
+            let matches = JSON.parse(localStorage.getItem('ftblzone_matches')) || [
                 { id: 1, team1: 'Galatasaray', team2: 'Fenerbahçe', time: '20:45', status: 'CANLI', score: '2 - 1' },
                 { id: 2, team1: 'Beşiktaş', team2: 'Trabzonspor', time: '21:00', status: 'YAKINDA', score: '-' }
             ];
+            
+            const updateLocalMatches = () => {
+                localStorage.setItem('ftblzone_matches', JSON.stringify(matches));
+            };
 
             // Büyük Maç Tarihi (Örn: 15 Aralık 2025, 20:00)
             const BIG_MATCH_DATE = new Date("Dec 15, 2025 20:00:00").getTime();
@@ -1097,11 +1126,10 @@
                 }
                 
                 // Dinamik içerik yükleme
-                renderMatchList(matches, document.getElementById('matchesList'));
-                renderMatchList(matches, document.getElementById('homeMatchesList'));
-                renderMatchList(matches, document.getElementById('simpleMatchesList'));
-
+                renderMatchLists();
                 renderAdminMatchesList();
+                hideAdminElements(!isAdminLoggedIn); // Admin menülerini başlangıçta gizle/göster
+
                 updateCountdown();
                 setInterval(updateCountdown, 1000); // Geri sayımı her saniye güncelle
             }
@@ -1120,7 +1148,7 @@
                 const option = e.currentTarget;
                 const deviceType = option.getAttribute('data-device');
                 
-                deviceOptions.forEach(opt => opt.classList.remove('selected'));
+                document.querySelectorAll('.device-option').forEach(opt => opt.classList.remove('selected'));
                 option.classList.add('selected');
                 selectedDevice = deviceType;
                 deviceContinueBtn.disabled = false;
@@ -1143,7 +1171,6 @@
                 
                 loginError.style.display = 'none';
                 registerSuccess.style.display = 'none';
-                registerSuccess.style.color = 'var(--success)';
             }
 
             function login() {
@@ -1170,6 +1197,7 @@
             }
 
             function register() {
+                // Basit kayıt simülasyonu
                 const username = document.getElementById('registerUsername').value;
                 const email = document.getElementById('registerEmail').value;
                 const password = document.getElementById('registerPassword').value;
@@ -1253,6 +1281,11 @@
                     if (opt.getAttribute('data-theme') === themeName) {
                         opt.classList.add('active');
                     }
+                    if (opt.classList.contains('active')) {
+                        opt.style.border = `2px solid ${themeName === 'default' ? 'var(--secondary)' : 'white'}`;
+                    } else {
+                        opt.style.border = '2px solid transparent';
+                    }
                 });
             }
 
@@ -1274,7 +1307,7 @@
 
             // --- Menü & Bölüm Yönetimi ---
             function selectMenuItem(sectionName) {
-                if (selectedInterface !== 'menu') return; // Sadece menülü arayüzde çalışır
+                if (selectedInterface !== 'menu') return; 
 
                 menuItems.forEach(item => item.classList.remove('active'));
                 contentSections.forEach(section => section.classList.remove('active'));
@@ -1302,8 +1335,9 @@
                 if (interfaceType === 'menu') {
                     goToSection('settings');
                 } else if (interfaceType === 'simple') {
-                    const selector = document.getElementById('simpleThemeSelector');
-                    selector.style.display = selector.style.display === 'grid' ? 'none' : 'grid';
+                    // Basit arayüzde tema seçiciyi göster/gizle
+                    simpleThemeSelector.style.display = simpleThemeSelector.style.display === 'flex' ? 'none' : 'flex';
+                    applyThemeToOptions(currentTheme);
                 }
             }
 
@@ -1312,10 +1346,17 @@
                 const password = adminPasswordInput.value;
                 if (password === CORRECT_ADMIN_PASSWORD) {
                     isAdminLoggedIn = true;
+                    localStorage.setItem('ftblzone_admin', 'true'); // Hafızaya al
                     adminLogin.style.display = 'none';
                     adminError.style.display = 'none';
-                    goToSection('admin');
+                    
                     hideAdminElements(false);
+                    // Eğer menülü arayüzdeyse admin paneline git
+                    if (selectedInterface === 'menu') {
+                        goToSection('admin');
+                    } else {
+                        alert('Admin girişi başarılı! Gelişmiş arayüze geçerek veya üst menüdeki Admin butonunu kullanarak yönetim işlemlerini yapabilirsiniz.');
+                    }
                 } else {
                     adminError.textContent = 'Hatalı şifre! Lütfen tekrar deneyin.';
                     adminError.style.display = 'block';
@@ -1324,14 +1365,15 @@
 
             function cancelAdminLogin() {
                 adminLogin.style.display = 'none';
-                goToSection('home');
+                if (selectedInterface === 'menu') {
+                    goToSection('home');
+                }
             }
             
             function hideAdminElements(shouldHide) {
                 const displayStyle = shouldHide ? 'none' : 'flex';
                 adminBtn.style.display = displayStyle;
                 adminBtnSimple.style.display = displayStyle;
-                const adminMenuItem = document.querySelector('.menu-item[data-section="admin"]');
                 if (adminMenuItem) {
                     adminMenuItem.style.display = displayStyle;
                 }
@@ -1350,6 +1392,12 @@
             }
 
             // --- Dinamik İçerik ve Maç Yönetimi ---
+            function renderMatchLists() {
+                renderMatchList(matches, document.getElementById('matchesList'));
+                renderMatchList(matches, document.getElementById('homeMatchesList'));
+                renderMatchList(matches, document.getElementById('simpleMatchesList'));
+            }
+
             function renderAdminMatchesList() {
                 adminMatchesList.innerHTML = '';
                 if (matches.length === 0) {
@@ -1361,9 +1409,8 @@
                     const matchItem = document.createElement('div');
                     matchItem.classList.add('admin-item');
                     matchItem.innerHTML = `
-                        <span>${match.team1} vs ${match.team2} (${match.time}, ${match.status})</span>
+                        <span style="flex-grow: 1;">${match.team1} vs ${match.team2} (${match.time}, ${match.status})</span>
                         <div class="admin-item-actions">
-                            <button class="admin-item-btn btn-edit" data-match-id="${match.id}">Düzenle</button>
                             <button class="admin-item-btn btn-delete" data-match-id="${match.id}">Sil</button>
                         </div>
                     `;
@@ -1391,11 +1438,9 @@
                 };
                 matches.push(newMatch);
                 
-                // Tüm listeleri güncelle
+                updateLocalMatches();
                 renderAdminMatchesList();
-                renderMatchList(matches, document.getElementById('matchesList'));
-                renderMatchList(matches, document.getElementById('homeMatchesList'));
-                renderMatchList(matches, document.getElementById('simpleMatchesList'));
+                renderMatchLists();
                 
                 // Formu temizle
                 adminMatchTeam1Input.value = '';
@@ -1403,6 +1448,14 @@
                 adminMatchTimeInput.value = '';
                 
                 alert('Maç başarıyla eklendi!');
+            }
+
+            function deleteMatch(matchId) {
+                matches = matches.filter(match => match.id !== matchId);
+                
+                updateLocalMatches();
+                renderAdminMatchesList();
+                renderMatchLists();
             }
 
             function renderMatchList(matchData, targetElement) {
@@ -1421,41 +1474,40 @@
                     
                     matchItem.innerHTML = `
                         <div class="match-teams">
-                            <span class="match-time">${match.time}</span>
-                            <span>${match.team1}</span>
-                            <span class="match-score">${match.score}</span>
-                            <span>${match.team2}</span>
+                            <span class="match-time" style="font-weight: 600;">${match.time}</span>
+                            <span style="margin: 0 5px;">${match.team1}</span>
+                            <span class="match-score" style="font-size: 1.2rem; font-weight: 700; color: var(--secondary); margin: 0 10px;">${match.score}</span>
+                            <span style="margin: 0 5px;">${match.team2}</span>
                         </div>
-                        <span class="match-status ${statusClass}">${match.status}</span>
+                        <span class="match-status ${statusClass}" style="padding: 5px 10px; border-radius: 6px; font-weight: 600;">${match.status}</span>
                     `;
                     targetElement.appendChild(matchItem);
                 });
             }
 
-            // --- Anket Yönetimi ---
+            // --- Anket Yönetimi (Önceki koddan) ---
             function selectPollOption(e) {
-                // Sadece oy verilebilecek durumdaysa seçimi yap
-                if (e.currentTarget.closest('.poll-container').querySelector('#voteBtn') || e.currentTarget.closest('.poll-container').querySelector('#simpleVoteBtn')) {
-                    pollOptions.forEach(opt => opt.classList.remove('selected'));
-                    e.currentTarget.classList.add('selected');
-                    selectedPollOption = e.currentTarget.getAttribute('data-option');
-                    voteBtn.disabled = false;
-                    simpleVoteBtn.disabled = false;
-                }
+                const container = e.currentTarget.closest('.poll-container');
+                container.querySelectorAll('.poll-option').forEach(opt => opt.classList.remove('selected'));
+                e.currentTarget.classList.add('selected');
+                selectedPollOption = e.currentTarget.getAttribute('data-option');
+                
+                const voteBtn = container.querySelector('#voteBtn') || container.querySelector('#simpleVoteBtn');
+                if(voteBtn) voteBtn.disabled = false;
             }
 
             function handleVote(interfaceType) {
+                const containerId = interfaceType === 'menu' ? 'currentPoll' : 'simpleInterface';
+                const pollContainer = document.getElementById(containerId).querySelector('.poll-container');
+                
                 if (!selectedPollOption) {
                     alert('Lütfen bir seçenek belirleyin!');
                     return;
                 }
                 
-                // Oylama butonlarını devre dışı bırak
-                voteBtn.disabled = true;
-                simpleVoteBtn.disabled = true;
+                const voteBtn = pollContainer.querySelector('#voteBtn') || pollContainer.querySelector('#simpleVoteBtn');
+                if(voteBtn) voteBtn.disabled = true;
 
-                const pollContainer = document.getElementById(interfaceType === 'menu' ? 'currentPoll' : 'simpleInterface').querySelector('.poll-container');
-                
                 // Simülasyon: Sonuçları simüle et
                 const results = [
                     { label: 'Galatasaray', votes: 45, total: 100, selected: selectedPollOption === '1' },
@@ -1468,20 +1520,20 @@
                 const userVoteIndex = results.findIndex(res => res.selected);
                 if (userVoteIndex > -1) {
                     results[userVoteIndex].votes++;
-                    results.forEach(res => res.total++); // Toplam oy sayısını artır
+                    results.forEach(res => res.total++); 
                 }
 
-                let resultsHTML = '<div class="poll-results">';
+                let resultsHTML = '<div class="poll-results" style="margin-top: 20px; text-align: left;">';
                 results.forEach(res => {
                     const percentage = (res.votes / res.total) * 100;
                     resultsHTML += `
-                        <div class="poll-result-item">
-                            <div class="poll-result-label">
+                        <div class="poll-result-item" style="margin-bottom: 10px;">
+                            <div class="poll-result-label" style="display: flex; justify-content: space-between; font-size: 0.9rem;">
                                 <span>${res.label} ${res.selected ? ' (Siz)' : ''}</span>
                                 <span>${percentage.toFixed(0)}% (${res.votes} Oy)</span>
                             </div>
-                            <div class="poll-result-bar">
-                                <div class="poll-result-fill" style="width: ${percentage}%; background: ${res.selected ? 'linear-gradient(90deg, var(--secondary), var(--warning))' : 'linear-gradient(90deg, var(--primary), var(--primary-dark))'};"></div>
+                            <div class="poll-result-bar" style="height: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 5px; margin-top: 5px;">
+                                <div class="poll-result-fill" style="height: 100%; width: ${percentage}%; border-radius: 5px; transition: width 0.5s; background: ${res.selected ? 'linear-gradient(90deg, var(--secondary), var(--warning))' : 'linear-gradient(90deg, var(--primary), var(--primary-dark))'};"></div>
                             </div>
                         </div>
                     `;
@@ -1490,20 +1542,20 @@
 
                 // Sonuçları göster
                 pollContainer.innerHTML = `
-                    <div class="poll-question">Bu sezon hangi takım şampiyon olur? (Sonuçlar)</div>
+                    <div class="poll-question" style="font-size: 1.2rem; font-weight: 600; margin-bottom: 5px;">Bu sezon hangi takım şampiyon olur? (Sonuçlar)</div>
                     ${resultsHTML}
                     <p class="note" style="text-align:center; margin-top:20px; color: var(--success);">Oyladığınız için teşekkürler!</p>
                 `;
                 
-                selectedPollOption = null; // Oylama bitince seçimi sıfırla
+                selectedPollOption = null; 
             }
-            
-            // --- Yapay Zeka Asistanı ---
+
+            // --- Yapay Zeka Asistanı (Önceki koddan) ---
             function toggleAIAssistant() {
                 aiAssistantModal.style.display = aiAssistantModal.style.display === 'flex' ? 'none' : 'flex';
                 if (aiAssistantModal.style.display === 'flex') {
                     aiInput.focus();
-                    aiMessages.scrollTop = aiMessages.scrollHeight; // Açıldığında en alta kaydır
+                    aiMessages.scrollTop = aiMessages.scrollHeight; 
                 }
             }
 
@@ -1511,13 +1563,11 @@
                 const message = question || aiInput.value.trim();
                 if (!message) return;
 
-                // Kullanıcı mesajını ekle
                 addMessageToChat('user', message);
                 aiInput.value = '';
                 aiInput.disabled = true;
                 sendAIBtn.disabled = true;
 
-                // Yapay zeka yanıtını simüle et
                 setTimeout(() => {
                     simulateAIResponse(message);
                     aiInput.disabled = false;
@@ -1555,11 +1605,12 @@
                 const lowerMessage = userMessage.toLowerCase().replace('?', '').replace('!', '');
 
                 if (lowerMessage.includes('bugünkü') || lowerMessage.includes('maçlar')) {
-                    botResponse = `Bugün oynanan ve oynanacak önemli maçlar şunlardır: ⚽ Galatasaray vs Fenerbahçe (${matches[0].score}, ${matches[0].status}) ve ⚽ Beşiktaş vs Trabzonspor (${matches[1].time}, ${matches[1].status}).`;
+                    const matchInfo = matches.map(m => `${m.team1} vs ${m.team2} (${m.score}, ${m.status})`).join(' ve ');
+                    botResponse = `Bugün oynanan/oynanacak maçlar şunlardır: ⚽ ${matchInfo}.`;
                 } else if (lowerMessage.includes('galatasaray') && lowerMessage.includes('performans')) {
                     botResponse = "Galatasaray, son 5 maçında 4 galibiyet ve 1 beraberlik alarak formunun zirvesinde. Özellikle Mauro Icardi gol yollarında çok etkili. Son maç skoru: 2-1.";
                 } else if (lowerMessage.includes('şampiyonlar ligi') || lowerMessage.includes('uefa')) {
-                    botResponse = 'Şampiyonlar Ligi grup aşaması heyecanı devam ediyor. Grup liderliği için kıyasıya bir mücadele var. En son sonuçları kontrol etmek için ilgili bölüme gidebilirsiniz.';
+                    botResponse = 'Şampiyonlar Ligi grup aşaması heyecanı devam ediyor. En son sonuçları kontrol etmek için ilgili bölüme gidebilirsiniz.';
                 } else if (lowerMessage.includes('admin') || lowerMessage.includes('yönetim')) {
                     botResponse = 'Admin paneline erişim, özel şifre gerektirir. Lütfen "Admin" butonunu kullanarak şifrenizi girin. (Şifre: admin)';
                 } else if (lowerMessage.includes('teşekkürler') || lowerMessage.includes('sağol')) {
@@ -1569,14 +1620,16 @@
                 addMessageToChat('bot', botResponse);
             }
             
-            // --- Geri Sayım ---
+            // --- Geri Sayım (Önceki koddan) ---
             function updateCountdown() {
                 const now = new Date().getTime();
                 const distance = BIG_MATCH_DATE - now;
+                
+                if (!countdownContainer) return;
 
                 if (distance < 0) {
                     document.querySelector('.countdown-title').textContent = 'Maç Başladı!';
-                    document.querySelector('.countdown-container').innerHTML = '<p style="font-weight: 600; color: var(--danger);">Maç şu anda CANLI yayınlanıyor!</p>';
+                    countdownContainer.innerHTML = '<p style="font-weight: 600; color: var(--danger);">Maç şu anda CANLI yayınlanıyor!</p>';
                     return;
                 }
 
@@ -1587,10 +1640,24 @@
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
                 // DOM'a yazma
-                countdownDays.textContent = days < 10 ? '0' + days : days;
-                countdownHours.textContent = hours < 10 ? '0' + hours : hours;
-                countdownMinutes.textContent = minutes < 10 ? '0' + minutes : minutes;
-                countdownSeconds.textContent = seconds < 10 ? '0' + seconds : seconds;
+                countdownContainer.innerHTML = `
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="countdownDays">${days < 10 ? '0' + days : days}</div>
+                        <div class="countdown-label">Gün</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="countdownHours">${hours < 10 ? '0' + hours : hours}</div>
+                        <div class="countdown-label">Saat</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="countdownMinutes">${minutes < 10 ? '0' + minutes : minutes}</div>
+                        <div class="countdown-label">Dakika</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="countdownSeconds">${seconds < 10 ? '0' + seconds : seconds}</div>
+                        <div class="countdown-label">Saniye</div>
+                    </div>
+                `;
             }
 
 
@@ -1625,7 +1692,7 @@
 
             // Tema Seçimi
             themeOptions.forEach(option => {
-                option.addEventListener('click', () => changeTheme(option.getAttribute('data-theme')));
+                option.addEventListener('click', (e) => changeTheme(e.currentTarget.getAttribute('data-theme')));
             });
 
             // Anket Oylama
@@ -1634,12 +1701,24 @@
             simpleVoteBtn.addEventListener('click', () => handleVote('simple'));
 
             // Admin Girişi
-            adminBtn.addEventListener('click', () => goToSection('admin'));
+            adminBtn.addEventListener('click', () => {
+                if (isAdminLoggedIn) {
+                    goToSection('admin');
+                } else {
+                    adminLogin.style.display = 'flex';
+                    adminPasswordInput.value = '';
+                    adminError.style.display = 'none';
+                    adminPasswordInput.focus();
+                }
+            });
             adminBtnSimple.addEventListener('click', () => {
                 if (!isAdminLoggedIn) {
                     adminLogin.style.display = 'flex';
+                    adminPasswordInput.value = '';
+                    adminError.style.display = 'none';
+                    adminPasswordInput.focus();
                 } else {
-                    alert('Admin paneli sadece "Gelişmiş Arayüz"de tam olarak kullanılabilir. Lütfen arayüzü değiştirin.');
+                    alert('Admin girişi başarılı! Yönetim işlemleri için Gelişmiş Arayüze geçmeniz önerilir.');
                 }
             });
 
@@ -1657,22 +1736,15 @@
             // Admin Maç Ekleme
             adminAddMatchBtn.addEventListener('click', addMatch);
 
-            // Admin Maç Silme/Düzenleme
+            // Admin Maç Silme
             adminMatchesList.addEventListener('click', (e) => {
                 const target = e.target;
                 if (target.classList.contains('btn-delete')) {
                     const matchId = parseInt(target.getAttribute('data-match-id'));
-                    matches = matches.filter(match => match.id !== matchId);
-                    
-                    // Tüm listeleri güncelle
-                    renderAdminMatchesList();
-                    renderMatchList(matches, document.getElementById('matchesList'));
-                    renderMatchList(matches, document.getElementById('homeMatchesList'));
-                    renderMatchList(matches, document.getElementById('simpleMatchesList'));
-                    
-                    alert('Maç başarıyla silindi!');
-                } else if (target.classList.contains('btn-edit')) {
-                    alert(`Maç ID ${target.getAttribute('data-match-id')} için düzenleme işlevi yakında eklenecektir.`);
+                    if (confirm('Bu maçı silmek istediğinizden emin misiniz?')) {
+                        deleteMatch(matchId);
+                        alert('Maç başarıyla silindi!');
+                    }
                 }
             });
 
